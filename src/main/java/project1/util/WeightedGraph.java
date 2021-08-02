@@ -24,7 +24,7 @@ public class WeightedGraph {
         Graph(int vertices) {
             this.vertices = vertices;
             adjacencylist = new LinkedList[vertices];
-            //initialize adjacency lists for all the vertices
+            // initialize adjacency lists for all the vertices
             for (int i = 0; i < vertices; i++) {
                 adjacencylist[i] = new LinkedList<>();
             }
@@ -32,7 +32,7 @@ public class WeightedGraph {
 
         public void addEgde(int source, int destination, int weight) {
             Edge edge = new Edge(source, destination, weight);
-            adjacencylist[source].addFirst(edge); //for directed graph
+            adjacencylist[source].addFirst(edge); // for directed graph
         }
 
         public void printGraph() {
