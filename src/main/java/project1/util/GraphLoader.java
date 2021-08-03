@@ -35,7 +35,7 @@ public class GraphLoader {
      * @param graph A graph to write .dot file from.
      * @param outputFileName Name of the output graph file.
      */
-    public void writeGraph(Graph graph, String outputFileName) {
+    public static void writeGraph(Graph graph, String outputFileName) {
         FileSink fileSink = new FileSinkDOT(true);
 
         try {
