@@ -2,8 +2,11 @@ package project1.algorithm;
 
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.SingleGraph;
+import project1.data.ScheduleNode;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class Astar {
 
@@ -18,6 +21,12 @@ public class Astar {
     }
 
     public void aStarSearch() {
+
+        Graph scheduleGraph = new SingleGraph("schedule");
+        List<List<Character>> schedule = null;
+        ScheduleNode root = new ScheduleNode(schedule, "root");
+
+
 
         Node chosen;
 
@@ -56,5 +65,8 @@ public class Astar {
         //	System.out.println(children.get(i));
         //}
         return children;
+    }
+    public int findHeuristic() {
+        return -1;
     }
 }
