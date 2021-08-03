@@ -20,36 +20,17 @@ public class Main {
 
 		Graph graph = new SingleGraph("Test");
 
-		graph.addNode("A");
-		graph.addNode("B");
-		graph.addNode("C");
-		graph.addNode("D");
-		graph.addEdge("AB", "A", "B", true);
-		graph.addEdge("AC", "A", "C", true);
-		graph.addEdge("BD", "B", "D", true);
-		graph.addEdge("CD", "C", "D", true);
+		graph.addNode("A").setAttribute("weight", 2);
+		graph.addNode("B").setAttribute("weight", 3);
+		graph.addNode("C").setAttribute("weight", 3);
+		graph.addNode("D").setAttribute("weight", 2);
+		graph.addEdge("AB", "A", "B", true).setAttribute("weight", 1);
+		graph.addEdge("AC", "A", "C", true).setAttribute("weight", 2);
+		graph.addEdge("BD", "B", "D", true).setAttribute("weight", 2);
+		graph.addEdge("CD", "C", "D", true).setAttribute("weight", 1);
 
-		Node n = graph.getNode("A");
-		n.setAttribute("weight", 2);
-		Node n1 = graph.getNode("B");
-		n1.setAttribute("weight", 3);
-		Node n2 = graph.getNode("C");
-		n2.setAttribute("weight", 3);
-		Node n3 = graph.getNode("D");
-		n3.setAttribute("weight", 2);
-
-
-		Edge e = graph.getEdge("AB");
-		e.setAttribute("weight", 1);
-		Edge e1 = graph.getEdge("AC");
-		e1.setAttribute("weight", 2);
-		Edge e2 = graph.getEdge("BD");
-		e2.setAttribute("weight", 2);
-		Edge e3 = graph.getEdge("CD");
-		e3.setAttribute("weight", 1);
-
-		int num = (int) graph.getEdge("AB").getAttribute("weight");
-		//System.out.println(num);
+//		int num = (int) graph.getEdge("AB").getAttribute("weight");
+//		System.out.println(num);
 
 		//graph.display();
 		Astar newSearch = new Astar(graph, 2);

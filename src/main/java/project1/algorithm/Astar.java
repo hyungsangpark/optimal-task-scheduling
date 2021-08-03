@@ -38,6 +38,9 @@ public class Astar {
         //Find initial task/tasks
         _initialTasks = findInitialTasks();
 
+        //Pick one initial task from _initialTasks based on minimum weight of the task node
+        Node task = pickOneInitial();
+
         //Create a graph for schedule nodes, create List to hold the partial schedules
         Graph scheduleGraph = new SingleGraph("schedule");
         List<List<String>> schedule = new ArrayList<>();
@@ -51,6 +54,8 @@ public class Astar {
         _tempOpenList.add(root);
         //Heuristics of the node
         root.setHeuristics(findHeuristic(root));
+
+
 
         Node chosen;
 
@@ -127,5 +132,24 @@ public class Astar {
             }
         }
         return initialTasks;
+    }
+
+    public Node pickOneInitial() {
+        //pick initial task
+        int minWeight = (int)_initialTasks.get(0).getAttribute("weight");
+        Node task = null;
+        if(_initialTasks.size()!=1) {
+            for (int i = 1; i < _initialTasks.size(); i++) {
+                int temp = (int) _initialTasks.get(i).getAttribute("weight");
+                if (temp < minWeight) {
+                    minWeight = temp;
+                    task = _initialTasks.get(i);
+                }
+            }
+        }
+        else {
+            task = _initialTasks.get(0);
+        }
+        return task;
     }
 }
