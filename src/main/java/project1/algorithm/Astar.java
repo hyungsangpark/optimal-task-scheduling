@@ -9,6 +9,8 @@ public class Astar {
 
     public Graph _graph;
     public int _processors;
+    public LinkedList<Node> _openList = new LinkedList<>();
+    public LinkedList<Node> _closedList = new LinkedList<>();
 
     public Astar(Graph graph, int processors) {
         _graph = graph;
@@ -17,19 +19,19 @@ public class Astar {
 
     public void aStarSearch() {
 
-        //LinkedList<Node> openList = new LinkedList<>();
-        LinkedList<Node> closedList = new LinkedList<>();
         Node chosen;
 
         Node node = _graph.getNode(0);
-        closedList.add(node);
+        _closedList.add(node);
         LinkedList<Node> childrenList = getChildren(node);
+
         //if (!childrenList.isEmpty()) {
         chosen = childrenList.get(0);
         int nodeWeight = (int) chosen.getAttribute("weight");
         String edge = node.toString() + chosen;
         int totalWeight = nodeWeight + (int) _graph.getEdge(edge).getAttribute("weight");
         //}
+
         for(int i=0; i<childrenList.size() - 1; i++) {
             Node next = childrenList.get(i+1);
             String nextEdge = node + next.toString();
@@ -38,8 +40,8 @@ public class Astar {
                 chosen = next;
             }
         }
-        closedList.add(chosen);
-        System.out.println(closedList);
+        _closedList.add(chosen);
+        System.out.println(_closedList);
     }
 
     public LinkedList<Node> getChildren(Node node) {
