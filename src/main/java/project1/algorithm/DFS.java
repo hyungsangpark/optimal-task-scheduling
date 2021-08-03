@@ -1,4 +1,4 @@
-package main.java.project1.algorithm;
+package project1.algorithm;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import project1.data.ScheduleNode;
@@ -15,33 +15,35 @@ public class DFS {
         _numOfProcessors = numOfProcessors;
     }
 
+    public void branchAndBoundStart() {
+        Node node = _graph.getNode(0);
+    }
+
     // Assume that the nodes are sorted.
-    public void branchAndBound() {
-        List<List<Character>> processors = new ArrayList<>();
+    public void branchAndBound(ScheduleNode current, Node currentNode) {
+        List<List<Character>> schedule = new ArrayList<>();
         for (int i = 0; i < _numOfProcessors; i++) {
-            processors.add(new ArrayList<>());
+            schedule.add(new ArrayList<>());
         }
 
-        Node node;
+        Node child;
 
-        for (int i = 0; i < _graph.getNodeCount(); i++) {
-            node = _graph.getNode(i);
-
-            for (int j = 0; j < _numOfProcessors; j++) {
-                for (int k = 0; k < node.getOutDegree(); k++) {
-
-                }
+        for (int i = 0; i < _numOfProcessors; i++) {
+            for (int j = 0; j < currentNode.getOutDegree(); j++) {
+                child = currentNode.getEdge(j).getTargetNode(); // resume from here. What about the weights?
+                List<List<Character>> childSchedule = addTask(current.getSchedule(), i, (char)child.getAttribute("Name"), (int)child.getAttribute("Weight"));
+                branchAndBound(new ScheduleNode(childSchedule, current), child);
             }
         }
 
-        for (int i = 0; i < _numOfProcessors; i++) {
-            for (int j = 0; j <)
-        }
-
-        ScheduleNode root = new ScheduleNode(processors, tasks, null);
-
+        // now think about how to do the bounding
     }
 
-    // carry on by making schedules then adding to the arraylist. Another good way to carry on will be to research how
-    // to use the Graph class to do everything.
+    public List<List<Character>> addTask(List<List<Character>> schedule, int processorNum, char task, int weight) {
+        for (int i = 0; i < weight; i++) {
+            schedule.get(processorNum).add(task);
+        }
+
+        return schedule;
+    }
 }
