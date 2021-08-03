@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScheduleNode {
-    private Node _self;
+
     private List<List<String>> _schedule;
     private List<ScheduleNode> _children = new ArrayList<>();
     private ScheduleNode _parent;
@@ -21,7 +21,6 @@ public class ScheduleNode {
         _schedule = schedule;
         _parent = parent;
         _name = name;
-        _self = graph.addNode(name);
     }
 
     //For root schedule node(node with no tasks assigned)
@@ -29,13 +28,10 @@ public class ScheduleNode {
         _graph = graph;
         _schedule = schedule;
         _name = name;
-        _self = graph.addNode(name);
     }
 
-    public void addChildren(int numOfChildren) {
-        for (int i = 0; i < numOfChildren; i++) {
-            System.out.println("Do something");
-        }
+    public void findTaskChildren() {
+
     }
 
     public List<List<String>> getSchedule() {
@@ -43,7 +39,7 @@ public class ScheduleNode {
     }
 
     public String getScheduleNodeName() {
-        return _self.toString();
+        return _name;
     }
 
     public void setHeuristics(int num) {

@@ -46,7 +46,6 @@ public class Astar {
         _tempOpenList.add(root);
         //Heuristics of the node
         root.setHeuristics(findHeuristic(root));
-        System.out.println(findHeuristic(root));
 
         Node chosen;
 
