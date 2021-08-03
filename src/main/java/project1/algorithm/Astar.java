@@ -21,6 +21,8 @@ public class Astar {
     public LinkedList<ScheduleNode> _tempOpenList = new LinkedList<>();
     public LinkedList<ScheduleNode> _tempClosedList = new LinkedList<>();
 
+    public LinkedList<Node> _initialTasks;
+
     public Astar(Graph taskGraph, int processors) {
         _taskGraph = taskGraph;
         _processors = processors;
@@ -32,6 +34,9 @@ public class Astar {
         for (int i=0; i<_taskGraph.getNodeCount();i++) {
             _taskNodeList.add(_taskGraph.getNode(i));
         }
+
+        //Find initial task/tasks
+        _initialTasks = findInitialTasks();
 
         //Create a graph for schedule nodes, create List to hold the partial schedules
         Graph scheduleGraph = new SingleGraph("schedule");
@@ -69,7 +74,7 @@ public class Astar {
             }
         }
         _closedList.add(chosen);
-        System.out.println(_closedList);
+        //System.out.println(_closedList);
     }
 
     public LinkedList<Node> getChildren(Node node) {
@@ -80,9 +85,9 @@ public class Astar {
             Node n = node.getEdge(i).getNode1();
             children.add(n);
         }
-        //for(int i=0; i<node.getOutDegree(); i++) {
-        //	System.out.println(children.get(i));
-        //}
+//        for(int i=0; i<node.getOutDegree(); i++) {
+//        	System.out.println(children.get(i));
+//        }
         return children;
     }
 
@@ -109,5 +114,18 @@ public class Astar {
             }
         }
         return count;
+    }
+
+    public LinkedList<Node> findInitialTasks() {
+        LinkedList<Node> initialTasks = new LinkedList<>();
+
+        //Find initial task/tasks by finding tasks with 0 income degree
+        for(int i=0; i<_taskGraph.getNodeCount(); i++) {
+            Node n = _taskGraph.getNode(i);
+            if (n.getInDegree() == 0) {
+                initialTasks.add(n);
+            }
+        }
+        return initialTasks;
     }
 }

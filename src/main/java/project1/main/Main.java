@@ -24,10 +24,10 @@ public class Main {
 		graph.addNode("B");
 		graph.addNode("C");
 		graph.addNode("D");
-		graph.addEdge("AB", "A", "B");
-		graph.addEdge("AC", "A", "C");
-		graph.addEdge("BD", "B", "D");
-		graph.addEdge("CD", "C", "D");
+		graph.addEdge("AB", "A", "B", true);
+		graph.addEdge("AC", "A", "C", true);
+		graph.addEdge("BD", "B", "D", true);
+		graph.addEdge("CD", "C", "D", true);
 
 		Node n = graph.getNode("A");
 		n.setAttribute("weight", 2);
@@ -37,6 +37,7 @@ public class Main {
 		n2.setAttribute("weight", 3);
 		Node n3 = graph.getNode("D");
 		n3.setAttribute("weight", 2);
+
 
 		Edge e = graph.getEdge("AB");
 		e.setAttribute("weight", 1);

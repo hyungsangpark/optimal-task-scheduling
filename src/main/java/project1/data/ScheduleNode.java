@@ -14,6 +14,7 @@ public class ScheduleNode {
     private String _name;
     private Graph _graph;
     private int _heuristics;
+    private int _totalScheduleTime = 0;
 
     //For normal schedule nodes
     public ScheduleNode(Graph graph, List<List<String>> schedule, ScheduleNode parent, String name) {
@@ -44,5 +45,9 @@ public class ScheduleNode {
 
     public void setHeuristics(int num) {
         _heuristics = num;
+    }
+
+    public void set_totalScheduleTime(int time) {
+        _totalScheduleTime = _totalScheduleTime + time;
     }
 }
