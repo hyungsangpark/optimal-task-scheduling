@@ -1,6 +1,7 @@
 package main.java.project1.algorithm;
 import org.graphstream.graph.Graph;
-import project1.data.Node;
+import org.graphstream.graph.Node;
+import project1.data.ScheduleNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,13 +15,30 @@ public class DFS {
         _numOfProcessors = numOfProcessors;
     }
 
+    // Assume that the nodes are sorted.
     public void branchAndBound() {
         List<List<Character>> processors = new ArrayList<>();
         for (int i = 0; i < _numOfProcessors; i++) {
             processors.add(new ArrayList<>());
         }
 
-        Node root = new Node(processors, tasks, numOfChildren, null);
+        Node node;
+
+        for (int i = 0; i < _graph.getNodeCount(); i++) {
+            node = _graph.getNode(i);
+
+            for (int j = 0; j < _numOfProcessors; j++) {
+                for (int k = 0; k < node.getOutDegree(); k++) {
+
+                }
+            }
+        }
+
+        for (int i = 0; i < _numOfProcessors; i++) {
+            for (int j = 0; j <)
+        }
+
+        ScheduleNode root = new ScheduleNode(processors, tasks, null);
 
     }
 
