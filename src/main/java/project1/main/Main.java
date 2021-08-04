@@ -55,9 +55,12 @@ public class Main {
         String graphFileName = args[0];
         outputName = outputName == null ? graphFileName.replace(".dot", "-output.dot") : outputName;
 
-        Graph importedGraph;
         try {
-            importedGraph = GraphLoader.readGraph(graphFileName);
+            Graph graph = GraphLoader.readGraph(graphFileName);
+
+            // TODO: Run ALGORITHM to receive schedule.
+
+            GraphLoader.writeGraph(graph, outputName);
         } catch (IOException e) {
             System.err.println("ERROR: Graph file with the provided name is not found.");
             System.exit(1);
