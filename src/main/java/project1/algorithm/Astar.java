@@ -52,6 +52,8 @@ public class Astar {
         //Create root node(empty schedule)
         ScheduleNode root = new ScheduleNode(scheduleGraph, schedule, "root");
         _tempOpenList.add(root);
+        //Add node represents ScheduleNode to scheduleGraph
+
         //Heuristics of the node
         root.setHeuristics(findHeuristic(root));
 
@@ -151,5 +153,21 @@ public class Astar {
             task = _initialTasks.get(0);
         }
         return task;
+    }
+
+    //perhaps this function is same as scheduler? or maybe run one function in another?
+    public int findTimeAfterSchedule() {
+        return -1;
+    }
+
+    public void scheduler () {
+
+    }
+
+    //Figure out if there are duplicate schedule nodes or not
+    //(might not need it because of heuristic function)
+    public boolean findDuplicate() {
+        //something to do with _tempClosedList
+        return false;
     }
 }

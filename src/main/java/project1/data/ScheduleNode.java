@@ -8,6 +8,7 @@ import java.util.List;
 
 public class ScheduleNode {
 
+    private Node _self;
     private List<List<String>> _schedule;
     private List<ScheduleNode> _children = new ArrayList<>();
     private ScheduleNode _parent;
@@ -22,6 +23,7 @@ public class ScheduleNode {
         _schedule = schedule;
         _parent = parent;
         _name = name;
+        _self = _graph.addNode(name);
     }
 
     //For root schedule node(node with no tasks assigned)
@@ -29,6 +31,7 @@ public class ScheduleNode {
         _graph = graph;
         _schedule = schedule;
         _name = name;
+        _self = _graph.addNode(name);
     }
 
     public void findTaskChildren() {
@@ -49,5 +52,13 @@ public class ScheduleNode {
 
     public void set_totalScheduleTime(int time) {
         _totalScheduleTime = _totalScheduleTime + time;
+    }
+
+    public Node getScheduleNodeReference() {
+        return _self;
+    }
+
+    public Graph getGraphForNextScheduleNode() {
+        return _graph;
     }
 }
