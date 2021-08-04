@@ -32,7 +32,7 @@ public class DFS {
             for (int j = 0; j < currentNode.getOutDegree(); j++) {
                 child = currentNode.getEdge(j).getTargetNode(); // resume from here. What about the weights?
                 List<List<Character>> childSchedule = addTask(current.getSchedule(), i, (char)child.getAttribute("Name"), (int)child.getAttribute("Weight"));
-                branchAndBound(new ScheduleNode(childSchedule, current), child);
+                branchAndBound(new ScheduleNode(_graph, childSchedule, current, current.getScheduleNodeName()), child);
             }
         }
 
