@@ -10,11 +10,10 @@ public class ScheduleNode {
 
     private Node _self;
     private List<List<Character>> _schedule;
-    private List<ScheduleNode> _children = new ArrayList<>();
+    private List<Node> _children = new ArrayList<>();
     private ScheduleNode _parent;
     private String _name;
     private Graph _graph;
-    private int _heuristics;
     private int _totalScheduleTime = 0;
 
     public ScheduleNode(Graph graph, List<List<Character>> schedule, ScheduleNode parent, String name) {
@@ -25,12 +24,14 @@ public class ScheduleNode {
         _self = _graph.addNode(name);
     }
 
-    public void addChildren(int numOfChildren, Node node) {
-        for (int i = 0; i< numOfChildren; i++){
-            if (node.getDegree() == 0) {
+    public void addChildren(Node node) {
+            if (node.getOutDegree() == 0) {
                 System.out.println("No children found");
             } else {
-                System.out.println("Children found");
+                for (int i=0; i< node.getOutDegree(); i++) {
+                    _children.add(i, node);
+                    // Not sure what to do here.
+                    System.out.println("Children found");
             }
         }
     }
@@ -41,10 +42,6 @@ public class ScheduleNode {
 
     public String getScheduleNodeName() {
         return _name;
-    }
-
-    public void setHeuristics(int num) {
-        _heuristics = num;
     }
 
     public void set_totalScheduleTime(int time) {
