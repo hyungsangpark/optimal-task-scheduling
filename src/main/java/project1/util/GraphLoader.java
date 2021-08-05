@@ -49,19 +49,20 @@ public class GraphLoader {
             PrintWriter graphWriter = new PrintWriter(outputFileName);
 
             // Header
-            graphWriter.println("digraph " + _graphID + " {");
+            graphWriter.println("digraph \"" + _graphID + "\" {");
 
             // Print Nodes.
             graph.nodes().forEach(node -> {
                 Double weight = (Double) node.getAttribute("Weight");
                 graphWriter.println(new StringBuilder()
+                        .append("    ")
                         .append(node.getId())
                         .append(" [Weight=")
                         .append(weight.intValue())
                         .append(",Start=")
-                        .append((int)node.getAttribute("Start"))
+                        .append((Integer)node.getAttribute("Start"))
                         .append(",Processor=")
-                        .append((int)node.getAttribute("Processor"))
+                        .append((Integer)node.getAttribute("Processor"))
                         .append("];")
                 );
             });
@@ -70,6 +71,7 @@ public class GraphLoader {
             graph.edges().forEach(edge -> {
                 Double weight = (Double)edge.getAttribute("Weight");
                 graphWriter.println(new StringBuilder()
+                        .append("    ")
                         .append(edge.getSourceNode().getId())
                         .append(" -> ")
                         .append(edge.getTargetNode().getId())
