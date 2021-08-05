@@ -5,6 +5,7 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import project1.algorithm.Astar;
+import project1.data.ScheduleNode;
 import project1.util.GraphLoader;
 
 import java.io.IOException;
@@ -27,6 +28,7 @@ public class Main {
 		}
 
 		Astar newSearch = new Astar(graph, 2);
-		newSearch.aStarSearch();
+		ScheduleNode result = newSearch.aStarSearch();
+		System.out.println(result);
 	}
 }

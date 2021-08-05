@@ -207,8 +207,8 @@ public class ScheduleNode {
         return output;
     }
 
-    public boolean isTarget() {
-        return false;
+    public boolean isTarget(Graph graph) {
+        return nodesLeft(graph).size() == 0;
     }
 
     public List<List<String>> getSchedule() {

@@ -36,7 +36,7 @@ public class Astar {
             ScheduleNode chosenSchedule = _tempOpenList.peek();
 
 //          if n is target:
-            if (chosenSchedule.isTarget()) {
+            if (chosenSchedule.isTarget(_taskGraph)) {
                 // return solution
                 return chosenSchedule;
             }
