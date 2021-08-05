@@ -42,29 +42,14 @@ public class Astar {
             }
 
             // expand chosenSchedule
+            List<ScheduleNode> childrenOfChosen = chosenSchedule.expandTree(_taskGraph);
 
 //          for every m which is a neighbor of n:
+            for (ScheduleNode sn : childrenOfChosen) {
+                _tempOpenList.add(sn);
+            }
 
-//              if (m is not in C) and (m is not in O):
-
-//                  add m to O, set n as m's parent
-
-//                  calculate g(m) and f(m) and save them
-
-//              else:
-
-//              if f(m) from last iteration is better than g(m) from this iteration:
-
-//                  set n as m's parent
-
-//                  update g(m) and f(m)
-
-//                  if m is in C:
-
-//                      move m to O
-
-//                      move n from O to C
-
+            _tempOpenList.remove(chosenSchedule);
         }
 //
 //        return that there's no solution
@@ -142,44 +127,6 @@ public class Astar {
         return children;
     }
 
-//    public int findHeuristic(ScheduleNode node) {
-//        //Find occurrence of unique names to figure out the amount of tasks not scheduled yet
-//        List<List<String>> currentSchedule = node.getSchedule();
-//        int count=0;
-//
-//        //Clone taskNodeList
-//        LinkedList<Node> taskNodeList = _taskNodeList;
-//
-//        //Find heuristics
-//        for (int i=0; i<_processors;i++) {
-//            List<String> oneProcess = currentSchedule.get(i);
-//            HashSet<String> uniqueList = new HashSet(oneProcess);
-//            taskNodeList.removeAll(uniqueList);
-//        }
-//
-//        for (Node n: taskNodeList) {
-//            String s = n.toString();
-//            if (!s.equals("-1")) {
-//                int temp = (int)((double)_taskGraph.getNode(s).getAttribute("Weight"));
-//                count = count + temp;
-//            }
-//        }
-//        return count;
-//    }
-
-    public void expandTree(Graph tree,ScheduleNode parent,LinkedList<Node> children,ArrayList<String> edgeWeights) {
-        ArrayList<ScheduleNode> output = new ArrayList<>();
-
-        for (int i = 0; i < children.size(); i++) {
-//            ScheduleNode newTreeNode = new ScheduleNode(tree, parent.getSchedule(), "idk");
-            List<List<String>> newSchedule = parent.getSchedule();
-
-            for (int j = 0; j < _processors; j++) {
-
-            }
-        }
-    }
-
     public LinkedList<Node> findInitialTasks() {
         LinkedList<Node> initialTasks = new LinkedList<>();
 
@@ -210,21 +157,5 @@ public class Astar {
             task = _initialTasks.get(0);
         }
         return task;
-    }
-
-    //perhaps this function is same as scheduler? or maybe run one function in another?
-    public int findTimeAfterSchedule() {
-        return -1;
-    }
-
-    public void scheduler () {
-
-    }
-
-    //Figure out if there are duplicate schedule nodes or not
-    //(might not need it because of heuristic function)
-    public boolean findDuplicate() {
-        //something to do with _tempClosedList
-        return false;
     }
 }

@@ -4,10 +4,7 @@ import javafx.scene.Parent;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ScheduleNode {
 
@@ -17,6 +14,8 @@ public class ScheduleNode {
     private int _heuristics;
 
     public ScheduleNode(int _processors) {
+        _schedule = new ArrayList<>();
+
         for (int i = 0; i < _processors; i++) {
             _schedule.add(new ArrayList<>());
         }
@@ -25,29 +24,63 @@ public class ScheduleNode {
     }
 
     public ScheduleNode(List<List<String>> schedule) {
-        _schedule = schedule;
+        _schedule = new ArrayList<>();
+
+        for (int i = 0;i < schedule.size(); i++) {
+            _schedule.add(new ArrayList<>());
+            for (int j = 0; j < schedule.get(i).size(); j++) {
+                _schedule.get(i).add(schedule.get(i).get(j));
+            }
+        }
     }
 
     public List<ScheduleNode> expandTree(Graph taskGraph) {
         List<ScheduleNode> newSchedules = new ArrayList<>();
 
-        List<String> schedulableNodes = nodesToSchedule(taskGraph);
+        List<String> schedulableNodes = getNodesToSchedule(taskGraph);
 
         // go over each node that needs to be scheduled
         for(String n : schedulableNodes) {
             // go over all the processors
             for(int i = 0; i < _schedule.size(); i++) {
-                ScheduleNode newChildeSchedule = new ScheduleNode(_schedule);
+                ScheduleNode newChildSchedule = new ScheduleNode(_schedule);
 
                 // add new node task depending on whether transition cost is required
-                newChildeSchedule.addNewNodeTask(i,taskGraph.getNode(n),taskGraph);
-
+                newChildSchedule.addNewNodeTask(i,taskGraph.getNode(n),taskGraph);
                 // calculate its heuristic
+                newChildSchedule.setHeuristics(taskGraph);
+                // add it to new schedules list
+                newSchedules.add(newChildSchedule);
             }
 
         }
 
         return newSchedules;
+    }
+
+    public void setHeuristics(Graph graph) {
+        int cost = getCost();
+
+        int totalH = 0;
+        for (String n: nodesLeft(graph)) {
+            totalH += (int)(double)graph.getNode(n).getAttribute("Weight");
+        }
+
+        _heuristics = cost + totalH;
+    }
+
+    private int getCost() {
+        int tempCost = 0;
+
+        for(int i = 0; i < _schedule.size(); i++) {
+            tempCost = Math.max(tempCost,_schedule.get(i).size());
+        }
+
+        return tempCost;
+    }
+
+    public int getHeristic() {
+        return _heuristics;
     }
 
     private void addNewNodeTask(int pNum,Node node,Graph graph) {
@@ -61,6 +94,7 @@ public class ScheduleNode {
         // if the node has no parents then add it
         if (parentsOfNode.size() == 0) {
             addNewNodeHelper(pNum,node.getId(),(int)(double)node.getAttribute("Weight"),0);
+            return;
         }
         // else check last parent to complete
         int latestEndTime = 0;
@@ -80,7 +114,7 @@ public class ScheduleNode {
         latestEndTime++;
 
         // find its end time, pNum and transition time
-        int transitionTime = (int)(double)graph.getEdge("("+_schedule.get(parentPNum).get(latestEndTime)+";"+node.getId()+")").getAttribute("Weight");
+        int transitionTime = (int)(double)graph.getEdge("("+_schedule.get(parentPNum).get(latestEndTime-1)+";"+node.getId()+")").getAttribute("Weight");
 
         // if same pNum then schedule node at first -1 * weight times
         if(parentPNum == pNum) {
@@ -90,6 +124,19 @@ public class ScheduleNode {
         else {
             addNewNodeHelper(pNum,node.getId(),(int)(double)node.getAttribute("Weight"),transitionTime);
         }
+    }
+
+    private List<String> nodesLeft(Graph graph) {
+        List<String> nodesDone = getNodesInSchedule();
+        List<String> output = new ArrayList<>();
+
+        for (int i = 0; i < graph.nodes().count(); i++) {
+            if (!nodesDone.contains(graph.getNode(i).getId())) {
+                output.add(graph.getNode(i).getId());
+            }
+        }
+
+        return output;
     }
 
     private void addNewNodeHelper(int pNum, String node, int weight, int transCost) {
@@ -105,7 +152,7 @@ public class ScheduleNode {
 
 
     // may or may not work currently plz check back again later
-    public List<String> nodesToSchedule(Graph taskGraph) {
+    public List<String> getNodesToSchedule(Graph taskGraph) {
         List<String> schedulableNodes = new ArrayList<>();
 
         // get task graph as input
@@ -120,10 +167,10 @@ public class ScheduleNode {
                         parentsComplete = false;
                     }
                 }
-            }
 
-            if (parentsComplete) {
-                schedulableNodes.add(n.getId());
+                if (parentsComplete) {
+                    schedulableNodes.add(n.getId());
+                }
             }
         }
 
@@ -147,15 +194,6 @@ public class ScheduleNode {
         output.addAll(set);
 
         return output;
-    }
-
-    public void setHeuristics(int num) {
-        _heuristics = num;
-    }
-
-    public int getCost() {
-        // returns cost;
-        return 0;
     }
 
     public boolean isTarget() {

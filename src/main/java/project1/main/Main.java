@@ -26,7 +26,7 @@ public class Main {
 			e.printStackTrace();
 		}
 
-//		Astar newSearch = new Astar(graph, 2);
-//		newSearch.aStarSearch();
+		Astar newSearch = new Astar(graph, 2);
+		newSearch.aStarSearch();
 	}
 }
