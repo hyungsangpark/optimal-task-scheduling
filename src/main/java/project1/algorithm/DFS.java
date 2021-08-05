@@ -1,4 +1,5 @@
 package project1.algorithm;
+import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import project1.data.ScheduleNode;
@@ -27,23 +28,38 @@ public class DFS {
         }
 
         Node child;
+        Edge edge;
+        int waitTime = 0;
+        int endTime = 0;
 
         for (int i = 0; i < _numOfProcessors; i++) {
             for (int j = 0; j < currentNode.getOutDegree(); j++) {
-                child = currentNode.getEdge(j).getTargetNode(); // resume from here. What about the weights?
-                List<List<Character>> childSchedule = addTask(current.getSchedule(), i, (char)child.getAttribute("Name"), (int)child.getAttribute("Weight"));
-                branchAndBound(new ScheduleNode(childSchedule, current), child);
+                edge = currentNode.getEdgeToward(j);
+                child = edge.getTargetNode(); // resume from here. What about the weights?
+
+                if (current.getLastUsedProcessorNum() != current.getLastUsedProcessorNum()) {
+                    waitTime = (int)edge.getAttribute("Weight");
+                    endTime = waitTime + (int)child.getAttribute("Weight");
+                }
+
+                List<List<Character>> childSchedule = addTask(current.getSchedule(), i, child.getId().charAt(0),
+                        waitTime, (int)child.getAttribute("Weight"));
+                branchAndBound(new ScheduleNode(childSchedule, current, i, endTime), child);
             }
         }
 
-        // now think about how to do the bounding
+        // now think about how to do the bounding and checking the wait time.
     }
 
-    public List<List<Character>> addTask(List<List<Character>> schedule, int processorNum, char task, int weight) {
+    public List<List<Character>> addTask(List<List<Character>> schedule, int processorNum, char task,
+                                         int waitTime, int weight) {
+        for (int i = 0; i < waitTime; i++) {
+            schedule.get(processorNum).add(null);
+        }
+
         for (int i = 0; i < weight; i++) {
             schedule.get(processorNum).add(task);
         }
-
         return schedule;
     }
 }
