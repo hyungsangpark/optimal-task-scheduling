@@ -13,6 +13,8 @@ public class ScheduleNode {
 
     private int _heuristics;
 
+    private boolean isSchedEmpty;
+
     public ScheduleNode(int _processors) {
         _schedule = new ArrayList<>();
 
@@ -21,6 +23,8 @@ public class ScheduleNode {
         }
 
         _heuristics = 0;
+
+        isSchedEmpty = true;
     }
 
     public ScheduleNode(List<List<String>> schedule) {
@@ -32,15 +36,17 @@ public class ScheduleNode {
                 _schedule.get(i).add(schedule.get(i).get(j));
             }
         }
+
+        isSchedEmpty = false;
     }
 
     public List<ScheduleNode> expandTree(Graph taskGraph) {
         List<ScheduleNode> newSchedules = new ArrayList<>();
 
-        List<String> schedulableNodes = getNodesToSchedule(taskGraph);
+        List<String> scheduleableNodes = getNodesToSchedule(taskGraph);
 
         // go over each node that needs to be scheduled
-        for(String n : schedulableNodes) {
+        for(String n : scheduleableNodes) {
             // go over all the processors
             for(int i = 0; i < _schedule.size(); i++) {
                 ScheduleNode newChildSchedule = new ScheduleNode(_schedule);
@@ -51,6 +57,11 @@ public class ScheduleNode {
                 newChildSchedule.setHeuristics(taskGraph);
                 // add it to new schedules list
                 newSchedules.add(newChildSchedule);
+
+                // if schedule is empty and only 1 scheduleable node then only do it once
+                if (isSchedEmpty && scheduleableNodes.size() == 1) {
+                    break;
+                }
             }
 
         }
@@ -122,7 +133,7 @@ public class ScheduleNode {
         }
         // else find first -1 then add transition time then add node weight times
         else {
-            addNewNodeHelper(pNum,node.getId(),(int)(double)node.getAttribute("Weight"),transitionTime);
+            addNewNodeHelper(pNum,node.getId(),(int)(double)node.getAttribute("Weight"),transitionTime+latestEndTime);
         }
     }
 
