@@ -40,6 +40,7 @@ public class ScheduleNode {
                 ScheduleNode newChildeSchedule = new ScheduleNode(_schedule);
 
                 // add new node task depending on whether transition cost is required
+                newChildeSchedule.addNewNodeTask(i,taskGraph.getNode(n),taskGraph);
 
                 // calculate its heuristic
             }
@@ -49,31 +50,56 @@ public class ScheduleNode {
         return newSchedules;
     }
 
-    private void addNewNodeTask(int pNum,Node node) {
+    private void addNewNodeTask(int pNum,Node node,Graph graph) {
         // find all its parents
-        List<Node> parentsOfNode = new ArrayList<>();
+        List<String> parentsOfNode = new ArrayList<>();
 
-        
+        for(int i = 0; i < node.enteringEdges().count(); i++) {
+            parentsOfNode.add(node.getEnteringEdge(i).getSourceNode().getId());
+        }
 
         // if the node has no parents then add it
+        if (parentsOfNode.size() == 0) {
+            addNewNodeHelper(pNum,node.getId(),(int)(double)node.getAttribute("Weight"),0);
+        }
+        // else check last parent to complete
+        int latestEndTime = 0;
+        int parentPNum = 0;
 
-        // else
+        for (int i = 0; i < _schedule.size(); i++) {
+            int pTotalTime = _schedule.get(i).size();
 
-        // check last parent to complete
+            for(int j = 0; j < pTotalTime; j++) {
+                if (parentsOfNode.contains(_schedule.get(i).get(j)) && j > latestEndTime) {
+                    latestEndTime = j;
+                    parentPNum = i;
+                }
+            }
+        }
+
+        latestEndTime++;
 
         // find its end time, pNum and transition time
+        int transitionTime = (int)(double)graph.getEdge("("+_schedule.get(parentPNum).get(latestEndTime)+";"+node.getId()+")").getAttribute("Weight");
 
         // if same pNum then schedule node at first -1 * weight times
-
+        if(parentPNum == pNum) {
+            addNewNodeHelper(pNum,node.getId(),(int)(double)node.getAttribute("Weight"),0);
+        }
         // else find first -1 then add transition time then add node weight times
+        else {
+            addNewNodeHelper(pNum,node.getId(),(int)(double)node.getAttribute("Weight"),transitionTime);
+        }
     }
 
     private void addNewNodeHelper(int pNum, String node, int weight, int transCost) {
+        List<String> processor = _schedule.get(pNum);
+
         for (int i = 0; i < transCost; i++) {
-            _schedule.get(pNum).add("-1");
+            processor.add("-1");
         }
         for(int i = 0; i < weight; i++) {
-            _schedule.get(pNum).add(node);
+            processor.add(node);
         }
     }
 
