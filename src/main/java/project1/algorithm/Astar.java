@@ -5,21 +5,16 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import project1.data.ScheduleNode;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Astar {
 
     public Graph _taskGraph;
     public int _processors;
-    public LinkedList<Node> _taskNodeList = new LinkedList<>();
-    public LinkedList<Node> _openList = new LinkedList<>();
-    public LinkedList<Node> _closedList = new LinkedList<>();
+//    public LinkedList<Node> _taskNodeList = new LinkedList<>();
+//    public LinkedList<Node> _openList;
 
-    public LinkedList<ScheduleNode> _tempOpenList = new LinkedList<>();
-    public LinkedList<ScheduleNode> _tempClosedList = new LinkedList<>();
+    public PriorityQueue<ScheduleNode> _tempOpenList = new PriorityQueue<>(new PriorityQueueComparator());
 
     public LinkedList<Node> _initialTasks;
 
@@ -28,60 +23,109 @@ public class Astar {
         _processors = processors;
     }
 
-    public void aStarSearch() {
+    public ScheduleNode aStarSearch() {
+//        make a list O of open nodes and their respective f values containing the start node
 
-        //Initialise taskNodeList
-        for (int i=0; i<_taskGraph.getNodeCount();i++) {
-            _taskNodeList.add(_taskGraph.getNode(i));
-        }
-
-        //Find initial task/tasks
-        _initialTasks = findInitialTasks();
-
-        //Pick one initial task from _initialTasks based on minimum weight of the task node
-        Node task = pickOneInitial();
-
-        //Create a graph for schedule nodes, create List to hold the partial schedules
-        Graph scheduleGraph = new SingleGraph("schedule");
-        List<List<String>> schedule = new ArrayList<>();
-        for (int i=0; i<_processors; i++) {
-            List<String> oneProcess = new ArrayList<>();
-            schedule.add(oneProcess);
-        }
-
-        //Create root node(empty schedule)
-        ScheduleNode root = new ScheduleNode(scheduleGraph, schedule, "root");
+        // create and add root to open
+        ScheduleNode root = new ScheduleNode(_processors);
         _tempOpenList.add(root);
-        //Add node represents ScheduleNode to scheduleGraph
 
-        //Heuristics of the node
-        root.setHeuristics(findHeuristic(root));
+//        while O isn't empty:
+        while(!_tempOpenList.isEmpty()) {
+//          pick a node n from O with the best value for f
+            ScheduleNode chosenSchedule = _tempOpenList.peek();
 
-
-
-        Node chosen;
-
-        Node node = _taskGraph.getNode(0);
-        _closedList.add(node);
-        LinkedList<Node> childrenList = getChildren(node);
-
-        //if (!childrenList.isEmpty()) {
-        chosen = childrenList.get(0);
-        int nodeWeight = (int) chosen.getAttribute("weight");
-        String edge = node.toString() + chosen;
-        int totalWeight = nodeWeight + (int) _taskGraph.getEdge(edge).getAttribute("weight");
-        //}
-
-        for(int i=0; i<childrenList.size() - 1; i++) {
-            Node next = childrenList.get(i+1);
-            String nextEdge = node + next.toString();
-            int nextTotalWeight = (int) node.getAttribute("weight") + (int) _taskGraph.getEdge(nextEdge).getAttribute("weight");
-            if (nextTotalWeight < totalWeight) {
-                chosen = next;
+//          if n is target:
+            if (chosenSchedule.isTarget()) {
+                // return solution
+                return chosenSchedule;
             }
+
+            // expand chosenSchedule
+
+//          for every m which is a neighbor of n:
+
+//              if (m is not in C) and (m is not in O):
+
+//                  add m to O, set n as m's parent
+
+//                  calculate g(m) and f(m) and save them
+
+//              else:
+
+//              if f(m) from last iteration is better than g(m) from this iteration:
+
+//                  set n as m's parent
+
+//                  update g(m) and f(m)
+
+//                  if m is in C:
+
+//                      move m to O
+
+//                      move n from O to C
+
         }
-        _closedList.add(chosen);
-        //System.out.println(_closedList);
+//
+//        return that there's no solution
+
+        return null;
+
+//        //Initialise taskNodeList
+//        for (int i=0; i<_taskGraph.getNodeCount();i++) {
+//            _taskNodeList.add(_taskGraph.getNode(i));
+//        }
+//
+//        //Find initial task/tasks
+//        _initialTasks = findInitialTasks();
+//
+//        //Pick one initial task from _initialTasks based on minimum weight of the task node
+//        Node task = pickOneInitial();
+//
+//        //Create a graph for schedule nodes, create List to hold the partial schedules
+//        Graph scheduleGraph = new SingleGraph("schedule");
+//        List<List<String>> schedule = new ArrayList<>();
+//        for (int i=0; i<_processors; i++) {
+//            List<String> oneProcess = new ArrayList<>();
+//            schedule.add(oneProcess);
+//        }
+//
+//        //Create root node(empty schedule)
+//        ScheduleNode root = new ScheduleNode(scheduleGraph, schedule, "root");
+//        _tempOpenList.add(root);
+//        //Add node represents ScheduleNode to scheduleGraph
+//
+//        //Heuristics of the node
+//        root.setHeuristics(findHeuristic(root));
+//
+//        ArrayList<String> edgeWeights = new ArrayList<String>();
+//
+//        // Expand tree
+//        expandTree(scheduleGraph,root,_initialTasks,edgeWeights);
+//
+//        Node chosen;
+//
+//        Node node = _taskGraph.getNode(0);
+//        _closedList.add(node);
+//        LinkedList<Node> childrenList = getChildren(node);
+//
+//        //if (!childrenList.isEmpty()) {
+//        chosen = childrenList.get(0);
+//        int nodeWeight = (int)((double)chosen.getAttribute("Weight"));
+//        String edge = "("+node.toString()+";"+ chosen+")";
+//        int totalWeight = nodeWeight + (int)((double)_taskGraph.getEdge(edge).getAttribute("Weight"));
+//        //}
+//
+//        for(int i=0; i<childrenList.size() - 1; i++) {
+//            Node next = childrenList.get(i+1);
+//            String nextEdge = "("+node +";"+ next.toString()+")";
+//            int nextTotalWeight = (int)((double)node.getAttribute("Weight")) + (int)((double)_taskGraph.getEdge(nextEdge).getAttribute("Weight"));
+//            if (nextTotalWeight < totalWeight) {
+//                chosen = next;
+//            }
+//        }
+//        _closedList.add(chosen);
+//        //System.out.println(_closedList);
     }
 
     public LinkedList<Node> getChildren(Node node) {
@@ -98,29 +142,42 @@ public class Astar {
         return children;
     }
 
-    public int findHeuristic(ScheduleNode node) {
-        //Find occurrence of unique names to figure out the amount of tasks not scheduled yet
-        List<List<String>> currentSchedule = node.getSchedule();
-        int count=0;
+//    public int findHeuristic(ScheduleNode node) {
+//        //Find occurrence of unique names to figure out the amount of tasks not scheduled yet
+//        List<List<String>> currentSchedule = node.getSchedule();
+//        int count=0;
+//
+//        //Clone taskNodeList
+//        LinkedList<Node> taskNodeList = _taskNodeList;
+//
+//        //Find heuristics
+//        for (int i=0; i<_processors;i++) {
+//            List<String> oneProcess = currentSchedule.get(i);
+//            HashSet<String> uniqueList = new HashSet(oneProcess);
+//            taskNodeList.removeAll(uniqueList);
+//        }
+//
+//        for (Node n: taskNodeList) {
+//            String s = n.toString();
+//            if (!s.equals("-1")) {
+//                int temp = (int)((double)_taskGraph.getNode(s).getAttribute("Weight"));
+//                count = count + temp;
+//            }
+//        }
+//        return count;
+//    }
 
-        //Clone taskNodeList
-        LinkedList<Node> taskNodeList = _taskNodeList;
+    public void expandTree(Graph tree,ScheduleNode parent,LinkedList<Node> children,ArrayList<String> edgeWeights) {
+        ArrayList<ScheduleNode> output = new ArrayList<>();
 
-        //Find heuristics
-        for (int i=0; i<_processors;i++) {
-            List<String> oneProcess = currentSchedule.get(i);
-            HashSet<String> uniqueList = new HashSet(oneProcess);
-            taskNodeList.removeAll(uniqueList);
-        }
+        for (int i = 0; i < children.size(); i++) {
+//            ScheduleNode newTreeNode = new ScheduleNode(tree, parent.getSchedule(), "idk");
+            List<List<String>> newSchedule = parent.getSchedule();
 
-        for (Node n: taskNodeList) {
-            String s = n.toString();
-            if (!s.equals("-1")) {
-                int temp = (int) _taskGraph.getNode(s).getAttribute("weight");
-                count = count + temp;
+            for (int j = 0; j < _processors; j++) {
+
             }
         }
-        return count;
     }
 
     public LinkedList<Node> findInitialTasks() {
@@ -138,11 +195,11 @@ public class Astar {
 
     public Node pickOneInitial() {
         //pick initial task
-        int minWeight = (int)_initialTasks.get(0).getAttribute("weight");
+        int minWeight = (int)((double)_initialTasks.get(0).getAttribute("Weight"));
         Node task = null;
         if(_initialTasks.size()!=1) {
             for (int i = 1; i < _initialTasks.size(); i++) {
-                int temp = (int) _initialTasks.get(i).getAttribute("weight");
+                int temp = (int)((double)_initialTasks.get(i).getAttribute("Weight"));
                 if (temp < minWeight) {
                     minWeight = temp;
                     task = _initialTasks.get(i);
