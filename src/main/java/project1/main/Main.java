@@ -1,36 +1,73 @@
 package project1.main;
 
+import org.apache.commons.cli.*;
 import org.graphstream.graph.Graph;
-import org.graphstream.graph.implementations.SingleGraph;
-import project1.algorithm.DFS;
+import project1.util.GraphLoader;
+
+import java.io.IOException;
 
 public class Main {
 
     public static void main(String[] args) {
-        Main main = new Main();
-        main.createGraph();
+
+        // Part 1: Parse arguments.
+
+        int numParallelCores = 1;
+        boolean isVisualized = false;
+        String outputName = null;
+        int numProcessors;
+
+        try {
+            numProcessors = Integer.parseInt(args[1]);
+        } catch (NumberFormatException nfe) {
+            System.err.println("ERROR: Invalid number of processors. Please enter an integer number of processors to schedule the graph on.");
+            System.exit(1);
+        }
+
+        Options parameters = new Options();
+        parameters.addOption(new Option("p", true, "number of cores for execution in parallel."));
+        parameters.addOption(new Option("v", false, "visualise the search"));
+        parameters.addOption(new Option("o", true, "set output file name"));
+
+        CommandLineParser parser = new DefaultParser();
+        try {
+            CommandLine cmd = parser.parse(parameters, args);
+
+            if (cmd.hasOption("p")) {
+                try {
+                    int numCores = Integer.parseInt(cmd.getOptionValue("p"));
+                    System.out.println("Great!, Num cores = " + numCores);
+                } catch (NumberFormatException e) {
+                    System.err.println("ERROR: Invalid number of cores provided.");
+                    System.exit(1);
+                }
+            }
+
+            isVisualized = cmd.hasOption("v");
+
+            if (cmd.hasOption("o")) {
+                outputName = cmd.getOptionValue("o");
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        String graphFileName = args[0];
+        outputName = outputName == null ? graphFileName.replace(".dot", "-output.dot") : outputName;
+
+        try {
+            GraphLoader graphLoader = new GraphLoader();
+
+            Graph graph = graphLoader.readGraph(graphFileName);
+
+            // TODO: Run ALGORITHM to receive schedule.
+
+            graphLoader.writeGraph(graph, outputName);
+        } catch (IOException e) {
+            System.err.println("ERROR: Graph file with the provided name is not found.");
+            System.exit(1);
+        }
+
     }
 
-    public void createGraph() {
-        //System.setProperty("org.graphstream.ui", "javafx");
-
-        Graph graph = new SingleGraph("Test");
-
-        graph.addNode("A").setAttribute("Weight", 2);
-        graph.addNode("B").setAttribute("Weight", 3);
-        graph.addNode("C").setAttribute("Weight", 3);
-        graph.addNode("D").setAttribute("Weight", 2);
-        graph.addEdge("(A;B)", "A", "B", true).setAttribute("Weight", 1);
-        graph.addEdge("(A;C)", "A", "C", true).setAttribute("Weight", 2);
-        graph.addEdge("(B;D)", "B", "D", true).setAttribute("Weight", 2);
-        graph.addEdge("(C;D)", "C", "D", true).setAttribute("Weight", 1);
-
-        //int num = (int) graph.getEdge("AB").getAttribute("weight");
-        //System.out.println(num);
-
-        //graph.display();
-        DFS dfs = new DFS(graph, 3);
-        graph = dfs.branchAndBoundStart();
-        graph.display();
-    }
 }
