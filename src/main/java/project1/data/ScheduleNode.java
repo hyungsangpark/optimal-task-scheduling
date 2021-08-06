@@ -76,7 +76,7 @@ public class ScheduleNode {
         //Find Heuristics Cost
         int HCost = 0;
         for (String n: tasksLeft(graph)) {
-            HCost += (int)(double)graph.getNode(n).getAttribute("Weight");
+            HCost += (int)graph.getNode(n).getAttribute("Weight");
         }
 
         _totalF = GCost + HCost;
@@ -122,7 +122,7 @@ public class ScheduleNode {
 
         // if the node has no parents then add it
         if (parentsOfNode.size() == 0) {
-            addNewNodeHelper(pNum,taskNode.getId(),(int)(double)taskNode.getAttribute("Weight"),0);
+            addNewNodeHelper(pNum,taskNode.getId(),(int)taskNode.getAttribute("Weight"),0);
             return;
         }
         // else check last parent to complete
@@ -143,15 +143,15 @@ public class ScheduleNode {
         latestEndTime++;
 
         // find its end time, pNum and transition time
-        int transitionTime = (int)(double)graph.getEdge("("+_schedule.get(parentPNum).get(latestEndTime-1)+";"+taskNode.getId()+")").getAttribute("Weight");
+        int transitionTime = (int)graph.getEdge("("+_schedule.get(parentPNum).get(latestEndTime-1)+";"+taskNode.getId()+")").getAttribute("Weight");
 
         // if same pNum then schedule node at first -1 * weight times
         if(parentPNum == pNum) {
-            addNewNodeHelper(pNum,taskNode.getId(),(int)(double)taskNode.getAttribute("Weight"),0);
+            addNewNodeHelper(pNum,taskNode.getId(),(int)taskNode.getAttribute("Weight"),0);
         }
         // else find first -1 then add transition time then add node weight times
         else {
-            addNewNodeHelper(pNum,taskNode.getId(),(int)(double)taskNode.getAttribute("Weight"),transitionTime+latestEndTime);
+            addNewNodeHelper(pNum,taskNode.getId(),(int)taskNode.getAttribute("Weight"),transitionTime+latestEndTime);
         }
     }
 
