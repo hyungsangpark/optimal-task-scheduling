@@ -10,7 +10,7 @@ public class ScheduleNode {
     private List<List<String>> _schedule;
     private ScheduleNode _parent;
 
-    private int _heuristics;
+    private int _totalF;
 
     private boolean isSchedEmpty;
 
@@ -21,7 +21,7 @@ public class ScheduleNode {
             _schedule.add(new ArrayList<>());
         }
 
-        _heuristics = 0;
+        _totalF = 0;
 
         isSchedEmpty = true;
     }
@@ -53,7 +53,7 @@ public class ScheduleNode {
                 // add new node task depending on whether transition cost is required
                 newChildSchedule.addNewNodeTask(i,taskGraph.getNode(n),taskGraph);
                 // calculate its heuristic
-                newChildSchedule.setHeuristics(taskGraph);
+                newChildSchedule.setTotalFCost(taskGraph);
                 // add it to new schedules list
                 newSchedules.add(newChildSchedule);
 
@@ -68,7 +68,7 @@ public class ScheduleNode {
         return newSchedules;
     }
 
-    public void setHeuristics(Graph graph) {
+    public void setTotalFCost(Graph graph) {
         int cost = getCost();
 
         int totalH = 0;
@@ -76,7 +76,7 @@ public class ScheduleNode {
             totalH += (int)(double)graph.getNode(n).getAttribute("Weight");
         }
 
-        _heuristics = cost + totalH;
+        _totalF = cost + totalH;
     }
 
 //    private int calculateBottomLevelOfNode(Graph graph) {
@@ -103,7 +103,7 @@ public class ScheduleNode {
     }
 
     public int getHeristic() {
-        return _heuristics;
+        return _totalF;
     }
 
     private void addNewNodeTask(int pNum,Node node,Graph graph) {
@@ -241,7 +241,7 @@ public class ScheduleNode {
 //    //private List<ScheduleNode> _children = new ArrayList<>();
 //    private ScheduleNode _parent;
 //    private String _name;
-//    private int _heuristics;
+//    private int _totalF;
 //    private int _totalScheduleTime = 0;
 //
 //    //For normal schedule nodes
@@ -270,7 +270,7 @@ public class ScheduleNode {
 //    }
 //
 //    public void setHeuristics(int num) {
-//        _heuristics = num;
+//        _totalF = num;
 //    }
 //
 //    public void set_totalScheduleTime(int time) {

@@ -79,8 +79,8 @@ public class Main {
             Graph graph = graphLoader.readGraph(graphFileName);
 
             // visualize if u want
-            System.setProperty("org.graphstream.ui","swing");
-            graph.display();
+            // System.setProperty("org.graphstream.ui","swing");
+            // graph.display();
 
             // TODO: Run ALGORITHM to receive schedule.
 
