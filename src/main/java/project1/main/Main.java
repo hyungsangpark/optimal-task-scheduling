@@ -28,10 +28,12 @@ public class Main {
         int numParallelCores = 1;
         boolean isVisualized = false;
         String outputName = null;
-        int numProcessors;
+        int numProcessors = 2;
 
         try {
-            numProcessors = Integer.parseInt(args[1]);
+            if ((args != null) && (args.length >= 1)) {
+                numProcessors = Integer.parseInt(args[1]);
+            }
         } catch (NumberFormatException nfe) {
             System.err.println("ERROR: Invalid number of processors. Please enter an integer number of processors to schedule the graph on.");
             System.exit(1);
@@ -65,16 +67,21 @@ public class Main {
             e.printStackTrace();
         }
 
-        String graphFileName = args[0];
+        String graphFileName = "./src/test/graphs/sample.dot";
+        if ((args != null) && (args.length > 0)){
+            graphFileName = args[0];
+        }
         outputName = outputName == null ? graphFileName.replace(".dot", "-output.dot") : outputName;
 
         try {
             Graph graph = graphLoader.readGraph(graphFileName);
 
             // TODO: Run ALGORITHM to receive schedule.
-            Astar newSearch = new Astar(graph, 2);
+
+            // temp
+            Astar newSearch = new Astar(graph, numProcessors);
             ScheduleNode result = newSearch.aStarSearch();
-            System.out.println(result);
+            graphLoader.formatOutputGraph(graph,result.getSchedule());
 
             graphLoader.writeGraph(graph, outputName);
         } catch (IOException e) {

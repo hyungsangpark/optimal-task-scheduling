@@ -1,11 +1,13 @@
 package project1.util;
 
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceDOT;
 
 import java.io.*;
+import java.util.List;
 
 /**
  * Loads and unloads graph from .dot file.
@@ -39,6 +41,20 @@ public class GraphLoader {
         return graph;
     }
 
+    public void formatOutputGraph(Graph graph, List<List<String>> schedule) {
+        for (int i = 0; i < schedule.size(); i++) {
+            for (int j = 0; j < schedule.get(i).size(); j++) {
+                if (!schedule.get(i).get(j).equals("-1")) {
+                    Node node = graph.getNode(schedule.get(i).get(j));
+                    if(!node.hasAttribute("Start")) {
+                        node.setAttribute("Start",j);
+                        node.setAttribute("Processor",i+1);
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Writes a given graph instance in a form of .dot file.
      * @param graph A graph to write .dot file from.
@@ -49,19 +65,21 @@ public class GraphLoader {
             PrintWriter graphWriter = new PrintWriter(outputFileName);
 
             // Header
-            graphWriter.println("digraph \"" + _graphID + "\" {");
+            graphWriter.println("digraph {");
 
             // Print Nodes.
             graph.nodes().forEach(node -> {
                 Double weight = (Double) node.getAttribute("Weight");
                 graphWriter.println(new StringBuilder()
                         .append("    ")
+                        .append("\"")
                         .append(node.getId())
-                        .append(" [Weight=")
-                        .append(weight.intValue())
-                        .append(",Start=")
+                        .append("\" ")
+                        .append("[\"Start\"=")
                         .append((Integer)node.getAttribute("Start"))
-                        .append(",Processor=")
+                        .append(",\"Weight\"=")
+                        .append(weight.intValue())
+                        .append(",\"Processor\"=")
                         .append((Integer)node.getAttribute("Processor"))
                         .append("];")
                 );
@@ -72,11 +90,15 @@ public class GraphLoader {
                 Double weight = (Double)edge.getAttribute("Weight");
                 graphWriter.println(new StringBuilder()
                         .append("    ")
+                        .append("\"")
                         .append(edge.getSourceNode().getId())
+                        .append("\"")
                         .append(" -> ")
+                        .append("\"")
                         .append(edge.getTargetNode().getId())
-                        .append(" [Weight=")
-                        .append(weight.intValue())
+                        .append("\"")
+                        .append(" [\"Weight\"=")
+                        .append(weight)
                         .append("];")
                 );
             });
