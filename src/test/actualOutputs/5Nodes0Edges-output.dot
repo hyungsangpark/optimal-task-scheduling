@@ -1,0 +1,7 @@
+digraph {
+    "0" ["Start"=0,"Weight"=20,"Processor"=2];
+    "1" ["Start"=0,"Weight"=30,"Processor"=1];
+    "2" ["Start"=20,"Weight"=32,"Processor"=2];
+    "3" ["Start"=30,"Weight"=46,"Processor"=1];
+    "4" ["Start"=52,"Weight"=26,"Processor"=2];
+}

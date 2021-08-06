@@ -41,6 +41,7 @@ public class GraphLoader {
         return graph;
     }
 
+    // keep this
     public void formatOutputGraph(Graph graph, List<List<String>> schedule) {
         for (int i = 0; i < schedule.size(); i++) {
             for (int j = 0; j < schedule.get(i).size(); j++) {

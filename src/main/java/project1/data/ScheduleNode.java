@@ -1,6 +1,5 @@
 package project1.data;
 
-import javafx.scene.Parent;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
@@ -79,6 +78,19 @@ public class ScheduleNode {
 
         _heuristics = cost + totalH;
     }
+
+//    private int calculateBottomLevelOfNode(Graph graph) {
+//        int output = 0;
+//
+//        // find finishing task
+//        Node finishingNode;
+//
+//        for(int i = 0; i < graph.nodes().count(); i++) {
+//
+//        }
+//
+//        return output;
+//    }
 
     private int getCost() {
         int tempCost = 0;
