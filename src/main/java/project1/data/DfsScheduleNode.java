@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DfsScheduleNode {
-    private List<List<Character>> _schedule;
+    private List<List<String>> _schedule;
     private List<DfsScheduleNode> _children = new ArrayList<>();
     private DfsScheduleNode _parent;
     private int _lastUsedProcessor;
     private int _endTime; // start from here
 
-    public DfsScheduleNode(List<List<Character>> schedule, DfsScheduleNode parent, int lastUsedProcessor,
+    public DfsScheduleNode(List<List<String>> schedule, DfsScheduleNode parent, int lastUsedProcessor,
                         int finishTime) {
         _schedule = schedule;
         _parent = parent;
@@ -28,7 +28,7 @@ public class DfsScheduleNode {
         return _lastUsedProcessor;
     }
 
-    public List<List<Character>> getSchedule() {
+    public List<List<String>> getSchedule() {
         return _schedule;
     }
 

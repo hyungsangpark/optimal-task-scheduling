@@ -2,7 +2,7 @@ package project1.algorithm;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
-import project1.data.ScheduleNode;
+import project1.data.DfsScheduleNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,17 +17,25 @@ public class DFS {
     }
 
     public void branchAndBoundStart() {
-        Node node = _graph.getNode(0);
+        Node rootNode = _graph.getNode(0);
+
+        List<List<String>> rootSchedule = createEmptySchedule();
+        // Parent is null because this is the root and lastUsedProcessor
+        // is -1 because no processors were used previously
+        DfsScheduleNode rootScheduleNode = new DfsScheduleNode(rootSchedule, null, -1, 0);
+
+        for (int i = 0; i < _numOfProcessors; i++) {
+            List<List<String>> childSchedule = addTask(createEmptySchedule(), i, rootNode.getId(), 0,
+                    (int)rootNode.getAttribute("Weight"));
+
+            branchAndBound(new DfsScheduleNode(childSchedule, rootScheduleNode, i,
+                    (int)rootNode.getAttribute("Weight")), rootNode);
+        }
     }
 
     // Assume that the nodes are sorted.
-    public void branchAndBound(ScheduleNode current, Node currentNode) {
-        List<List<Character>> schedule = new ArrayList<>();
-        for (int i = 0; i < _numOfProcessors; i++) {
-            schedule.add(new ArrayList<>());
-        }
-
-        Node child;
+    public List<> branchAndBound(DfsScheduleNode currentSchedule, Node currentNode) {
+        Node childNode;
         Edge edge;
         int waitTime = 0;
         int endTime = 0;
@@ -35,23 +43,24 @@ public class DFS {
         for (int i = 0; i < _numOfProcessors; i++) {
             for (int j = 0; j < currentNode.getOutDegree(); j++) {
                 edge = currentNode.getEdgeToward(j);
-                child = edge.getTargetNode(); // resume from here. What about the weights?
+                childNode = edge.getTargetNode();
 
-                if (current.getLastUsedProcessorNum() != current.getLastUsedProcessorNum()) {
+                if (currentSchedule.getLastUsedProcessorNum() != currentSchedule.getLastUsedProcessorNum()) {
                     waitTime = (int)edge.getAttribute("Weight");
-                    endTime = waitTime + (int)child.getAttribute("Weight");
+                    endTime = waitTime + (int) childNode.getAttribute("Weight");
                 }
 
-                List<List<Character>> childSchedule = addTask(current.getSchedule(), i, child.getId().charAt(0),
-                        waitTime, (int)child.getAttribute("Weight"));
-                branchAndBound(new ScheduleNode(childSchedule, current, i, endTime), child);
-            }
+                List<List<String>> childSchedule = addTask(currentSchedule.getSchedule(), i,
+                        childNode.getId().substring(0, 1), waitTime, (int) childNode.getAttribute("Weight"));
+                branchAndBound(new DfsScheduleNode(childSchedule, currentSchedule, i, endTime), childNode);
+            } 
         }
 
-        // now think about how to do the bounding and checking the wait time.
+        // now think about how to do bounding.
+        // Carry on by changing the implementation so it fits the purpose that Hyung explained to me about.
     }
 
-    public List<List<Character>> addTask(List<List<Character>> schedule, int processorNum, char task,
+    public List<List<String>> addTask(List<List<String>> schedule, int processorNum, String task,
                                          int waitTime, int weight) {
         for (int i = 0; i < waitTime; i++) {
             schedule.get(processorNum).add(null);
@@ -61,5 +70,14 @@ public class DFS {
             schedule.get(processorNum).add(task);
         }
         return schedule;
+    }
+
+    public List<List<String>> createEmptySchedule() {
+        List<List<String>> emptySchedule = new ArrayList<>();
+        for (int i = 0; i < _numOfProcessors; i++) {
+            emptySchedule.add(new ArrayList<>());
+        }
+
+        return emptySchedule;
     }
 }
