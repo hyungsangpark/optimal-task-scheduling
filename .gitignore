@@ -26,3 +26,6 @@ out/
 .idea/
 *.iml
 META-INF/
+
+# Graph Files
+*.dot
