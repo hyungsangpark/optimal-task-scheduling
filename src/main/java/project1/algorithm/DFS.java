@@ -7,11 +7,11 @@ import project1.data.NewScheduleNode;
 
 public class DFS {
     private Graph _graph;
-    private int _numOfProcessors;
+    private int _numProcessors;
 
     public DFS(Graph graph, int numOfProcessors) {
         _graph = graph;
-        _numOfProcessors = numOfProcessors;
+        _numProcessors = numOfProcessors;
     }
 
     public Graph branchAndBoundStart() {
@@ -21,7 +21,7 @@ public class DFS {
         NewScheduleNode[] solution;
         int size = 0;
 
-        for (int i = 0; i < _numOfProcessors; i++) {
+        for (int i = 0; i < _numProcessors; i++) {
             schedule[0] = new NewScheduleNode(rootNode.getId(), 0,
                     (int)rootNode.getAttribute("Weight"), i);
             solution = branchAndBound(rootNode, schedule, optimalSchedule, size++);
@@ -44,7 +44,7 @@ public class DFS {
         schedule[0] = new NewScheduleNode(currentNode.getId(), 0,
                 (int)currentNode.getAttribute("Weight"), 0);
         size++;
-        currentNode = currentNode.getEdgeToward(0).getTargetNode();
+        currentNode = currentNode. getEdgeToward(1).getTargetNode();
 
         while (currentNode.getOutDegree() != 0) {
             startTime = schedule[size - 1].getEndTime();
@@ -86,7 +86,7 @@ public class DFS {
         NewScheduleNode[] solution;
 
         // Branching.
-        for (int i = 0; i < _numOfProcessors; i++) {
+        for (int i = 0; i < _numProcessors; i++) {
             for (int j = 0; j < currentNode.getOutDegree(); j++) {
                 edge = currentNode.getEdgeToward(j);
                 childNode = edge.getTargetNode();

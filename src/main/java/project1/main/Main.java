@@ -2,6 +2,7 @@ package project1.main;
 
 import org.apache.commons.cli.*;
 import org.graphstream.graph.Graph;
+import project1.algorithm.DFS;
 import project1.util.GraphLoader;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ public class Main {
         int numParallelCores = 1;
         boolean isVisualized = false;
         String outputName = null;
-        int numProcessors;
+        int numProcessors = 0;
 
         try {
             numProcessors = Integer.parseInt(args[1]);
@@ -61,6 +62,10 @@ public class Main {
             Graph graph = graphLoader.readGraph(graphFileName);
 
             // TODO: Run ALGORITHM to receive schedule.
+            DFS dfs = new DFS(graph, numProcessors);
+            dfs.branchAndBoundStart();
+            System.setProperty("org.graphstream.ui", "swing");
+            graph.display();
 
             graphLoader.writeGraph(graph, outputName);
         } catch (IOException e) {
