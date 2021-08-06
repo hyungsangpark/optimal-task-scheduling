@@ -3,6 +3,7 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import project1.data.DfsScheduleNode;
+import project1.data.NewScheduleNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,48 +19,92 @@ public class DFS {
 
     public void branchAndBoundStart() {
         Node rootNode = _graph.getNode(0);
-
-        List<List<String>> rootSchedule = createEmptySchedule();
-        // Parent is null because this is the root and lastUsedProcessor
-        // is -1 because no processors were used previously
-        DfsScheduleNode rootScheduleNode = new DfsScheduleNode(rootSchedule, null, -1, 0);
+        NewScheduleNode[] schedule = new NewScheduleNode[(int)_graph.nodes().count()];
+        NewScheduleNode[] optimalSchedule = findLeftmostSchedule();
+        int size = 0;
 
         for (int i = 0; i < _numOfProcessors; i++) {
-            List<List<String>> childSchedule = addTask(createEmptySchedule(), i, rootNode.getId(), 0,
-                    (int)rootNode.getAttribute("Weight"));
-
-            branchAndBound(new DfsScheduleNode(childSchedule, rootScheduleNode, i,
-                    (int)rootNode.getAttribute("Weight")), rootNode);
+            schedule[0] = new NewScheduleNode(0, (int)rootNode.getAttribute("Weight"), i);
+            branchAndBound(rootNode, schedule, optimalSchedule, size++);
         }
     }
 
+    public NewScheduleNode[] findLeftmostSchedule() {
+        int startTime;
+        int endTime;
+        int size = 0;
+        Node currentNode = _graph.getNode(0);
+        NewScheduleNode[] schedule = new NewScheduleNode[(int)_graph.nodes().count()];
+
+        schedule[0] = new NewScheduleNode(0, (int)currentNode.getAttribute("Weight"), 0);
+        size++;
+        currentNode = currentNode.getEdgeToward(0).getTargetNode();
+
+        while (currentNode.getOutDegree() != 0) {
+            startTime = schedule[size - 1].getEndTime();
+            endTime = startTime + (int)currentNode.getAttribute("Weight");
+
+            schedule[size] = new NewScheduleNode(startTime, endTime, 0);
+
+            currentNode = currentNode.getEdgeToward(0).getTargetNode();
+            size++;
+        }
+
+        startTime = schedule[size - 1].getEndTime();
+        endTime = startTime + (int)currentNode.getAttribute("Weight");
+        schedule[size] = new NewScheduleNode(startTime, endTime, 0);
+
+        return schedule;
+    }
+
     // Assume that the nodes are sorted.
-    public List<> branchAndBound(DfsScheduleNode currentSchedule, Node currentNode) {
+    public NewScheduleNode[] branchAndBound(Node currentNode, NewScheduleNode[] currentSchedule,
+                                            NewScheduleNode[] optimalSchedule, int size) {
+        if (currentNode.getOutDegree() == 0) {
+            if (currentSchedule[currentSchedule.length - 1].getEndTime()
+                    < optimalSchedule[optimalSchedule.length - 1].getEndTime()) {
+                return currentSchedule;
+            }
+        }
+
+        // Bounding.
+        if (currentSchedule[currentSchedule.length - 1].getEndTime()
+                >= optimalSchedule[optimalSchedule.length - 1].getEndTime()) {
+            return null;
+        }
+
         Node childNode;
         Edge edge;
-        int waitTime = 0;
-        int endTime = 0;
+        int startTime;
+        int endTime;
+        NewScheduleNode[] solution;
 
+        // Branching.
         for (int i = 0; i < _numOfProcessors; i++) {
             for (int j = 0; j < currentNode.getOutDegree(); j++) {
                 edge = currentNode.getEdgeToward(j);
                 childNode = edge.getTargetNode();
 
-                if (currentSchedule.getLastUsedProcessorNum() != currentSchedule.getLastUsedProcessorNum()) {
-                    waitTime = (int)edge.getAttribute("Weight");
-                    endTime = waitTime + (int) childNode.getAttribute("Weight");
+                if (currentSchedule[currentSchedule.length - 1].getProcessorNum() == i) {
+                    startTime = currentSchedule[currentSchedule.length - 1].getEndTime();
+                } else {
+                    startTime = currentSchedule[currentSchedule.length - 1].getEndTime()
+                            + (int)edge.getAttribute("Weight");;
                 }
+                endTime = startTime + (int)childNode.getAttribute("Weight");
 
-                List<List<String>> childSchedule = addTask(currentSchedule.getSchedule(), i,
-                        childNode.getId().substring(0, 1), waitTime, (int) childNode.getAttribute("Weight"));
-                branchAndBound(new DfsScheduleNode(childSchedule, currentSchedule, i, endTime), childNode);
-            } 
+                currentSchedule[currentSchedule.length] = new NewScheduleNode(startTime, endTime, i);
+                solution = branchAndBound(childNode, currentSchedule, optimalSchedule, size++);
+                if (solution != null) {
+                    optimalSchedule = solution;
+                }
+            }
         }
 
-        // now think about how to do bounding.
-        // Carry on by changing the implementation so it fits the purpose that Hyung explained to me about.
+        return optimalSchedule;
     }
 
+    /*
     public List<List<String>> addTask(List<List<String>> schedule, int processorNum, String task,
                                          int waitTime, int weight) {
         for (int i = 0; i < waitTime; i++) {
@@ -80,4 +125,5 @@ public class DFS {
 
         return emptySchedule;
     }
+    */
 }
