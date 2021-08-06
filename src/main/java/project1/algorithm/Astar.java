@@ -15,11 +15,9 @@ public class Astar {
     public Graph _taskGraph;
     public int _processors;
     public LinkedList<Node> _taskNodeList = new LinkedList<>();
-    public LinkedList<Node> _openList = new LinkedList<>();
     public LinkedList<Node> _closedList = new LinkedList<>();
 
     public LinkedList<ScheduleNode> _tempOpenList = new LinkedList<>();
-    public LinkedList<ScheduleNode> _tempClosedList = new LinkedList<>();
 
     public LinkedList<Node> _initialTasks;
 
@@ -98,6 +96,9 @@ public class Astar {
         return children;
     }
 
+
+    //Need to change this, reference from notes: if two or more node schedule has same total schedule time, pick the schedule
+    //with min(scheduleTotalTime + larger edge cost prevented or how close is it to goal state(how many more tasks left))
     public int findHeuristic(ScheduleNode node) {
         //Find occurrence of unique names to figure out the amount of tasks not scheduled yet
         List<List<String>> currentSchedule = node.getSchedule();
@@ -121,6 +122,22 @@ public class Astar {
             }
         }
         return count;
+    }
+
+    public List<Node> findRemaindingTasks(ScheduleNode node) {
+        //Find occurrence of unique names to figure out the amount of tasks not scheduled yet
+        List<List<String>> currentSchedule = node.getSchedule();
+
+        //Clone taskNodeList
+        LinkedList<Node> taskNodeList = _taskNodeList;
+
+        //Find heuristics
+        for (int i = 0; i < _processors; i++) {
+            List<String> oneProcess = currentSchedule.get(i);
+            HashSet<String> uniqueList = new HashSet(oneProcess);
+            taskNodeList.removeAll(uniqueList);
+        }
+        return taskNodeList;
     }
 
     public LinkedList<Node> findInitialTasks() {
@@ -155,6 +172,11 @@ public class Astar {
         return task;
     }
 
+    public Node pickOne(List<Node> taskNodeList) {
+
+        return null;
+    }
+
     //perhaps this function is same as scheduler? or maybe run one function in another?
     public int findTimeAfterSchedule() {
         return -1;
@@ -166,7 +188,7 @@ public class Astar {
 
     //Figure out if there are duplicate schedule nodes or not
     //(might not need it because of heuristic function)
-    public boolean findDuplicate() {
+    public boolean findDuplicateSchedule() {
         //something to do with _tempClosedList
         return false;
     }
