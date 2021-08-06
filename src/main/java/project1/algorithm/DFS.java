@@ -1,12 +1,9 @@
 package project1.algorithm;
+
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
-import project1.data.DfsScheduleNode;
 import project1.data.NewScheduleNode;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DFS {
     private Graph _graph;
@@ -17,16 +14,24 @@ public class DFS {
         _numOfProcessors = numOfProcessors;
     }
 
-    public void branchAndBoundStart() {
+    public Graph branchAndBoundStart() {
         Node rootNode = _graph.getNode(0);
         NewScheduleNode[] schedule = new NewScheduleNode[(int)_graph.nodes().count()];
         NewScheduleNode[] optimalSchedule = findLeftmostSchedule();
+        NewScheduleNode[] solution;
         int size = 0;
 
         for (int i = 0; i < _numOfProcessors; i++) {
-            schedule[0] = new NewScheduleNode(0, (int)rootNode.getAttribute("Weight"), i);
-            branchAndBound(rootNode, schedule, optimalSchedule, size++);
+            schedule[0] = new NewScheduleNode(rootNode.getId(), 0,
+                    (int)rootNode.getAttribute("Weight"), i);
+            solution = branchAndBound(rootNode, schedule, optimalSchedule, size++);
+            if (solution != null) {
+                optimalSchedule = solution;
+            }
         }
+
+        ScheduleToGraph(optimalSchedule);
+        return _graph;
     }
 
     public NewScheduleNode[] findLeftmostSchedule() {
@@ -36,7 +41,8 @@ public class DFS {
         Node currentNode = _graph.getNode(0);
         NewScheduleNode[] schedule = new NewScheduleNode[(int)_graph.nodes().count()];
 
-        schedule[0] = new NewScheduleNode(0, (int)currentNode.getAttribute("Weight"), 0);
+        schedule[0] = new NewScheduleNode(currentNode.getId(), 0,
+                (int)currentNode.getAttribute("Weight"), 0);
         size++;
         currentNode = currentNode.getEdgeToward(0).getTargetNode();
 
@@ -44,7 +50,7 @@ public class DFS {
             startTime = schedule[size - 1].getEndTime();
             endTime = startTime + (int)currentNode.getAttribute("Weight");
 
-            schedule[size] = new NewScheduleNode(startTime, endTime, 0);
+            schedule[size] = new NewScheduleNode(currentNode.getId(), startTime, endTime, 0);
 
             currentNode = currentNode.getEdgeToward(0).getTargetNode();
             size++;
@@ -52,7 +58,7 @@ public class DFS {
 
         startTime = schedule[size - 1].getEndTime();
         endTime = startTime + (int)currentNode.getAttribute("Weight");
-        schedule[size] = new NewScheduleNode(startTime, endTime, 0);
+        schedule[size] = new NewScheduleNode(currentNode.getId(), startTime, endTime, 0);
 
         return schedule;
     }
@@ -93,7 +99,8 @@ public class DFS {
                 }
                 endTime = startTime + (int)childNode.getAttribute("Weight");
 
-                currentSchedule[currentSchedule.length] = new NewScheduleNode(startTime, endTime, i);
+                currentSchedule[currentSchedule.length] =
+                        new NewScheduleNode(currentNode.getId(), startTime, endTime, i);
                 solution = branchAndBound(childNode, currentSchedule, optimalSchedule, size++);
                 if (solution != null) {
                     optimalSchedule = solution;
@@ -102,6 +109,13 @@ public class DFS {
         }
 
         return optimalSchedule;
+    }
+
+    public void ScheduleToGraph(NewScheduleNode[] schedule) {
+        for (int i = 0; i < schedule.length; i++) {
+            _graph.getNode(schedule[i].getId()).setAttribute("Start", schedule[i].getStartTime());
+            _graph.getNode(schedule[i].getId()).setAttribute("Processor", schedule[i].getProcessorNum());
+        }
     }
 
     /*
