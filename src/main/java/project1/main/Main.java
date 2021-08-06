@@ -83,7 +83,7 @@ public class Main {
             ScheduleNode result = newSearch.aStarSearch();
             graphLoader.formatOutputGraph(graph,result.getSchedule());
 
-            graphLoader.writeGraph(graph, outputName);
+            graphLoader.writeGraph(graph, outputName.replace("graphs","actualOutputs"));
         } catch (IOException e) {
             System.err.println("ERROR: Graph file with the provided name is not found.");
             System.exit(1);
