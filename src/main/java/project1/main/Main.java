@@ -16,11 +16,10 @@ public class Main {
 //
 //        for (File file : files) {
 //            if (file.isFile()) {
-//                String test = file.getPath();
 //                run(args,file.getAbsolutePath());
 //            }
 //        }
-        run(args,"./src/test/graphs/sample.dot");
+        run(args,"./src/test/graphs/15Nodes80Edges.dot");
     }
 
     public static void run(String[] args,String gFileName) {
@@ -78,6 +77,10 @@ public class Main {
 
         try {
             Graph graph = graphLoader.readGraph(graphFileName);
+
+            // visualize if u want
+            System.setProperty("org.graphstream.ui","swing");
+            graph.display();
 
             // TODO: Run ALGORITHM to receive schedule.
 
