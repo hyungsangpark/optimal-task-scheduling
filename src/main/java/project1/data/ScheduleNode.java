@@ -186,13 +186,15 @@ public class ScheduleNode {
         // get task graph as input
         for (Node n : taskGraph) {
             boolean parentsComplete = true;
+            List<String> tasksInScheduleNode = getTasksInScheduleNode();
 
-            // if the node is not already scheduled
-            if (!getTasksInScheduleNode().contains(n.getId())) {
+            // if the task is not already scheduled
+            if (!tasksInScheduleNode.contains(n.getId())) {
                 // check if its parents have already been done
                 for (int i = 0; i < n.enteringEdges().count(); i++) {
-                    if (!getTasksInScheduleNode().contains(n.getEnteringEdge(i).getSourceNode().getId())) {
+                    if (!tasksInScheduleNode.contains(n.getEnteringEdge(i).getSourceNode().getId())) {
                         parentsComplete = false;
+                        break;
                     }
                 }
 
