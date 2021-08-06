@@ -11,28 +11,26 @@ public class Astar {
     public Graph _taskGraph;
     public int _processors;
 
-    public PriorityQueue<ScheduleNode> _tempOpenList = new PriorityQueue<>(new PriorityQueueComparator());
-
-    public LinkedList<Node> _initialTasks;
+    public PriorityQueue<ScheduleNode> _openList = new PriorityQueue<>(new PriorityQueueComparator());
 
     public Astar(Graph taskGraph, int processors) {
         _taskGraph = taskGraph;
         _processors = processors;
     }
 
+    // make a list O of open nodes and their respective f values containing the start node
     public ScheduleNode aStarSearch() {
-//        make a list O of open nodes and their respective f values containing the start node
 
         // create and add root to open
         ScheduleNode root = new ScheduleNode(_processors);
-        _tempOpenList.add(root);
+        _openList.add(root);
 
-//        while O isn't empty:
-        while(!_tempOpenList.isEmpty()) {
-//          pick a node n from O with the best value for f
-            ScheduleNode chosenSchedule = _tempOpenList.peek();
+        // while Open List isn't empty:
+        while(!_openList.isEmpty()) {
+            // pick a node n from O with the best value for f
+            ScheduleNode chosenSchedule = _openList.peek();
 
-//          if n is target:
+            // if n is target:
             if (chosenSchedule.isTarget(_taskGraph)) {
                 // return solution
                 return chosenSchedule;
@@ -41,19 +39,25 @@ public class Astar {
             // expand chosenSchedule
             List<ScheduleNode> childrenOfChosen = chosenSchedule.expandTree(_taskGraph);
 
-//          for every m which is a neighbor of n:
+            // for every m which is a neighbor of n:
             for (ScheduleNode sn : childrenOfChosen) {
-                _tempOpenList.add(sn);
+                _openList.add(sn);
             }
 
-            _tempOpenList.remove(chosenSchedule);
+            _openList.remove(chosenSchedule);
         }
-//
-//        return that there's no solution
 
+        // return that there's no solution
         return null;
     }
 }
+
+
+
+
+
+
+
 //package project1.algorithm;
 //
 //import org.graphstream.graph.Graph;
@@ -73,7 +77,7 @@ public class Astar {
 //    public LinkedList<Node> _taskNodeList = new LinkedList<>();
 //    public LinkedList<Node> _closedList = new LinkedList<>();
 //
-//    public LinkedList<ScheduleNode> _tempOpenList = new LinkedList<>();
+//    public LinkedList<ScheduleNode> _openList = new LinkedList<>();
 //
 //    public LinkedList<Node> _initialTasks;
 //
@@ -105,7 +109,7 @@ public class Astar {
 //
 //        //Create root node(empty schedule)
 //        ScheduleNode root = new ScheduleNode(scheduleGraph, schedule, "root");
-//        _tempOpenList.add(root);
+//        _openList.add(root);
 //        //Add node represents ScheduleNode to scheduleGraph
 //
 //        //Heuristics of the node
