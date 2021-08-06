@@ -36,6 +36,16 @@ public class GraphLoader {
         fileSource.addSink(graph);
         fileSource.readAll(linkToGraphFile);
 
+        // Change file type of weight attribute of nodes and edges into integer.
+        graph.nodes().forEach(node -> {
+            Double weight = (Double)node.getAttribute("Weight");
+            node.setAttribute("Weight", weight.intValue());
+        });
+        graph.edges().forEach(edge -> {
+            Double weight = (Double)edge.getAttribute("Weight");
+            edge.setAttribute("Weight", weight.intValue());
+        });
+
         return graph;
     }
 
@@ -53,30 +63,28 @@ public class GraphLoader {
 
             // Print Nodes.
             graph.nodes().forEach(node -> {
-                Double weight = (Double) node.getAttribute("Weight");
                 graphWriter.println(new StringBuilder()
                         .append("    ")
                         .append(node.getId())
                         .append(" [Weight=")
-                        .append(weight.intValue())
+                        .append((int)node.getAttribute("Weight"))
                         .append(",Start=")
-                        .append((Integer)node.getAttribute("Start"))
+                        .append((int)node.getAttribute("Start"))
                         .append(",Processor=")
-                        .append((Integer)node.getAttribute("Processor"))
+                        .append((int)node.getAttribute("Processor"))
                         .append("];")
                 );
             });
 
             // Print edges
             graph.edges().forEach(edge -> {
-                Double weight = (Double)edge.getAttribute("Weight");
                 graphWriter.println(new StringBuilder()
                         .append("    ")
                         .append(edge.getSourceNode().getId())
                         .append(" -> ")
                         .append(edge.getTargetNode().getId())
                         .append(" [Weight=")
-                        .append(weight.intValue())
+                        .append((int)edge.getAttribute("Weight"))
                         .append("];")
                 );
             });
