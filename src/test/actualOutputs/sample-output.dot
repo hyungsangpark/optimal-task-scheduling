@@ -1,7 +1,7 @@
 digraph {
     "a" ["Start"=0,"Weight"=2,"Processor"=1];
-    "b" ["Start"=2,"Weight"=2,"Processor"=1];
-    "c" ["Start"=3,"Weight"=3,"Processor"=2];
+    "b" ["Start"=4,"Weight"=2,"Processor"=2];
+    "c" ["Start"=2,"Weight"=3,"Processor"=1];
     "d" ["Start"=6,"Weight"=2,"Processor"=2];
     "a" -> "b" ["Weight"=2.0];
     "a" -> "c" ["Weight"=1.0];

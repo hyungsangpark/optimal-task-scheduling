@@ -7,8 +7,17 @@ public class PriorityQueueComparator implements Comparator<ScheduleNode> {
     public int compare(ScheduleNode sn1, ScheduleNode sn2) {
         if (sn1.get_totalF() < sn2.get_totalF()) {
             return -1;
-        } else
+        } else if (sn1.get_totalF() > sn2.get_totalF()) {
             return 1;
+        } else {
+            if (sn1.getTasksInScheduleNode().size() >= sn2.getTasksInScheduleNode().size()) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
         }
+
+    }
 }
 

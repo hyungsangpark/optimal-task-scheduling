@@ -11,6 +11,22 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) {
+//        File[] files = new File("./src/test/graphs/").listFiles();
+//
+//        for (File file : files) {
+//            if (file.isFile()) {
+//                run(args,file.getAbsolutePath());
+//                System.out.println("Finished file: "+ file.getName());
+//            }
+//        }
+////        run(args,"./src/test/graphs/15Nodes10Edges.dot");
+//    }
+//
+//    public static void run(String[] args,String gFileName) {
+
+        args = new String[2];
+        args[0] = "./src/test/graphs/sample.dot";
+        args[1] = "2";
 
         // Part 1: Parse arguments.
 

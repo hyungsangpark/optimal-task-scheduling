@@ -2,6 +2,7 @@ package project1.data;
 
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import project1.algorithm.TotalFCostCalculator;
 
 import java.util.*;
 
@@ -70,6 +71,12 @@ public class ScheduleNode {
 
     // Find f(n) = g(n) + h(n)
     public void setTotalFCost(Graph graph) {
+        // Bottom levels method
+//        TotalFCostCalculator totalFCostCalculator = new TotalFCostCalculator();
+//        _totalF = totalFCostCalculator.calculateTotalF(graph,_schedule);
+
+        // Old method
+
         //Find G cost
         int GCost = getCost();
 
@@ -81,19 +88,6 @@ public class ScheduleNode {
 
         _totalF = GCost + HCost;
     }
-
-//    private int calculateBottomLevelOfNode(Graph graph) {
-//        int output = 0;
-//
-//        // find finishing task
-//        Node finishingNode;
-//
-//        for(int i = 0; i < graph.nodes().count(); i++) {
-//
-//        }
-//
-//        return output;
-//    }
 
     //Find G cost
     private int getCost() {
@@ -126,43 +120,61 @@ public class ScheduleNode {
             return;
         }
         // else check last parent to complete
-        int latestEndTime = 0;
+        int earliestPossbileStartTime = 0;
         int parentPNum = 0;
 
         for (int i = 0; i < _schedule.size(); i++) {
             int pTotalTime = _schedule.get(i).size();
 
             for(int j = 0; j < pTotalTime; j++) {
-                if (parentsOfNode.contains(_schedule.get(i).get(j)) && j > latestEndTime) {
-                    latestEndTime = j;
-                    parentPNum = i;
+                if (parentsOfNode.contains(_schedule.get(i).get(j))) {
+                    Node parentNode = graph.getNode(_schedule.get(i).get(j));
+
+                    int totalC = j;
+
+                    if (i != pNum) {
+                        int transitionTime = (int) graph
+                                .getEdge("("+parentNode.getId()+";"+taskNode.getId()+")")
+                                .getAttribute("Weight");
+                        totalC += transitionTime;
+                    }
+
+                    if (totalC > earliestPossbileStartTime) {
+                        earliestPossbileStartTime = totalC;
+                        parentPNum = i;
+                    }
                 }
             }
         }
 
-        latestEndTime++;
+        earliestPossbileStartTime++;
 
-        // find its end time, pNum and transition time
-        int transitionTime = (int)graph.getEdge("("+_schedule.get(parentPNum).get(latestEndTime-1)+";"+taskNode.getId()+")").getAttribute("Weight");
-
+//        int transitionTime = (int)graph.getEdge("("+_schedule.get(parentPNum).get(earliestPossbileStartTime-1)+";"+taskNode.getId()+")").getAttribute("Weight");
         // if same pNum then schedule node at first -1 * weight times
         if(parentPNum == pNum) {
-            addNewNodeHelper(pNum,taskNode.getId(),(int)taskNode.getAttribute("Weight"),0);
+            addNewNodeHelper(pNum,taskNode.getId(),(int)taskNode.getAttribute("Weight"),earliestPossbileStartTime);
         }
         // else find first -1 then add transition time then add node weight times
         else {
-            addNewNodeHelper(pNum,taskNode.getId(),(int)taskNode.getAttribute("Weight"),transitionTime+latestEndTime);
+            addNewNodeHelper(pNum,taskNode.getId(),(int)taskNode.getAttribute("Weight"),earliestPossbileStartTime);
         }
     }
 
-    private void addNewNodeHelper(int pNum, String node, int weight, int edgeCost) {
+    private void addNewNodeHelper(int pNum, String node, int weight, int earliestStartTime) {
         List<String> processor = _schedule.get(pNum);
 
-        for (int i = 0; i < edgeCost; i++) {
-            processor.add("-1");
+        if (processor.size() > earliestStartTime) {
+            for (int i = 0; i < weight; i++) {
+                processor.add(node);
+            }
         }
-        for(int i = 0; i < weight; i++) {
-            processor.add(node);
+        else {
+            while(processor.size() != earliestStartTime) {
+                processor.add("-1");
+            }
+            for(int i = 0; i < weight; i++) {
+                processor.add(node);
+            }
         }
     }
 
@@ -182,11 +194,11 @@ public class ScheduleNode {
     // may or may not work currently plz check back again later
     public List<String> getTaskToSchedule(Graph taskGraph) {
         List<String> schedulableNodes = new ArrayList<>();
+        List<String> tasksInScheduleNode = getTasksInScheduleNode();
 
         // get task graph as input
         for (Node n : taskGraph) {
             boolean parentsComplete = true;
-            List<String> tasksInScheduleNode = getTasksInScheduleNode();
 
             // if the task is not already scheduled
             if (!tasksInScheduleNode.contains(n.getId())) {
@@ -235,6 +247,10 @@ public class ScheduleNode {
     // Getter for _schedule
     public List<List<String>> getSchedule() {
         return _schedule;
+    }
+
+    public void setTotalF(int totalF) {
+        _totalF = totalF;
     }
 }
 //package project1.data;

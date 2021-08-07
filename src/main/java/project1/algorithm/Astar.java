@@ -11,6 +11,8 @@ public class Astar {
     public Graph _taskGraph;
     public int _processors;
 
+    TotalFCostCalculator totalFCostCalculator;
+
     public PriorityQueue<ScheduleNode> _openList = new PriorityQueue<>(new PriorityQueueComparator());
 
     public Astar(Graph taskGraph, int processors) {
@@ -20,6 +22,22 @@ public class Astar {
 
     // make a list O of open nodes and their respective f values containing the start node
     public ScheduleNode aStarSearch() {
+        // Format graph with dummy start and end nodes
+//        _taskGraph.addNode("dummyStart").setAttribute("Weight",1.0);
+//        _taskGraph.addNode("dummyEnd").setAttribute("Weight",1.0);
+//
+//        for (Node n:_taskGraph) {
+//            if (n.getInDegree() == 0 && !n.getId().equals("dummyStart")) {
+//                _taskGraph.addEdge("(dummyStart;"+n+")",_taskGraph.getNode("dummyStart"),n,true).setAttribute("Weight",0.0);
+//            }
+//            else if (n.getOutDegree() == 0 && !n.getId().equals("dummyEnd")) {
+//                _taskGraph.addEdge("("+n.getId()+";dummyEnd)",n,_taskGraph.getNode("dummyEnd"),true).setAttribute("Weight",0.0);
+//            }
+//        }
+
+//         System.setProperty("org.graphstream.ui","swing");
+//        _taskGraph.display();
+
 
         // create and add root to open
         ScheduleNode root = new ScheduleNode(_processors);

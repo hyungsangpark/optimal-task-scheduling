@@ -1,11 +1,11 @@
 digraph {
     "0" ["Start"=0,"Weight"=5,"Processor"=1];
-    "1" ["Start"=11,"Weight"=6,"Processor"=1];
-    "2" ["Start"=16,"Weight"=5,"Processor"=2];
+    "1" ["Start"=16,"Weight"=6,"Processor"=1];
+    "2" ["Start"=11,"Weight"=5,"Processor"=1];
     "3" ["Start"=5,"Weight"=6,"Processor"=1];
-    "4" ["Start"=17,"Weight"=4,"Processor"=1];
-    "5" ["Start"=28,"Weight"=7,"Processor"=1];
-    "6" ["Start"=21,"Weight"=7,"Processor"=1];
+    "4" ["Start"=29,"Weight"=4,"Processor"=1];
+    "5" ["Start"=26,"Weight"=7,"Processor"=2];
+    "6" ["Start"=22,"Weight"=7,"Processor"=1];
     "0" -> "1" ["Weight"=15.0];
     "0" -> "2" ["Weight"=11.0];
     "0" -> "3" ["Weight"=11.0];
