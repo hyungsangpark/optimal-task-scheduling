@@ -15,6 +15,9 @@ import java.util.List;
  * Author: Dave Shin
  */
 public class DFS {
+    private static final int END_TIME_IDX = 0; // For indexing the schedule. Index 0 of a schedule is its endTime.
+    private static final int IGNORE = -1; // -1 is used as substitute for null and insignificant values.
+
     private Graph _graph;
     private int _numProcessors;
 
@@ -25,13 +28,17 @@ public class DFS {
 
     public Graph branchAndBoundStart() {
         Node rootNode = _graph.getNode(0);
-        NewScheduleNode[] schedule = new NewScheduleNode[(int)_graph.nodes().count()];
-        NewScheduleNode[] optimalSchedule = findLeftmostSchedule();
+        // Index 0 is for the endTime of the schedule and the rest are for the tasks. That is why 1 is added after
+        //(int)_graph.nodes().count()
+        NewScheduleNode[] schedule = new NewScheduleNode[(int)_graph.nodes().count() + 1];
         NewScheduleNode[] solution;
-        int size = 0;
+        NewScheduleNode[] optimalSchedule = new NewScheduleNode[(int)_graph.nodes().count() + 1];
+        optimalSchedule[END_TIME_IDX] =
+                new NewScheduleNode("endTime", IGNORE, findLeftmostSchedule(0), IGNORE);
+        int size = 1; // Because endTime is at index 0.
 
         for (int i = 0; i < _numProcessors; i++) {
-            schedule[0] = new NewScheduleNode(rootNode.getId(), 0,
+            schedule[size] = new NewScheduleNode(rootNode.getId(), 0,
                     (int)rootNode.getAttribute("Weight"), i);
             solution = branchAndBound(rootNode, schedule, optimalSchedule, size++);
             if (solution != null) {
@@ -43,23 +50,12 @@ public class DFS {
         return _graph;
     }
 
-    public NewScheduleNode[] findLeftmostSchedule(Node currentNode, NewScheduleNode[] schedule, int size) {
-        int startTime;
-        int endTime;
-        Node childNode;
-        Object[] edges = currentNode.leavingEdges().toArray();
-
-        for (Object edge : edges) {
-            childNode = ((Edge)edge).getTargetNode();
-
-            startTime = schedule[size - 1].getEndTime();
-            endTime = startTime + (int)childNode.getAttribute("Weight");
-
-            schedule[size] = new NewScheduleNode(currentNode.getId(), startTime, endTime, 0);
-            schedule = findLeftmostSchedule(childNode, schedule, size++);
+    public int findLeftmostSchedule(int endTime) {
+        for (Node task : (Node[])_graph.nodes().toArray()) {
+            endTime += (int)task.getAttribute("Weight");
         }
 
-        return schedule;
+        return endTime;
     }
 
     /**
@@ -76,13 +72,13 @@ public class DFS {
                                             NewScheduleNode[] optimalSchedule, int size) {
         // Replace the current optimalSchedule with more optimal schedule.
         if (currentTask.getOutDegree() == 0) {
-            if (currentSchedule[size - 1].getEndTime() < optimalSchedule[size - 1].getEndTime()) {
+            if (currentSchedule[size - 1].getEndTime() <= optimalSchedule[END_TIME_IDX].getEndTime()) {
                 return currentSchedule;
             }
         }
 
         // Bounding. Return null if currentSchedule is getting slower than optimalSchedule.
-        if (currentSchedule[size - 1].getEndTime() >= optimalSchedule[size - 1].getEndTime()) {
+        if (currentSchedule[size - 1].getEndTime() >= optimalSchedule[END_TIME_IDX].getEndTime()) {
             return null;
         }
 
