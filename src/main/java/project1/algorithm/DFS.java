@@ -64,43 +64,42 @@ public class DFS {
      * @param currentTask - current task node in the task graph.
      * @param currentSchedule - current ScheduleNode in the DFS branch-and-bound tree.
      * @param optimalSchedule - current most optimal schedule the algorithm has found.
-     * @param size - current number of tasks in the optimal schedule.
+     * @param size - number of tasks in currentSchedule.
      * @return optimalSchedule
      */
     // Assume that the nodes are sorted.
     public NewScheduleNode[] branchAndBound(Node currentTask, NewScheduleNode[] currentSchedule,
                                             NewScheduleNode[] optimalSchedule, int size) {
+        // Replace the current optimalSchedule with more optimal schedule.
         if (currentTask.getOutDegree() == 0) {
-            if (currentSchedule[currentSchedule.length - 1].getEndTime()
-                    < optimalSchedule[optimalSchedule.length - 1].getEndTime()) {
+            if (currentSchedule[size - 1].getEndTime() < optimalSchedule[size - 1].getEndTime()) {
                 return currentSchedule;
             }
         }
 
-        // Bounding.
-        if (currentSchedule[currentSchedule.length - 1].getEndTime()
-                >= optimalSchedule[optimalSchedule.length - 1].getEndTime()) {
+        // Bounding. Return null if currentSchedule is getting slower than optimalSchedule.
+        if (currentSchedule[size - 1].getEndTime() >= optimalSchedule[size - 1].getEndTime()) {
             return null;
         }
 
-        // Branching.
+        // Branching. Based on number of processors and tasks.
         for (int i = 0; i < _numProcessors; i++) {
-            optimalSchedule = Branch(currentTask, currentSchedule, optimalSchedule, size);
+            optimalSchedule = Branch(currentTask, currentSchedule, optimalSchedule, size++);
         }
 
         return optimalSchedule;
     }
 
-    public NewScheduleNode[] Branch(Node currentNode, NewScheduleNode[] currentSchedule,
-                       NewScheduleNode[] optimalSchedule, int size) {
+    public NewScheduleNode[] Branch(Node currentTask, NewScheduleNode[] currentSchedule,
+                                    NewScheduleNode[] optimalSchedule, int size) {
         Node childNode;
         Edge edge;
         int startTime;
         int endTime;
         NewScheduleNode[] solution;
 
-        for (int i = 0; i < currentNode.getOutDegree(); i++) {
-            edge = currentNode.getEdgeToward(i);
+        for (int i = 0; i < currentTask.getOutDegree(); i++) {
+            edge = currentTask.getEdgeToward(i);
             childNode = edge.getTargetNode();
 
             if (currentSchedule[currentSchedule.length - 1].getProcessorNum() == i) {
@@ -112,7 +111,7 @@ public class DFS {
             endTime = startTime + (int)childNode.getAttribute("Weight");
 
             currentSchedule[currentSchedule.length] =
-                    new NewScheduleNode(currentNode.getId(), startTime, endTime, i);
+                    new NewScheduleNode(currentTask.getId(), startTime, endTime, i);
             solution = branchAndBound(childNode, currentSchedule, optimalSchedule, size++);
             if (solution != null) {
                 optimalSchedule = solution;
