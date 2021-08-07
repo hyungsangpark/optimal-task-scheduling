@@ -8,9 +8,9 @@ import java.util.*;
 public class ScheduleNode {
 
     private List<List<String>> _schedule;
-    private ScheduleNode _parent;
     private int _totalF;
     private boolean isSchedEmpty;
+    private int _gCost;
 
     //For root schedule node(node with no tasks assigned)
     public ScheduleNode(int _processors) {
@@ -70,8 +70,6 @@ public class ScheduleNode {
 
     // Find f(n) = g(n) + h(n)
     public void setTotalFCost(Graph graph) {
-        //Find G cost
-        int GCost = getCost();
 
         //Find Heuristics Cost
         int HCost = 0;
@@ -79,7 +77,7 @@ public class ScheduleNode {
             HCost += (int)graph.getNode(n).getAttribute("Weight");
         }
 
-        _totalF = GCost + HCost;
+        _totalF = _gCost + HCost;
     }
 
 //    private int calculateBottomLevelOfNode(Graph graph) {
@@ -94,17 +92,6 @@ public class ScheduleNode {
 //
 //        return output;
 //    }
-
-    //Find G cost
-    private int getCost() {
-        int tempCost = 0;
-
-        for(int i = 0; i < _schedule.size(); i++) {
-            tempCost = Math.max(tempCost,_schedule.get(i).size());
-        }
-
-        return tempCost;
-    }
 
     // Getter for f(n) pf this ScheduleNode
     public int get_totalF() {
@@ -148,10 +135,12 @@ public class ScheduleNode {
         // if same pNum then schedule node at first -1 * weight times
         if(parentPNum == pNum) {
             addNewNodeHelper(pNum,taskNode.getId(),(int)taskNode.getAttribute("Weight"),0);
+            _gCost = latestEndTime;
         }
         // else find first -1 then add transition time then add node weight times
         else {
             addNewNodeHelper(pNum,taskNode.getId(),(int)taskNode.getAttribute("Weight"),transitionTime+latestEndTime);
+            _gCost = transitionTime+latestEndTime;
         }
     }
 
