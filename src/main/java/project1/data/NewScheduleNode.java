@@ -1,5 +1,11 @@
 package project1.data;
 
+/**
+ * Node of the DFS schedule tree. A node contains the schedule of tasks and the processors that the tasks are allocated
+ * to.
+ *
+ * Author: Dave Shin
+ */
 public class NewScheduleNode {
     private String _id;
     private int _startTime;

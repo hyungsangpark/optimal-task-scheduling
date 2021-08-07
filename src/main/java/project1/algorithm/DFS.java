@@ -5,6 +5,11 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import project1.data.NewScheduleNode;
 
+/**
+ * DFS branch-and-bound algorithm. Creates an optimal schedule for tasks and processors.
+ *
+ * Author: Dave Shin
+ */
 public class DFS {
     private Graph _graph;
     private int _numProcessors;
@@ -34,31 +39,21 @@ public class DFS {
         return _graph;
     }
 
-    public NewScheduleNode[] findLeftmostSchedule() {
+    public NewScheduleNode[] findLeftmostSchedule(Node currentNode, NewScheduleNode[] schedule, int size) {
         int startTime;
         int endTime;
-        int size = 0;
-        Node currentNode = _graph.getNode(0);
-        NewScheduleNode[] schedule = new NewScheduleNode[(int)_graph.nodes().count()];
+        Node childNode;
+        Object[] edges = currentNode.leavingEdges().toArray();
 
-        schedule[0] = new NewScheduleNode(currentNode.getId(), 0,
-                (int)currentNode.getAttribute("Weight"), 0);
-        size++;
-        currentNode = currentNode. getEdgeToward(1).getTargetNode();
+        for (Object edge : edges) {
+            childNode = ((Edge)edge).getTargetNode();
 
-        while (currentNode.getOutDegree() != 0) {
             startTime = schedule[size - 1].getEndTime();
-            endTime = startTime + (int)currentNode.getAttribute("Weight");
+            endTime = startTime + (int)childNode.getAttribute("Weight");
 
             schedule[size] = new NewScheduleNode(currentNode.getId(), startTime, endTime, 0);
-
-            currentNode = currentNode.getEdgeToward(0).getTargetNode();
-            size++;
+            schedule = findLeftmostSchedule(childNode, schedule, size++);
         }
-
-        startTime = schedule[size - 1].getEndTime();
-        endTime = startTime + (int)currentNode.getAttribute("Weight");
-        schedule[size] = new NewScheduleNode(currentNode.getId(), startTime, endTime, 0);
 
         return schedule;
     }
@@ -79,32 +74,39 @@ public class DFS {
             return null;
         }
 
+        // Branching.
+        for (int i = 0; i < _numProcessors; i++) {
+            optimalSchedule = Branch(currentNode, currentSchedule, optimalSchedule, size);
+        }
+
+        return optimalSchedule;
+    }
+
+    public NewScheduleNode[] Branch(Node currentNode, NewScheduleNode[] currentSchedule,
+                       NewScheduleNode[] optimalSchedule, int size) {
         Node childNode;
         Edge edge;
         int startTime;
         int endTime;
         NewScheduleNode[] solution;
 
-        // Branching.
-        for (int i = 0; i < _numProcessors; i++) {
-            for (int j = 0; j < currentNode.getOutDegree(); j++) {
-                edge = currentNode.getEdgeToward(j);
-                childNode = edge.getTargetNode();
+        for (int i = 0; i < currentNode.getOutDegree(); i++) {
+            edge = currentNode.getEdgeToward(i);
+            childNode = edge.getTargetNode();
 
-                if (currentSchedule[currentSchedule.length - 1].getProcessorNum() == i) {
-                    startTime = currentSchedule[currentSchedule.length - 1].getEndTime();
-                } else {
-                    startTime = currentSchedule[currentSchedule.length - 1].getEndTime()
-                            + (int)edge.getAttribute("Weight");;
-                }
-                endTime = startTime + (int)childNode.getAttribute("Weight");
+            if (currentSchedule[currentSchedule.length - 1].getProcessorNum() == i) {
+                startTime = currentSchedule[currentSchedule.length - 1].getEndTime();
+            } else {
+                startTime = currentSchedule[currentSchedule.length - 1].getEndTime()
+                        + (int)edge.getAttribute("Weight");;
+            }
+            endTime = startTime + (int)childNode.getAttribute("Weight");
 
-                currentSchedule[currentSchedule.length] =
-                        new NewScheduleNode(currentNode.getId(), startTime, endTime, i);
-                solution = branchAndBound(childNode, currentSchedule, optimalSchedule, size++);
-                if (solution != null) {
-                    optimalSchedule = solution;
-                }
+            currentSchedule[currentSchedule.length] =
+                    new NewScheduleNode(currentNode.getId(), startTime, endTime, i);
+            solution = branchAndBound(childNode, currentSchedule, optimalSchedule, size++);
+            if (solution != null) {
+                optimalSchedule = solution;
             }
         }
 
