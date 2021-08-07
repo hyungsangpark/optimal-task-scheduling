@@ -58,10 +58,19 @@ public class DFS {
         return schedule;
     }
 
+    /**
+     * Recursive method for DFS branch-and-bound algorithm.
+     *
+     * @param currentTask - current task node in the task graph.
+     * @param currentSchedule - current ScheduleNode in the DFS branch-and-bound tree.
+     * @param optimalSchedule - current most optimal schedule the algorithm has found.
+     * @param size - current number of tasks in the optimal schedule.
+     * @return optimalSchedule
+     */
     // Assume that the nodes are sorted.
-    public NewScheduleNode[] branchAndBound(Node currentNode, NewScheduleNode[] currentSchedule,
+    public NewScheduleNode[] branchAndBound(Node currentTask, NewScheduleNode[] currentSchedule,
                                             NewScheduleNode[] optimalSchedule, int size) {
-        if (currentNode.getOutDegree() == 0) {
+        if (currentTask.getOutDegree() == 0) {
             if (currentSchedule[currentSchedule.length - 1].getEndTime()
                     < optimalSchedule[optimalSchedule.length - 1].getEndTime()) {
                 return currentSchedule;
@@ -76,7 +85,7 @@ public class DFS {
 
         // Branching.
         for (int i = 0; i < _numProcessors; i++) {
-            optimalSchedule = Branch(currentNode, currentSchedule, optimalSchedule, size);
+            optimalSchedule = Branch(currentTask, currentSchedule, optimalSchedule, size);
         }
 
         return optimalSchedule;
