@@ -86,13 +86,34 @@ public class DFS {
             return null;
         }
 
+        int startTime;
+        int endTime;
+        List<String> schedulableTasks = findSchedulableTasks(_graph, currentSchedule);
+        NewScheduleNode[] solution;
+
         // Branching. Based on number of processors and tasks.
         for (int i = 0; i < schedulableTasks.size(); i++) {
             for (int j = 0; j < _numProcessors; j++) {
-                optimalSchedule = Branch(currentTask, currentSchedule, optimalSchedule, size++);
+                if (currentSchedule[size - 1].getProcessorNum() == i) {
+                    startTime = currentSchedule[size - 1].getEndTime();
+                } else {
+                    // I can increase the readability of this part by doing List<Node> schedulableTasks?
+                    int waitTime = (int)_graph.getNode(schedulableTasks.get(i)).getEdgeFrom(currentSchedule[size - 1]
+                            .getId()).getAttribute("Weight");
+                    startTime = currentSchedule[size - 1].getEndTime() + waitTime;
+                }
+                // Same with this part.
+                endTime = startTime + (int)_graph.getNode(schedulableTasks.get(i)).getAttribute("Weight");
+
+                currentSchedule[size] = new NewScheduleNode(currentTask.getId(), startTime, endTime, j);
+                solution = branchAndBound(currentTask, currentSchedule, optimalSchedule, size++);
+                if (solution != null) {
+                    optimalSchedule = solution;
+                }
+
+                return optimalSchedule;
             }
         }
-
 
         return optimalSchedule;
     }
@@ -117,7 +138,7 @@ public class DFS {
             if (!scheduledTasks.contains(task.getId())) {
                 // Check if its parents have already been done.
                 Iterator<Edge> iterator = task.enteringEdges().iterator();
-                
+
                 while(iterator.hasNext()) {
                     if (!scheduledTasks.contains(iterator.next().getSourceNode().getId())) {
                         areParentsComplete = false;
@@ -148,37 +169,6 @@ public class DFS {
         }
 
         return scheduledTasks;
-    }
-
-    public NewScheduleNode[] Branch(Node currentTask, NewScheduleNode[] currentSchedule,
-                                    NewScheduleNode[] optimalSchedule, int size) {
-        Node childNode;
-        Edge edge;
-        int startTime;
-        int endTime;
-        NewScheduleNode[] solution;
-
-        for (int i = 0; i < currentTask.getOutDegree(); i++) {
-            edge = currentTask.getEdgeToward(i);
-            childNode = edge.getTargetNode();
-
-            if (currentSchedule[currentSchedule.length - 1].getProcessorNum() == i) {
-                startTime = currentSchedule[currentSchedule.length - 1].getEndTime();
-            } else {
-                startTime = currentSchedule[currentSchedule.length - 1].getEndTime()
-                        + (int)edge.getAttribute("Weight");;
-            }
-            endTime = startTime + (int)childNode.getAttribute("Weight");
-
-            currentSchedule[currentSchedule.length] =
-                    new NewScheduleNode(currentTask.getId(), startTime, endTime, i);
-            solution = branchAndBound(childNode, currentSchedule, optimalSchedule, size++);
-            if (solution != null) {
-                optimalSchedule = solution;
-            }
-        }
-
-        return optimalSchedule;
     }
 
     public void ScheduleToGraph(NewScheduleNode[] schedule) {
