@@ -5,6 +5,10 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import project1.data.NewScheduleNode;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * DFS branch-and-bound algorithm. Creates an optimal schedule for tasks and processors.
  *
@@ -83,11 +87,67 @@ public class DFS {
         }
 
         // Branching. Based on number of processors and tasks.
-        for (int i = 0; i < _numProcessors; i++) {
-            optimalSchedule = Branch(currentTask, currentSchedule, optimalSchedule, size++);
+        for (int i = 0; i < schedulableTasks.size(); i++) {
+            for (int j = 0; j < _numProcessors; j++) {
+                optimalSchedule = Branch(currentTask, currentSchedule, optimalSchedule, size++);
+            }
         }
 
+
         return optimalSchedule;
+    }
+
+    /**
+     * Returns a List of schedulable tasks for a given schedule.
+     *
+     * @param graph - Graph representation of the tasks and their orders.
+     * @param schedule - current schedule of the scheduled tasks.
+     * @return schedulableTasks
+     */
+    public List<String> findSchedulableTasks(Graph graph, NewScheduleNode[] schedule) {
+        List<String> schedulableTasks = new ArrayList<>();
+
+        // get task graph as input ,remove the node in the graph if it is already done? Maybe make a simple data
+        // structure that keeps track of which nodes are not scheduled yet?
+        for (Node task : graph) {
+            boolean areParentsComplete = true;
+            List<String> scheduledTasks = getScheduledTasks(schedule);
+
+            // If the task is not already scheduled.
+            if (!scheduledTasks.contains(task.getId())) {
+                // Check if its parents have already been done.
+                Iterator<Edge> iterator = task.enteringEdges().iterator();
+                
+                while(iterator.hasNext()) {
+                    if (!scheduledTasks.contains(iterator.next().getSourceNode().getId())) {
+                        areParentsComplete = false;
+                        break;
+                    }
+                }
+
+                if (areParentsComplete) {
+                    schedulableTasks.add(task.getId());
+                }
+            }
+        }
+
+        return schedulableTasks;
+    }
+
+    /**
+     * Return a List of scheduled tasks in the input schedule.
+     *
+     * @param schedule
+     * @return scheduledTasks
+     */
+    public List<String> getScheduledTasks(NewScheduleNode[] schedule) {
+        List<String> scheduledTasks = new ArrayList<>();
+
+        for (NewScheduleNode task : schedule) {
+            scheduledTasks.add(task.getId());
+        }
+
+        return scheduledTasks;
     }
 
     public NewScheduleNode[] Branch(Node currentTask, NewScheduleNode[] currentSchedule,
