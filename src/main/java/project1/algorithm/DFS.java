@@ -26,6 +26,12 @@ public class DFS {
         _numProcessors = numOfProcessors;
     }
 
+    /**
+     * Starting point for the DFS branch-and-bound scheduling algorithm.
+     *
+     * @return _graph - graph with tasks that contains the start times and used processor numbers according to the
+     *                  optimal schedule that is created by the algorithm.
+     */
     public Graph branchAndBoundStart() {
         Node rootNode = _graph.getNode(0);
         // Index 0 is for the endTime of the schedule and the rest are for the tasks. That is why 1 is added after
@@ -34,7 +40,7 @@ public class DFS {
         NewScheduleNode[] solution;
         NewScheduleNode[] optimalSchedule = new NewScheduleNode[(int)_graph.nodes().count() + 1];
         optimalSchedule[END_TIME_IDX] =
-                new NewScheduleNode("endTime", IGNORE, findLeftmostSchedule(0), IGNORE);
+                new NewScheduleNode("endTime", IGNORE, findLeftmostScheduleEndTime(0), IGNORE);
         int size = 1; // Because endTime is at index 0.
 
         for (int i = 0; i < _numProcessors; i++) {
@@ -50,7 +56,14 @@ public class DFS {
         return _graph;
     }
 
-    public int findLeftmostSchedule(int endTime) {
+    /**
+     * Finds the endTime of the leftmost schedule. Leftmost schedule is the schedule that is the leftmost in the DFS
+     * schedule tree.
+     *
+     * @param endTime - zero as an argument because the weights of the tasks will be added as the method executes.
+     * @return endTime
+     */
+    public int findLeftmostScheduleEndTime(int endTime) {
         for (Node task : (Node[])_graph.nodes().toArray()) {
             endTime += (int)task.getAttribute("Weight");
         }
@@ -167,33 +180,15 @@ public class DFS {
         return scheduledTasks;
     }
 
+    /**
+     * Inserts the start times and processor numbers used for the tasks in _graph according to the input schedule.
+     *
+     * @param schedule - schedule containing the tasks with start times and used processor numbers.
+     */
     public void ScheduleToGraph(NewScheduleNode[] schedule) {
         for (int i = 0; i < schedule.length; i++) {
             _graph.getNode(schedule[i].getId()).setAttribute("Start", schedule[i].getStartTime());
             _graph.getNode(schedule[i].getId()).setAttribute("Processor", schedule[i].getProcessorNum());
         }
     }
-
-    /*
-    public List<List<String>> addTask(List<List<String>> schedule, int processorNum, String task,
-                                         int waitTime, int weight) {
-        for (int i = 0; i < waitTime; i++) {
-            schedule.get(processorNum).add(null);
-        }
-
-        for (int i = 0; i < weight; i++) {
-            schedule.get(processorNum).add(task);
-        }
-        return schedule;
-    }
-
-    public List<List<String>> createEmptySchedule() {
-        List<List<String>> emptySchedule = new ArrayList<>();
-        for (int i = 0; i < _numOfProcessors; i++) {
-            emptySchedule.add(new ArrayList<>());
-        }
-
-        return emptySchedule;
-    }
-    */
 }
