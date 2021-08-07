@@ -5,9 +5,7 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import project1.data.NewScheduleNode;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * DFS branch-and-bound algorithm. Creates an optimal schedule for tasks and processors.
@@ -15,9 +13,6 @@ import java.util.List;
  * Author: Dave Shin
  */
 public class DFS {
-    private static final int END_TIME_IDX = 0; // For indexing the schedule. Index 0 of a schedule is its endTime.
-    private static final int IGNORE = -1; // -1 is used as substitute for null and insignificant values.
-
     private Graph _graph;
     private int _numProcessors;
 
@@ -33,20 +28,16 @@ public class DFS {
      *                  optimal schedule that is created by the algorithm.
      */
     public Graph branchAndBoundStart() {
-        Node rootNode = _graph.getNode(0);
-        // Index 0 is for the endTime of the schedule and the rest are for the tasks. That is why 1 is added after
-        //(int)_graph.nodes().count()
-        NewScheduleNode[] schedule = new NewScheduleNode[(int)_graph.nodes().count() + 1];
+        NewScheduleNode[] optimalSchedule = findLeftmostSchedule();
         NewScheduleNode[] solution;
-        NewScheduleNode[] optimalSchedule = new NewScheduleNode[(int)_graph.nodes().count() + 1];
-        optimalSchedule[END_TIME_IDX] =
-                new NewScheduleNode("endTime", IGNORE, findLeftmostScheduleEndTime(0), IGNORE);
-        int size = 1; // Because endTime is at index 0.
+        Node rootNode = _graph.getNode(0);
+        int size = 0;
 
         for (int i = 0; i < _numProcessors; i++) {
+            NewScheduleNode[] schedule = new NewScheduleNode[(int)_graph.nodes().count()];
             schedule[size] = new NewScheduleNode(rootNode.getId(), 0,
                     (int)rootNode.getAttribute("Weight"), i);
-            solution = branchAndBound(rootNode, schedule, optimalSchedule, size++);
+            solution = branchAndBound(schedule, optimalSchedule, size + 1);
             if (solution != null) {
                 optimalSchedule = solution;
             }
@@ -57,41 +48,49 @@ public class DFS {
     }
 
     /**
-     * Finds the endTime of the leftmost schedule. Leftmost schedule is the schedule that is the leftmost in the DFS
-     * schedule tree.
+     * Finds the leftmost schedule. Leftmost schedule is the schedule that is the leftmost in the DFS schedule tree.
      *
-     * @param endTime - zero as an argument because the weights of the tasks will be added as the method executes.
-     * @return endTime
+     * @return leftmostScheduleNode
      */
-    public int findLeftmostScheduleEndTime(int endTime) {
-        for (Node task : (Node[])_graph.nodes().toArray()) {
-            endTime += (int)task.getAttribute("Weight");
+    public NewScheduleNode[] findLeftmostSchedule() {
+        NewScheduleNode[] leftmostSchedule = new NewScheduleNode[(int)_graph.nodes().count()];
+        int idx = 0;
+        int startTime = 0;
+
+        for (Object taskObject : _graph.nodes().toArray()) {
+            Node task = (Node)taskObject;
+            leftmostSchedule[idx] = new NewScheduleNode(task.getId(), startTime, startTime
+                    + (int)task.getAttribute("Weight"), 0);
+            startTime += (int)task.getAttribute("Weight");
+            idx++;
         }
 
-        return endTime;
+        return leftmostSchedule;
     }
 
     /**
      * Recursive method for DFS branch-and-bound algorithm.
      *
-     * @param currentTask - current task node in the task graph.
      * @param currentSchedule - current ScheduleNode in the DFS branch-and-bound tree.
      * @param optimalSchedule - current most optimal schedule the algorithm has found.
      * @param size - number of tasks in currentSchedule.
      * @return optimalSchedule
      */
     // Assume that the nodes are sorted.
-    public NewScheduleNode[] branchAndBound(Node currentTask, NewScheduleNode[] currentSchedule,
-                                            NewScheduleNode[] optimalSchedule, int size) {
-        // Replace the current optimalSchedule with more optimal schedule.
-        if (currentTask.getOutDegree() == 0) {
-            if (currentSchedule[size - 1].getEndTime() <= optimalSchedule[END_TIME_IDX].getEndTime()) {
+    public NewScheduleNode[] branchAndBound(NewScheduleNode[] currentSchedule, NewScheduleNode[] optimalSchedule,
+                                            int size) {
+        // Replace the current optimalSchedule with more optimal schedule when a schedule is finished creating. Return
+        // null if not optimal.
+        if (size == _graph.getNodeCount()) {
+            if (currentSchedule[size - 1].getEndTime() < optimalSchedule[optimalSchedule.length - 1].getEndTime()) {
                 return currentSchedule;
             }
+
+            return null;
         }
 
         // Bounding. Return null if currentSchedule is getting slower than optimalSchedule.
-        if (currentSchedule[size - 1].getEndTime() >= optimalSchedule[END_TIME_IDX].getEndTime()) {
+        if (currentSchedule[size - 1].getEndTime() >= optimalSchedule[optimalSchedule.length - 1].getEndTime()) {
             return null;
         }
 
@@ -101,26 +100,18 @@ public class DFS {
         NewScheduleNode[] solution;
 
         // Branching. Based on number of processors and tasks.
-        for (int i = 0; i < schedulableTasks.size(); i++) {
-            for (int j = 0; j < _numProcessors; j++) {
-                if (currentSchedule[size - 1].getProcessorNum() == i) {
-                    startTime = currentSchedule[size - 1].getEndTime();
-                } else {
-                    // I can increase the readability of this part by doing List<Node> schedulableTasks?
-                    int waitTime = (int)_graph.getNode(schedulableTasks.get(i)).getEdgeFrom(currentSchedule[size - 1]
-                            .getId()).getAttribute("Weight");
-                    startTime = currentSchedule[size - 1].getEndTime() + waitTime;
-                }
-                // Same with this part.
-                endTime = startTime + (int)_graph.getNode(schedulableTasks.get(i)).getAttribute("Weight");
+        for (String task : schedulableTasks) {
+            for (int i = 0; i < _numProcessors; i++) {
+                startTime = calculateStartTime(arrayToHashMap(currentSchedule), getScheduledTasks(currentSchedule),
+                        task, i);
+                endTime = startTime + (int)_graph.getNode(task).getAttribute("Weight");
 
-                currentSchedule[size] = new NewScheduleNode(currentTask.getId(), startTime, endTime, j);
-                solution = branchAndBound(currentTask, currentSchedule, optimalSchedule, size++);
+                NewScheduleNode[] nextSchedule = currentSchedule.clone();
+                nextSchedule[size] = new NewScheduleNode(task, startTime, endTime, i);
+                solution = branchAndBound(nextSchedule, optimalSchedule, size + 1);
                 if (solution != null) {
                     optimalSchedule = solution;
                 }
-
-                return optimalSchedule;
             }
         }
 
@@ -146,10 +137,11 @@ public class DFS {
             // If the task is not already scheduled.
             if (!scheduledTasks.contains(task.getId())) {
                 // Check if its parents have already been done.
-                Iterator<Edge> iterator = task.enteringEdges().iterator();
-
-                while(iterator.hasNext()) {
-                    if (!scheduledTasks.contains(iterator.next().getSourceNode().getId())) {
+                for (Object edge : task.enteringEdges().toArray()) {
+//                    if (!scheduledTasks.contains(task.))
+//                }
+//                        bject edge : task.enteringEdges().toArray()) {
+                    if (!scheduledTasks.contains(((Edge)edge).getSourceNode().getId())) {
                         areParentsComplete = false;
                         break;
                     }
@@ -174,10 +166,60 @@ public class DFS {
         List<String> scheduledTasks = new ArrayList<>();
 
         for (NewScheduleNode task : schedule) {
+            if (task == null) { // use -1 instead?
+                break;
+            }
+
             scheduledTasks.add(task.getId());
         }
 
         return scheduledTasks;
+    }
+
+    // I can increase the readability of this part by doing List<Node> schedulableTasks?
+    public int calculateStartTime(HashMap<String, NewScheduleNode> schedule, List<String> scheduledTasks, String task,
+                                  int processor) {
+        int tempStartTime;
+        int maxStartTime = 0;
+        for (int i = scheduledTasks.size() - 1; i >= 0; i--) {
+            if (schedule.get(scheduledTasks.get(i)).getProcessorNum() == processor) {
+                maxStartTime = schedule.get(scheduledTasks.get(i)).getEndTime();
+                break;
+            }
+        }
+        NewScheduleNode prevTask;
+
+        for (String scheduledTask : scheduledTasks) {
+            if (_graph.getNode(scheduledTask).hasEdgeToward(task)) { // Change the code so that we don't have to traverse through _graph? e.g. Include the parents information in NewScheduleNode.
+                prevTask = schedule.get(scheduledTask);
+                if (prevTask.getProcessorNum() == processor) {
+                    tempStartTime = prevTask.getEndTime();
+                } else {
+                    tempStartTime = prevTask.getEndTime() + (int)_graph.getNode(scheduledTask)
+                            .getEdgeToward(_graph.getNode(task)).getAttribute("Weight");
+                }
+
+                if (tempStartTime > maxStartTime) {
+                    maxStartTime = tempStartTime;
+                }
+            }
+        }
+
+        return maxStartTime;
+    }
+
+    public HashMap<String, NewScheduleNode> arrayToHashMap(NewScheduleNode[] schedule) {
+        HashMap<String, NewScheduleNode> map = new HashMap<>();
+
+        for (NewScheduleNode task : schedule) {
+            if (task == null) {
+                break;
+            }
+
+            map.put(task.getId(), task);
+        }
+
+        return map;
     }
 
     /**
@@ -186,9 +228,9 @@ public class DFS {
      * @param schedule - schedule containing the tasks with start times and used processor numbers.
      */
     public void ScheduleToGraph(NewScheduleNode[] schedule) {
-        for (int i = 0; i < schedule.length; i++) {
-            _graph.getNode(schedule[i].getId()).setAttribute("Start", schedule[i].getStartTime());
-            _graph.getNode(schedule[i].getId()).setAttribute("Processor", schedule[i].getProcessorNum());
+        for (NewScheduleNode task : schedule) {
+            _graph.getNode(task.getId()).setAttribute("Start", task.getStartTime());
+            _graph.getNode(task.getId()).setAttribute("Processor", task.getProcessorNum());
         }
     }
 }
