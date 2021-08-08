@@ -6,6 +6,7 @@ import project1.algorithm.Astar;
 import project1.data.ScheduleNode;
 import project1.util.GraphLoader;
 
+import java.io.File;
 import java.io.IOException;
 
 public class Main {
@@ -15,18 +16,18 @@ public class Main {
 //
 //        for (File file : files) {
 //            if (file.isFile()) {
-//                run(args,file.getAbsolutePath());
+//                args = new String[2];
+//                args[0] = file.getPath();
+//                args[1] = "2";
+//
+//                run(args);
 //                System.out.println("Finished file: "+ file.getName());
 //            }
 //        }
 ////        run(args,"./src/test/graphs/15Nodes10Edges.dot");
 //    }
 //
-//    public static void run(String[] args,String gFileName) {
-
-        args = new String[2];
-        args[0] = "./src/test/graphs/test.dot";
-        args[1] = "2";
+//    public static void run(String[] args) {
 
         // Part 1: Parse arguments.
 
@@ -85,6 +86,7 @@ public class Main {
             graphLoader.formatOutputGraph(graph,result.getSchedule());
 
             graphLoader.writeGraph(graph, outputName);
+//            graphLoader.writeGraph(graph, outputName.replace("graphs","actualOutputs"));
         } catch (IOException e) {
             System.err.println("ERROR: Graph file with the provided name is not found.");
             System.exit(1);
