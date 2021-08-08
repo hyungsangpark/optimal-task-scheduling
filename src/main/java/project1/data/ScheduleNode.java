@@ -1,5 +1,6 @@
 package project1.data;
 
+import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
@@ -49,6 +50,7 @@ public class ScheduleNode {
         for(String n : scheduleableNodes) {
             // go over all the processors
             for(int i = 0; i < _schedule.size(); i++) {
+                //Create new ScheduleNode
                 ScheduleNode newChildSchedule = new ScheduleNode(_schedule);
 
                 // add new node task depending on whether transition cost is required
@@ -115,14 +117,27 @@ public class ScheduleNode {
         // else check last parent to complete
         int latestEndTime = 0;
         int parentPNum = 0;
+        String nextLongTask = "";
+        int temp = 0;
 
         for (int i = 0; i < _schedule.size(); i++) {
+            //pTotalTime could be one
             int pTotalTime = _schedule.get(i).size();
 
             for(int j = 0; j < pTotalTime; j++) {
-                if (parentsOfNode.contains(_schedule.get(i).get(j)) && j > latestEndTime) {
-                    latestEndTime = j;
-                    parentPNum = i;
+                if (parentsOfNode.contains(_schedule.get(i).get(j))) {
+
+                    String tempLastTask = _schedule.get(i).get(j);
+                    int tempNextLongestTime = pTotalTime + (int)graph.getEdge("("+tempLastTask+";"+taskNode.getId()+")").getAttribute("Weight");
+                    if (tempNextLongestTime > temp) {
+                        temp = tempNextLongestTime;
+                        nextLongTask = tempLastTask;
+                    }
+
+                    if(j > latestEndTime) {
+                        latestEndTime = j;
+                        parentPNum = i;
+                    }
                 }
             }
         }
@@ -130,17 +145,35 @@ public class ScheduleNode {
         latestEndTime++;
 
         // find its end time, pNum and transition time
-        int transitionTime = (int)graph.getEdge("("+_schedule.get(parentPNum).get(latestEndTime-1)+";"+taskNode.getId()+")").getAttribute("Weight");
+
+        String lastTask = _schedule.get(parentPNum).get(latestEndTime-1);
+        int transitionTime = (int)graph.getEdge("("+lastTask+";"+taskNode.getId()+")").getAttribute("Weight");
+
+        //boolean to see if the parent that has longest time is the task with longest finish time + edge time or not
+        boolean same = false;
+        if (lastTask == nextLongTask) {
+            same = true;
+        }
 
         // if same pNum then schedule node at first -1 * weight times
         if(parentPNum == pNum) {
-            addNewNodeHelper(pNum,taskNode.getId(),(int)taskNode.getAttribute("Weight"),0);
-            _gCost = latestEndTime;
+            if (same) {
+                addNewNodeHelper(pNum, taskNode.getId(), (int) taskNode.getAttribute("Weight"), 0);
+                _gCost = latestEndTime + (int) taskNode.getAttribute("Weight");
+            }
+            else {
+                addNewNodeHelper(pNum, taskNode.getId(), (int) taskNode.getAttribute("Weight"), 0);
+                _gCost = Math.max(latestEndTime, temp) + (int) taskNode.getAttribute("Weight");
+            }
         }
         // else find first -1 then add transition time then add node weight times
         else {
-            addNewNodeHelper(pNum,taskNode.getId(),(int)taskNode.getAttribute("Weight"),transitionTime+latestEndTime);
-            _gCost = transitionTime+latestEndTime;
+            if (same) {
+                addNewNodeHelper(pNum,taskNode.getId(),(int)taskNode.getAttribute("Weight"),transitionTime+latestEndTime);
+                _gCost = transitionTime + latestEndTime + (int)taskNode.getAttribute("Weight");
+            }
+            addNewNodeHelper(pNum,taskNode.getId(),(int)taskNode.getAttribute("Weight"),Math.max(temp, latestEndTime));
+            _gCost = Math.max(temp, latestEndTime) + (int)taskNode.getAttribute("Weight");
         }
     }
 
