@@ -34,7 +34,7 @@ public class DFS {
 
         NewScheduleNode[] optimalSchedule = findLeftmostSchedule();
         NewScheduleNode[] solution;
-        Node rootNode = _graph.getNode(0);
+        Node rootNode = getStartNode();
         int size = 0;
 
         for (int i = 0; i < _numProcessors; i++) {
@@ -49,6 +49,16 @@ public class DFS {
 
         ScheduleToGraph(optimalSchedule);
         return _graph;
+    }
+
+    public Node getStartNode() {
+        for (Object task : _graph.nodes().toArray()) {
+            if (((Node)task).getInDegree() == 0) {
+                return (Node)task;
+            }
+        }
+
+        return null;
     }
 
     /**
