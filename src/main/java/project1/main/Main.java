@@ -2,6 +2,8 @@ package project1.main;
 
 import org.apache.commons.cli.*;
 import org.graphstream.graph.Graph;
+import project1.algorithm.Astar;
+import project1.data.ScheduleNode;
 import project1.util.GraphLoader;
 
 import java.io.IOException;
@@ -82,7 +84,10 @@ public class Main {
 
             Graph graph = graphLoader.readGraph(graphFileName);
 
-            // TODO: Run ALGORITHM to receive schedule.
+            // Run ALGORITHM to receive schedule.
+            Astar newSearch = new Astar(graph, numProcessors);
+            ScheduleNode result = newSearch.aStarSearch();
+            graphLoader.formatOutputGraph(graph,result.getSchedule());
 
             graphLoader.writeGraph(graph, outputName);
         } catch (IOException e) {
