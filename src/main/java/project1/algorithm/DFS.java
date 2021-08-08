@@ -51,6 +51,11 @@ public class DFS {
         return _graph;
     }
 
+    /**
+     * Find the start of the input graph.
+     *
+     * @return task - return null if there is no start node.
+     */
     public Node getStartNode() {
         for (Object task : _graph.nodes().toArray()) {
             if (((Node)task).getInDegree() == 0) {
@@ -90,7 +95,6 @@ public class DFS {
      * @param size - number of tasks in currentSchedule.
      * @return optimalSchedule
      */
-    // Assume that the nodes are sorted.
     public NewScheduleNode[] branchAndBound(NewScheduleNode[] currentSchedule, NewScheduleNode[] optimalSchedule,
                                             int size) {
         // Replace the current optimalSchedule with more optimal schedule when a schedule is finished creating. Return
@@ -142,8 +146,6 @@ public class DFS {
     public List<String> findSchedulableTasks(Graph graph, NewScheduleNode[] schedule) {
         List<String> schedulableTasks = new ArrayList<>();
 
-        // get task graph as input ,remove the node in the graph if it is already done? Maybe make a simple data
-        // structure that keeps track of which nodes are not scheduled yet?
         for (Node task : graph) {
             boolean areParentsComplete = true;
             List<String> scheduledTasks = getScheduledTasks(schedule);
@@ -152,9 +154,6 @@ public class DFS {
             if (!scheduledTasks.contains(task.getId())) {
                 // Check if its parents have already been done.
                 for (Object edge : task.enteringEdges().toArray()) {
-//                    if (!scheduledTasks.contains(task.))
-//                }
-//                        bject edge : task.enteringEdges().toArray()) {
                     if (!scheduledTasks.contains(((Edge)edge).getSourceNode().getId())) {
                         areParentsComplete = false;
                         break;
@@ -180,7 +179,7 @@ public class DFS {
         List<String> scheduledTasks = new ArrayList<>();
 
         for (NewScheduleNode task : schedule) {
-            if (task == null) { // use -1 instead?
+            if (task == null) {
                 break;
             }
 
@@ -190,7 +189,15 @@ public class DFS {
         return scheduledTasks;
     }
 
-    // I can increase the readability of this part by doing List<Node> schedulableTasks?
+    /**
+     * Calculate the startTime for an input task.
+     *
+     * @param schedule - currentScheudle.
+     * @param scheduledTasks - currently scheduled tasks in the solution.
+     * @param task - task that is going to be scheduled.
+     * @param processor - processor number that the task is going to be scheduled on.
+     * @return maxStartTime - valid startTime.
+     */
     public int calculateStartTime(HashMap<String, NewScheduleNode> schedule, List<String> scheduledTasks, String task,
                                   int processor) {
         int tempStartTime;
@@ -204,7 +211,7 @@ public class DFS {
         NewScheduleNode prevTask;
 
         for (String scheduledTask : scheduledTasks) {
-            if (_graph.getNode(scheduledTask).hasEdgeToward(task)) { // Change the code so that we don't have to traverse through _graph? e.g. Include the parents information in NewScheduleNode.
+            if (_graph.getNode(scheduledTask).hasEdgeToward(task)) {
                 prevTask = schedule.get(scheduledTask);
                 if (prevTask.getProcessorNum() == processor) {
                     tempStartTime = prevTask.getEndTime();
@@ -222,6 +229,12 @@ public class DFS {
         return maxStartTime;
     }
 
+    /**
+     * Convert the input array to HashMap so that the schedule can be used to calculate the startTime.
+     *
+     * @param schedule - current schedule array.
+     * @return map
+     */
     public HashMap<String, NewScheduleNode> arrayToHashMap(NewScheduleNode[] schedule) {
         HashMap<String, NewScheduleNode> map = new HashMap<>();
 
