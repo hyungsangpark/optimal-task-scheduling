@@ -149,15 +149,17 @@ public class ScheduleNode {
 
         earliestPossbileStartTime++;
 
+        addNewNodeHelper(pNum,taskNode.getId(),(int)taskNode.getAttribute("Weight"),earliestPossbileStartTime);
+
 //        int transitionTime = (int)graph.getEdge("("+_schedule.get(parentPNum).get(earliestPossbileStartTime-1)+";"+taskNode.getId()+")").getAttribute("Weight");
         // if same pNum then schedule node at first -1 * weight times
-        if(parentPNum == pNum) {
-            addNewNodeHelper(pNum,taskNode.getId(),(int)taskNode.getAttribute("Weight"),earliestPossbileStartTime);
-        }
-        // else find first -1 then add transition time then add node weight times
-        else {
-            addNewNodeHelper(pNum,taskNode.getId(),(int)taskNode.getAttribute("Weight"),earliestPossbileStartTime);
-        }
+//        if(parentPNum == pNum) {
+//            addNewNodeHelper(pNum,taskNode.getId(),(int)taskNode.getAttribute("Weight"),earliestPossbileStartTime);
+//        }
+//        // else find first -1 then add transition time then add node weight times
+//        else {
+//            addNewNodeHelper(pNum,taskNode.getId(),(int)taskNode.getAttribute("Weight"),earliestPossbileStartTime);
+//        }
     }
 
     private void addNewNodeHelper(int pNum, String node, int weight, int earliestStartTime) {
