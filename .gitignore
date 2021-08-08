@@ -26,6 +26,10 @@ out/
 .idea/
 *.iml
 META-INF/
+target/
 
 # Graph Files
 *.dot
+
+# Jar Executable
+*.jar
