@@ -7,6 +7,8 @@ import project1.data.ScheduleNode;
 import project1.util.GraphLoader;
 
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.List;
 
 public class Main {
 
@@ -61,10 +63,12 @@ public class Main {
                     System.err.println("ERROR: Invalid number of cores provided.");
                     System.exit(1);
                 }
+                System.out.println("ERROR: Parallelization is unimplemented yet. The scheduler will run with a single core.");
             }
 
             // Check status of isVisualised based on presence of "-v" parameter.
             isVisualized = cmd.hasOption("v");
+            if (isVisualized) System.out.println("ERROR: Visualisation is unimplemented yet. The scheduler will run without a visualiser.");
 
             // Parse parameter "-o" when available. Output name can be anything hence doesn't require checking.
             if (cmd.hasOption("o")) {
@@ -84,21 +88,30 @@ public class Main {
 
             Graph graph = graphLoader.readGraph(graphFileName);
 
+            // Record the start time.
+            long startTime = System.nanoTime();
+
             // Run ALGORITHM to receive schedule.
             Astar newSearch = new Astar(graph, numProcessors);
             ScheduleNode result = newSearch.aStarSearch();
-            graphLoader.formatOutputGraph(graph,result.getSchedule());
+            graphLoader.formatOutputGraph(graph, result.getSchedule());
+
+            // Record the end time.
+            long endTime = System.nanoTime();
+            long duration = (endTime - startTime)/1000;
 
             graphLoader.writeGraph(graph, outputName);
+
+            // Output results.
+            System.out.println("\nOutput written to file named: " + outputName);
+            System.out.println("Time taken: " + duration + " ms");
+
+            // Find out the finish time.
+            result.getSchedule().sort(Comparator.comparingInt(List::size));
+            System.out.println("Finish time of best schedule: " + result.getSchedule().get(result.getSchedule().size() - 1).size());
         } catch (IOException e) {
             System.err.println("ERROR: Graph file with the provided name is not found.");
             System.exit(1);
         }
-
-        // Output results.
-        System.out.println("\nOutput written to file named: " + outputName);
-        System.out.println("Time taken: " + 0);
-        System.out.println("Finish time of best schedule: " + 0);
     }
-
 }
