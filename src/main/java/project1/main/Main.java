@@ -10,28 +10,42 @@ public class Main {
 
     public static void main(String[] args) {
 
+        // Do a simple check on whether at least two arguments have been inputted.
+        if (args == null || args.length < 2) {
+            System.err.println("ERROR: Invalid number of arguments. " +
+                    "Please provide the mandatory arguments in the following form:  " +
+                    "java -jar scheduler.jar INPUT.dot P [OPTIONS]");
+            System.exit(1);
+        }
+
         // Part 1: Parse arguments.
 
-        // Configurations available in this code, in their default values.
+        // Default value for the number of processors.
+        // Since number of processors MUST be specified, it is deliberately set to 0 so that it would cause an error
+        // with its default form.
+        int numProcessors = 1;
+
+        // Default values for optionals.
         int numParallelCores = 1;
         boolean isVisualized = false;
         String outputName = null;
-        // numProcessors does not have a default value since it must be specified when the program runs.
-        int numProcessors;
 
         // First, parse num of processors, if invalid num of processors, print error and exit program.
         try {
             numProcessors = Integer.parseInt(args[1]);
+            if (numProcessors < 2) {
+                throw new NumberFormatException();
+            }
         } catch (NumberFormatException nfe) {
-            System.err.println("ERROR: Invalid number of processors. Please enter an integer number of processors to schedule the graph on.");
+            System.err.println("ERROR: Invalid number of processors. Please enter an integer number of processors that is greater than 1 to schedule the graph.");
             System.exit(1);
         }
 
         // Parse optional parameters.
         Options parameters = new Options();
         parameters.addOption(new Option("p", true, "number of cores for execution in parallel."));
-        parameters.addOption(new Option("v", false, "visualise the search"));
-        parameters.addOption(new Option("o", true, "set output file name"));
+        parameters.addOption(new Option("v", false, "visualise the search."));
+        parameters.addOption(new Option("o", true, "set output file name, including file extension."));
 
         CommandLineParser parser = new DefaultParser();
         try {
@@ -40,8 +54,7 @@ public class Main {
             // Parse parameter "-p" when available. If parameter present, also check its validity. If not, exit program.
             if (cmd.hasOption("p")) {
                 try {
-                    int numCores = Integer.parseInt(cmd.getOptionValue("p"));
-                    System.out.println("Great!, Num cores = " + numCores);
+                    numParallelCores = Integer.parseInt(cmd.getOptionValue("p"));
                 } catch (NumberFormatException e) {
                     System.err.println("ERROR: Invalid number of cores provided.");
                     System.exit(1);
