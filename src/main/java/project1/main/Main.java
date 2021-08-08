@@ -12,11 +12,14 @@ public class Main {
 
         // Part 1: Parse arguments.
 
+        // Configurations available in this code, in their default values.
         int numParallelCores = 1;
         boolean isVisualized = false;
         String outputName = null;
+        // numProcessors does not have a default value since it must be specified when the program runs.
         int numProcessors;
 
+        // First, parse num of processors, if invalid num of processors, print error and exit program.
         try {
             numProcessors = Integer.parseInt(args[1]);
         } catch (NumberFormatException nfe) {
@@ -24,6 +27,7 @@ public class Main {
             System.exit(1);
         }
 
+        // Parse optional parameters.
         Options parameters = new Options();
         parameters.addOption(new Option("p", true, "number of cores for execution in parallel."));
         parameters.addOption(new Option("v", false, "visualise the search"));
@@ -33,6 +37,7 @@ public class Main {
         try {
             CommandLine cmd = parser.parse(parameters, args);
 
+            // Parse parameter "-p" when available. If parameter present, also check its validity. If not, exit program.
             if (cmd.hasOption("p")) {
                 try {
                     int numCores = Integer.parseInt(cmd.getOptionValue("p"));
@@ -43,8 +48,10 @@ public class Main {
                 }
             }
 
+            // Check status of isVisualised based on presence of "-v" parameter.
             isVisualized = cmd.hasOption("v");
 
+            // Parse parameter "-o" when available. Output name can be anything hence doesn't require checking.
             if (cmd.hasOption("o")) {
                 outputName = cmd.getOptionValue("o");
             }
@@ -52,9 +59,11 @@ public class Main {
             e.printStackTrace();
         }
 
+        // Parse graph file name, and retrieve output name, either default or specified one.
         String graphFileName = args[0];
         outputName = outputName == null ? graphFileName.replace(".dot", "-output.dot") : outputName;
 
+        // Read graph, run algorithm, then write graph.
         try {
             GraphLoader graphLoader = new GraphLoader();
 
@@ -68,6 +77,10 @@ public class Main {
             System.exit(1);
         }
 
+        // Output results.
+        System.out.println("\nOutput written to file named: " + outputName);
+        System.out.println("Time taken: " + 0);
+        System.out.println("Finish time of best schedule: " + 0);
     }
 
 }
