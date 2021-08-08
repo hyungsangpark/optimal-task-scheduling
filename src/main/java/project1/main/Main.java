@@ -25,7 +25,7 @@ public class Main {
 //    public static void run(String[] args,String gFileName) {
 
         args = new String[2];
-        args[0] = "./src/test/graphs/sample.dot";
+        args[0] = "./src/test/graphs/test.dot";
         args[1] = "2";
 
         // Part 1: Parse arguments.

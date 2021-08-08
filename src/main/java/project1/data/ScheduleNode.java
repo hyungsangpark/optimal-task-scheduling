@@ -72,21 +72,21 @@ public class ScheduleNode {
     // Find f(n) = g(n) + h(n)
     public void setTotalFCost(Graph graph) {
         // Bottom levels method
-        TotalFCostCalculator totalFCostCalculator = new TotalFCostCalculator();
-        _totalF = totalFCostCalculator.calculateTotalF(graph,_schedule);
+//        TotalFCostCalculator totalFCostCalculator = new TotalFCostCalculator();
+//        _totalF = totalFCostCalculator.calculateTotalF(graph,_schedule);
 
         // Old method
 
         //Find G cost
-//        int GCost = getCost();
-//
-//        //Find Heuristics Cost
-//        int HCost = 0;
-//        for (String n: tasksLeft(graph)) {
-//            HCost += (int)graph.getNode(n).getAttribute("Weight");
-//        }
-//
-//        _totalF = GCost + HCost;
+        int GCost = getCost();
+
+        //Find Heuristics Cost
+        int HCost = 0;
+        for (String n: tasksLeft(graph)) {
+            HCost += (int)graph.getNode(n).getAttribute("Weight");
+        }
+
+        _totalF = GCost + HCost;
     }
 
     //Find G cost
