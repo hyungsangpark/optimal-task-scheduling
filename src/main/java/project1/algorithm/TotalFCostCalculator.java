@@ -47,10 +47,10 @@ public class TotalFCostCalculator {
                 }
             }
 
-            return largestBtmLvl + (int)(double)node.getAttribute("Weight");
+            return largestBtmLvl + (int)node.getAttribute("Weight");
         }
         else {
-            return (int)(double)node.getAttribute("Weight");
+            return (int)node.getAttribute("Weight");
         }
     }
 }
