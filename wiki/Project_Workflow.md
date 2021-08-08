@@ -29,4 +29,4 @@ Meetings were mainly held in person, having approximately 3 meetings a week. Som
 * Valid A* Implementation – Marcus, Danil
 * Valid DFS Implementation – Dave, Do Hyun
 * Testing – Everyone
-* Report, Wiki - Everyone
+* Report, Wiki – Everyone
