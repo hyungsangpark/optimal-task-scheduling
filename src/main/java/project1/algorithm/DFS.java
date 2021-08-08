@@ -28,6 +28,10 @@ public class DFS {
      *                  optimal schedule that is created by the algorithm.
      */
     public Graph branchAndBoundStart() {
+        if (_graph.nodes().count() == 0) {
+            return _graph;
+        }
+
         NewScheduleNode[] optimalSchedule = findLeftmostSchedule();
         NewScheduleNode[] solution;
         Node rootNode = _graph.getNode(0);
