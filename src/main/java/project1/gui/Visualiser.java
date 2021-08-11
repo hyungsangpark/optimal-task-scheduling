@@ -6,6 +6,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * The Visualiser Class is responsible for loading the GUI.
+ * Will add more comments
+ */
+
 public class Visualiser extends Application {
 
     private Controller controller;
@@ -27,7 +32,10 @@ public class Visualiser extends Application {
 
 
     }
-
+    /**
+     * This method sets up the fields for the Controller class that are to \
+     * be displayed on the GUI.
+     */
     public void ArgsSetup(int numProcessors, int numTasks, String graphName){
         controller.ArgsSetup(numProcessors, numTasks, graphName);
     }
