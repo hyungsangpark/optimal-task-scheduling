@@ -2,6 +2,8 @@ package project1.main;
 
 import org.apache.commons.cli.*;
 import org.graphstream.graph.Graph;
+import project1.IO.GraphReader;
+import project1.IO.GraphWriter;
 import project1.algorithm.Astar;
 import project1.data.ScheduleNode;
 import project1.util.GraphLoader;
@@ -100,7 +102,13 @@ public class Main {
             long endTime = System.nanoTime();
             long duration = (endTime - startTime)/1000;
 
-            graphLoader.writeGraph(graph, outputName);
+//            graphLoader.writeGraph(graph, outputName);
+            GraphWriter graphWriter = new GraphWriter();
+
+            GraphReader graphReader = GraphReader.getInstance();
+            graphReader.loadGraphData(graphFileName);
+
+            graphWriter.outputGraphData(outputName,result.getSchedule());
 
             // Output results.
             System.out.println("\nOutput written to file named: " + outputName);

@@ -6,8 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class GraphReader {
-
-    private String graphId;
+    private String _graphId;
 
     private String[] _nodeIdArr;
     private HashMap<String,Integer> _nodeWeightsMap = new HashMap<>();
@@ -25,14 +24,14 @@ public class GraphReader {
         return _instance;
     }
 
-    public void loadGraphData(String fileName) throws IOException {
-        InputStreamReader isr = new FileReader(fileName);
+    public void loadGraphData(String inputFileName) throws IOException {
+        InputStreamReader isr = new FileReader(inputFileName);
         BufferedReader bfr = new BufferedReader(isr);
 
         ArrayList<String> tempNodeIdList = new ArrayList<>();
 
         String currentLine = bfr.readLine();
-        // TODO: output line
+        _graphId = currentLine.substring(currentLine.indexOf("\"")+1,currentLine.lastIndexOf("\""));
 
         while ((currentLine = bfr.readLine()) != null) {
             if (currentLine.substring(0,1).equalsIgnoreCase("}")) {
@@ -62,7 +61,6 @@ public class GraphReader {
                     addNodeToMap(destinationNode,sourceNode, _parentsOfNodeMap);
                     // add to child map
                     addNodeToMap(sourceNode,destinationNode, _childrenOfNodeMap);
-                    // TODO: output edge
                 }
                 else {
                     // get node id
@@ -71,7 +69,6 @@ public class GraphReader {
                     tempNodeIdList.add(nodeId);
                     // set its weight
                     _nodeWeightsMap.putIfAbsent(nodeId,weightOfEdgeOrNode);
-                    // TODO: output node
                 }
             }
             else {
@@ -82,7 +79,7 @@ public class GraphReader {
         _nodeIdArr = new String[tempNodeIdList.size()];
 
         for (int i = 0; i < tempNodeIdList.size(); i++) {
-            _nodeIdArr[0] = tempNodeIdList.get(i);
+            _nodeIdArr[i] = tempNodeIdList.get(i);
         }
 
         bfr.close();
@@ -101,6 +98,10 @@ public class GraphReader {
             newNodesOfNode = new String[] {node2};
         }
         nodeMap.put(node1,newNodesOfNode);
+    }
+
+    public String getGraphId() {
+        return _graphId;
     }
 
     public String[] getNodeIdArr() {
