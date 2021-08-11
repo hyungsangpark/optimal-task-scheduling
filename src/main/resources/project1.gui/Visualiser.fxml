@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<Pane id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" stylesheets="@Styles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox id="header" alignment="CENTER">
+         <children>
+            <ImageView fitHeight="18.0" fitWidth="18.0" preserveRatio="true" styleClass="white-star">
+               <image>
+                  <Image url="@white%20star.png" />
+               </image>
+               <effect>
+                  <DropShadow height="30.0" offsetX="3.0" offsetY="3.0" radius="14.5" width="30.0">
+                     <color>
+                        <Color opacity="0.27000001072883606" />
+                     </color>
+                  </DropShadow>
+               </effect>
+            </ImageView>
+            <Text id="title" strokeType="OUTSIDE" strokeWidth="0.0" text="SCHEDULER">
+               <HBox.margin>
+                  <Insets left="20.0" right="20.0" />
+               </HBox.margin>
+               <font>
+                  <Font size="24.0" />
+               </font></Text>
+            <ImageView fitHeight="18.0" fitWidth="18.0" preserveRatio="true" styleClass="white-star">
+               <image>
+                  <Image url="@white%20star.png" />
+               </image>
+               <effect>
+                  <DropShadow height="30.0" offsetX="3.0" offsetY="3.0" radius="14.5" width="30.0">
+                     <color>
+                        <Color opacity="0.27000001072883606" />
+                     </color>
+                  </DropShadow>
+               </effect>
+            </ImageView>
+         </children>
+      </HBox>
+      <VBox id="sidebar" alignment="TOP_CENTER" layoutY="50.0">
+         <children>
+            <VBox alignment="CENTER" styleClass="sidebar-value-container">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="sidebar-value-header" text="STATUS">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="status" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="sidebar-value" text="READY" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </VBox>
+            <VBox alignment="CENTER" styleClass="sidebar-value-container">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="sidebar-value-header" text="OPTIMAL TIME">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="optimalTime" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="sidebar-value" text="135" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </VBox>
+            <VBox alignment="CENTER" styleClass="sidebar-value-container">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="sidebar-value-header" text="TIME ELAPSED">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="timeElapsed" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="sidebar-value" text="15:43" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </VBox>
+            <Pane prefHeight="200.0" prefWidth="200.0" />
+            <Button id="start-button" fx:id="startButton" mnemonicParsing="false" text="START" />
+         </children>
+      </VBox>
+      <Line id="border" endX="-100.00001525878906" endY="525.5252075195312" layoutX="239.0" layoutY="73.0" startX="-100.00001525878906" startY="-21.464828491210938" stroke="#2968ab" strokeWidth="3.0">
+         <effect>
+            <DropShadow height="0.0" radius="0.25" width="3.0">
+               <color>
+                  <Color opacity="0.3400000035762787" />
+               </color>
+            </DropShadow>
+         </effect>
+      </Line>
+      <Pane fx:id="graphContainer" layoutX="146.0" layoutY="57.0" prefHeight="537.0" prefWidth="247.0" />
+   </children>
+</Pane>
