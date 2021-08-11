@@ -17,24 +17,24 @@ public class Main {
 
     public static void main(String[] args) {
 
-        File[] files = new File("./src/test/graphs/").listFiles();
+//        File[] files = new File("./src/test/graphs/").listFiles();
+//
+//        for (File file : files) {
+//            if (file.isFile()) {
+//                args = new String[2];
+//                args[0] = file.getPath();
+//                args[1] = "2";
+//
+//                run(args);
+//                System.out.println("Finished file: " + file.getName());
+//            }
+//            GraphReader.getInstance().resetGraphReader();
+//        }
 
-        for (File file : files) {
-            if (file.isFile()) {
-                args = new String[2];
-                args[0] = file.getPath();
-                args[1] = "2";
-
-                run(args);
-                System.out.println("Finished file: " + file.getName());
-            }
-            GraphReader.getInstance().resetGraphReader();
-        }
-
-//        args = new String[2];
-//        args[0] = "./src/test/graphs/Nodes_7_OutTree.dot";
-//        args[1] = "2";
-//        run(args);
+        args = new String[2];
+        args[0] = "./src/test/graphs/15Nodes10Edges.dot";
+        args[1] = "2";
+        run(args);
     }
 
     public static void run(String[] args) {

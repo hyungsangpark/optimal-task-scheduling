@@ -1,6 +1,7 @@
 package project1.data;
 
 import project1.IO.GraphReader;
+import project1.algorithm.TotalFCostCalculator;
 
 import java.util.*;
 
@@ -69,22 +70,22 @@ public class ScheduleNode {
     // Find f(n) = g(n) + h(n)
     public void setTotalFCost() {
         // Bottom levels method
-//        TotalFCostCalculator totalFCostCalculator = new TotalFCostCalculator();
-//        _totalF = totalFCostCalculator.calculateTotalF(graph,_schedule);
+        TotalFCostCalculator totalFCostCalculator = new TotalFCostCalculator();
+        _totalF = totalFCostCalculator.calculateTotalF(_schedule);
 
         // Old method
 
         //Find G cost
-        int GCost = getCost();
-
-        //Find Heuristics Cost
-        GraphReader graphReader = GraphReader.getInstance();
-        int HCost = 0;
-        for (String n : tasksLeft()) {
-            HCost += graphReader.getNodeWeightsMap().get(n);
-        }
-
-        _totalF = GCost + HCost;
+//        int GCost = getCost();
+//
+//        //Find Heuristics Cost
+//        GraphReader graphReader = GraphReader.getInstance();
+//        int HCost = 0;
+//        for (String n : tasksLeft()) {
+//            HCost += graphReader.getNodeWeightsMap().get(n);
+//        }
+//
+//        _totalF = GCost + HCost;
     }
 
     //Find G cost

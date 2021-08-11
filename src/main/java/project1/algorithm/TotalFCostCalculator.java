@@ -3,6 +3,7 @@ package project1.algorithm;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import project1.IO.GraphReader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public class TotalFCostCalculator {
 
-    public int calculateTotalF(Graph graph, List<List<String>> schedule) {
+    public int calculateTotalF(List<List<String>> schedule) {
         int totalCost = 0;
 
         for (List<String> p:schedule) {
@@ -18,7 +19,7 @@ public class TotalFCostCalculator {
                 String node = p.get(i);
 
                 if (!node.equals("-1") && i > 0 && !node.equals(p.get(i-1))) {
-                    int bottomLevelCost = bottomLevelCost(graph,node) + i;
+                    int bottomLevelCost = bottomLevelCost(node) + i;
                     totalCost = Math.max(bottomLevelCost,totalCost);
                 }
             }
@@ -27,30 +28,25 @@ public class TotalFCostCalculator {
         return totalCost;
     }
 
-    private int bottomLevelCost(Graph graph, String nodeId) {
-        Node node = graph.getNode(nodeId);
+    private int bottomLevelCost(String nodeId) {
+        GraphReader graphReader = GraphReader.getInstance();
+        String[] childrenOfNode = graphReader.getChildrenOfNodeMap().get(nodeId);
 
-        if (node.getOutDegree() != 0) {
+        if (childrenOfNode != null) {
             int largestBtmLvl = 0;
             int currentBtmLvl = 0;
 
-            List<Node> children = new ArrayList<>();
-
-            for(int i = 0; i < node.getOutDegree(); i++) {
-                children.add(node.getLeavingEdge(i).getTargetNode());
-            }
-
-            for (Node child : children) {
-                currentBtmLvl = bottomLevelCost(graph, child.getId());
+            for (String child : childrenOfNode) {
+                currentBtmLvl = bottomLevelCost(child);
                 if (currentBtmLvl > largestBtmLvl) {
                     largestBtmLvl = currentBtmLvl;
                 }
             }
 
-            return largestBtmLvl + (int)node.getAttribute("Weight");
+            return largestBtmLvl + graphReader.getNodeWeightsMap().get(nodeId);
         }
         else {
-            return (int)node.getAttribute("Weight");
+            return graphReader.getNodeWeightsMap().get(nodeId);
         }
     }
 }
