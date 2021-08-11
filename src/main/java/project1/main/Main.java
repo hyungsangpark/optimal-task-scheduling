@@ -8,6 +8,7 @@ import project1.algorithm.Astar;
 import project1.data.ScheduleNode;
 import project1.util.GraphLoader;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
@@ -15,6 +16,28 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
+
+//        File[] files = new File("./src/test/graphs/").listFiles();
+//
+//        for (File file : files) {
+//            if (file.isFile()) {
+//                args = new String[2];
+//                args[0] = file.getPath();
+//                args[1] = "2";
+//
+//                run(args);
+//                System.out.println("Finished file: " + file.getName());
+//            }
+//            GraphReader.getInstance().resetGraphReader();
+//        }
+
+        args = new String[2];
+        args[0] = "./src/test/graphs/15Nodes10Edges.dot";
+        args[1] = "2";
+        run(args);
+    }
+
+    public static void run(String[] args) {
 
         // Do a simple check on whether at least two arguments have been inputted.
         if (args == null || args.length < 2) {
@@ -86,31 +109,22 @@ public class Main {
 
         // Read graph, run algorithm, then write graph.
         try {
-            GraphLoader graphLoader = new GraphLoader();
-
-            Graph graph = graphLoader.readGraph(graphFileName);
+            GraphReader graphReader = GraphReader.getInstance();
+            graphReader.loadGraphData(graphFileName);
 
             // Record the start time.
             long startTime = System.nanoTime();
 
             // Run ALGORITHM to receive schedule.
-            Astar newSearch = new Astar(graph, numProcessors);
+            Astar newSearch = new Astar(numProcessors);
             ScheduleNode result = newSearch.aStarSearch();
-            graphLoader.formatOutputGraph(graph, result.getSchedule());
 
             // Record the end time.
             long endTime = System.nanoTime();
             long duration = (endTime - startTime)/1000;
 
-            graphLoader.writeGraph(graph, outputName);
-
-            // New way of doing it
-//            GraphWriter graphWriter = new GraphWriter();
-//
-//            GraphReader graphReader = GraphReader.getInstance();
-//            graphReader.loadGraphData(graphFileName);
-//
-//            graphWriter.outputGraphData(outputName,result.getSchedule());
+            GraphWriter graphWriter = new GraphWriter();
+            graphWriter.outputGraphData(outputName.replace("graphs","actualOutputs"),result.getSchedule());
 
             // Output results.
             System.out.println("\nOutput written to file named: " + outputName);

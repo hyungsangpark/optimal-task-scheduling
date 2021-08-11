@@ -24,6 +24,12 @@ public class GraphReader {
         return _instance;
     }
 
+    // For testing purpose
+    // Resets the singleton
+    public void resetGraphReader() {
+        _instance = new GraphReader();
+    }
+
     public void loadGraphData(String inputFileName) throws IOException {
         InputStreamReader isr = new FileReader(inputFileName);
         BufferedReader bfr = new BufferedReader(isr);
@@ -34,6 +40,10 @@ public class GraphReader {
         _graphId = currentLine.substring(currentLine.indexOf("\"")+1,currentLine.lastIndexOf("\""));
 
         while ((currentLine = bfr.readLine()) != null) {
+            if (currentLine.isEmpty()) {
+                continue;
+            }
+
             if (currentLine.substring(0,1).equalsIgnoreCase("}")) {
                 break;
             }
@@ -43,18 +53,18 @@ public class GraphReader {
                 // get the weight of edge or node as it uses the same method
                 int weightOfEdgeOrNode = Integer.parseInt(currentLine
                         .substring(currentLine.indexOf("=") + 1, currentLine.indexOf("]"))
-                        .replaceAll(" ", ""));
+                        .replaceAll("\\s",""));
 
                 // check for edge
                 if (currentLine.contains("->")) {
                     // get the source node
                     String sourceNode = currentLine
                             .substring(0,currentLine.indexOf("-"))
-                            .replaceAll(" ","");
+                            .replaceAll("\\s","");
                     // get the destination node
                     String destinationNode = currentLine
                             .substring(currentLine.indexOf(">")+1,currentLine.indexOf("["))
-                            .replaceAll(" ","");
+                            .replaceAll("\\s","");
                     // add weight to map
                     _edgeWeightMap.putIfAbsent(sourceNode+"->"+destinationNode,weightOfEdgeOrNode);
                     // add to parent map
@@ -64,7 +74,7 @@ public class GraphReader {
                 }
                 else {
                     // get node id
-                    String nodeId = currentLine.substring(0,currentLine.indexOf("[")).replaceAll(" ","");
+                    String nodeId = currentLine.substring(0,currentLine.indexOf("[")).replaceAll("\\s","");
                     // add it to the node id list
                     tempNodeIdList.add(nodeId);
                     // set its weight

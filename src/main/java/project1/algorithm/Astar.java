@@ -8,15 +8,11 @@ import java.util.*;
 
 public class Astar {
 
-    public Graph _taskGraph;
     public int _processors;
-
-    TotalFCostCalculator totalFCostCalculator;
 
     public PriorityQueue<ScheduleNode> _openList = new PriorityQueue<>(new PriorityQueueComparator());
 
-    public Astar(Graph taskGraph, int processors) {
-        _taskGraph = taskGraph;
+    public Astar(int processors) {
         _processors = processors;
     }
 
@@ -49,13 +45,13 @@ public class Astar {
             ScheduleNode chosenSchedule = _openList.peek();
 
             // if n is target:
-            if (chosenSchedule.isTarget(_taskGraph)) {
+            if (chosenSchedule.isTarget()) {
                 // return solution
                 return chosenSchedule;
             }
 
             // expand chosenSchedule
-            List<ScheduleNode> childrenOfChosen = chosenSchedule.expandTree(_taskGraph);
+            List<ScheduleNode> childrenOfChosen = chosenSchedule.expandTree();
 
             // for every m which is a neighbor of n:
             for (ScheduleNode sn : childrenOfChosen) {
