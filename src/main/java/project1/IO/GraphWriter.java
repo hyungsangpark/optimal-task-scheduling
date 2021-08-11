@@ -64,7 +64,7 @@ public class GraphWriter {
 //            // Print edges
             for (String edge : edgeWeightMap.keySet()) {
                 String sourceNodeId = edge.substring(0, edge.indexOf("-"));
-                String destinationNodeId = edge.substring(edge.indexOf("-") + 1);
+                String destinationNodeId = edge.substring(edge.indexOf(">") + 1);
 
                 graphWriter.println("    " +
                         sourceNodeId +

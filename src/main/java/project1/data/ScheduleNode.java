@@ -119,7 +119,6 @@ public class ScheduleNode {
 
         // else check last parent to complete
         int earliestPossbileStartTime = 0;
-        int parentPNum = 0;
 
         for (int i = 0; i < _schedule.size(); i++) {
             int pTotalTime = _schedule.get(i).size();
@@ -136,7 +135,6 @@ public class ScheduleNode {
 
                     if (totalC > earliestPossbileStartTime) {
                         earliestPossbileStartTime = totalC;
-                        parentPNum = i;
                     }
                 }
             }
@@ -219,10 +217,10 @@ public class ScheduleNode {
                     }
 
                 }
-            }
 
-            if (parentsComplete) {
-                schedulableNodes.add(nodeId);
+                if (parentsComplete) {
+                    schedulableNodes.add(nodeId);
+                }
             }
         }
 

@@ -1,4 +1,4 @@
-digraph {
+digraph "Nodes 10 Random" {
 	0	 [Weight=6];
 	3	 [Weight=10];
 	0 -> 3	 [Weight=34];

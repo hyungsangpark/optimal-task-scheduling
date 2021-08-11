@@ -10,8 +10,6 @@ public class Astar {
 
     public int _processors;
 
-    TotalFCostCalculator totalFCostCalculator;
-
     public PriorityQueue<ScheduleNode> _openList = new PriorityQueue<>(new PriorityQueueComparator());
 
     public Astar(int processors) {
