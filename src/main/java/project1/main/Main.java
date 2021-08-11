@@ -86,31 +86,22 @@ public class Main {
 
         // Read graph, run algorithm, then write graph.
         try {
-            GraphLoader graphLoader = new GraphLoader();
-
-            Graph graph = graphLoader.readGraph(graphFileName);
+            GraphReader graphReader = GraphReader.getInstance();
+            graphReader.loadGraphData(graphFileName);
 
             // Record the start time.
             long startTime = System.nanoTime();
 
             // Run ALGORITHM to receive schedule.
-            Astar newSearch = new Astar(graph, numProcessors);
+            Astar newSearch = new Astar(numProcessors);
             ScheduleNode result = newSearch.aStarSearch();
-            graphLoader.formatOutputGraph(graph, result.getSchedule());
 
             // Record the end time.
             long endTime = System.nanoTime();
             long duration = (endTime - startTime)/1000;
 
-            graphLoader.writeGraph(graph, outputName);
-
-            // New way of doing it
-//            GraphWriter graphWriter = new GraphWriter();
-//
-//            GraphReader graphReader = GraphReader.getInstance();
-//            graphReader.loadGraphData(graphFileName);
-//
-//            graphWriter.outputGraphData(outputName,result.getSchedule());
+            GraphWriter graphWriter = new GraphWriter();
+            graphWriter.outputGraphData(outputName,result.getSchedule());
 
             // Output results.
             System.out.println("\nOutput written to file named: " + outputName);
