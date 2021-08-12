@@ -5,11 +5,13 @@ import org.graphstream.graph.Graph;
 import project1.IO.GraphReader;
 import project1.IO.GraphWriter;
 import project1.algorithm.Astar;
+import project1.algorithm.TotalFCostCalculator;
 import project1.data.ScheduleNode;
 import project1.util.GraphLoader;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -116,6 +118,13 @@ public class Main {
             long startTime = System.nanoTime();
 
             // Run ALGORITHM to receive schedule.
+
+//            ArrayList<Integer> test = new ArrayList<>();
+//            for (String nodeId : graphReader.getNodeIdArr()) {
+//                test.add(TotalFCostCalculator.bottomLevelCost(nodeId));
+//            }
+//            System.out.println(test);
+
             Astar newSearch = new Astar(numProcessors);
             ScheduleNode result = newSearch.aStarSearch();
 

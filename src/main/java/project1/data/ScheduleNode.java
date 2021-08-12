@@ -58,7 +58,7 @@ public class ScheduleNode {
                 newSchedules.add(newChildSchedule);
 
                 // if schedule is empty and only 1 scheduleable node then only do it once
-                if (isSchedEmpty && scheduleableNodes.size() == 1) {
+                if (isSchedEmpty) {
                     break;
                 }
             }
@@ -70,8 +70,7 @@ public class ScheduleNode {
     // Find f(n) = g(n) + h(n)
     public void setTotalFCost() {
         // Bottom levels method
-        TotalFCostCalculator totalFCostCalculator = new TotalFCostCalculator();
-        _totalF = totalFCostCalculator.calculateTotalF(_schedule);
+        _totalF = TotalFCostCalculator.calculateTotalF(_schedule);
 
         // Old method
 

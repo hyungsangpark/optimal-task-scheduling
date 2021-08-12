@@ -54,9 +54,7 @@ public class Astar {
             List<ScheduleNode> childrenOfChosen = chosenSchedule.expandTree();
 
             // for every m which is a neighbor of n:
-            for (ScheduleNode sn : childrenOfChosen) {
-                _openList.add(sn);
-            }
+            _openList.addAll(childrenOfChosen);
 
             _openList.remove(chosenSchedule);
         }
