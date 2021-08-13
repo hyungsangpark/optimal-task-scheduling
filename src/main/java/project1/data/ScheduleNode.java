@@ -7,16 +7,16 @@ import java.util.*;
 
 public class ScheduleNode {
 
-    private List<List<String>> _schedule;
+    private List<String>[] _schedule;
     private int _totalF;
     private boolean isSchedEmpty;
 
     //For root schedule node(node with no tasks assigned)
     public ScheduleNode(int _processors) {
-        _schedule = new ArrayList<>();
+        _schedule = new ArrayList[_processors];
 
         for (int i = 0; i < _processors; i++) {
-            _schedule.add(new ArrayList<>());
+            _schedule[i] = new ArrayList<>();
         }
 
         _totalF = 0;
@@ -25,13 +25,13 @@ public class ScheduleNode {
     }
 
     //For normal schedule nodes
-    public ScheduleNode(List<List<String>> schedule) {
-        _schedule = new ArrayList<>();
+    public ScheduleNode(List<String>[] schedule) {
+        _schedule = new ArrayList[schedule.length];
 
-        for (int i = 0; i < schedule.size(); i++) {
-            _schedule.add(new ArrayList<>());
-            for (int j = 0; j < schedule.get(i).size(); j++) {
-                _schedule.get(i).add(schedule.get(i).get(j));
+        for (int i = 0; i < schedule.length; i++) {
+            _schedule[i] = new ArrayList<>();
+            for (int j = 0; j < schedule[i].size(); j++) {
+                _schedule[i].add(schedule[i].get(j));
             }
         }
 
@@ -47,7 +47,7 @@ public class ScheduleNode {
         // go over each node that needs to be scheduled
         for (String n : scheduleableNodes) {
             // go over all the processors
-            for (int i = 0; i < _schedule.size(); i++) {
+            for (int i = 0; i < _schedule.length; i++) {
                 ScheduleNode newChildSchedule = new ScheduleNode(_schedule);
 
                 // add new node task depending on whether transition cost is required
@@ -91,8 +91,8 @@ public class ScheduleNode {
     private int getCost() {
         int tempCost = 0;
 
-        for (int i = 0; i < _schedule.size(); i++) {
-            tempCost = Math.max(tempCost, _schedule.get(i).size());
+        for (int i = 0; i < _schedule.length; i++) {
+            tempCost = Math.max(tempCost, _schedule[i].size());
         }
 
         return tempCost;
@@ -120,11 +120,11 @@ public class ScheduleNode {
         // else check last parent to complete
         int earliestPossbileStartTime = 0;
 
-        for (int i = 0; i < _schedule.size(); i++) {
-            int pTotalTime = _schedule.get(i).size();
+        for (int i = 0; i < _schedule.length; i++) {
+            int pTotalTime = _schedule[i].size();
 
             for (int j = 0; j < pTotalTime; j++) {
-                String parent = getParentFromArr(parentsOfNodeToAdd, _schedule.get(i).get(j));
+                String parent = getParentFromArr(parentsOfNodeToAdd, _schedule[i].get(j));
                 if (parent != null) {
                     int totalC = j;
 
@@ -156,7 +156,7 @@ public class ScheduleNode {
     }
 
     private void addNewNodeHelper(int pNum, String nodeId, int earliestStartTime) {
-        List<String> processor = _schedule.get(pNum);
+        List<String> processor = _schedule[pNum];
         GraphReader graphReader = GraphReader.getInstance();
         int weight = graphReader.getNodeWeightsMap().get(nodeId);
 
@@ -253,7 +253,7 @@ public class ScheduleNode {
     }
 
     // Getter for _schedule
-    public List<List<String>> getSchedule() {
+    public List<String>[] getSchedule() {
         return _schedule;
     }
 

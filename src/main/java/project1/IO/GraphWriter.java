@@ -7,12 +7,12 @@ import java.util.List;
 
 public class GraphWriter {
 
-    private HashMap<String, int[]> formatOutputGraph(List<List<String>> schedule) {
+    private HashMap<String, int[]> formatOutputGraph(List<String>[] schedule) {
         HashMap<String, int[]> nodeStartAndPNumMap = new HashMap<>();
 
-        for (int i = 0; i < schedule.size(); i++) {
-            for (int j = 0; j < schedule.get(i).size(); j++) {
-                String value = schedule.get(i).get(j);
+        for (int i = 0; i < schedule.length; i++) {
+            for (int j = 0; j < schedule[i].size(); j++) {
+                String value = schedule[i].get(j);
                 if (!value.equals("-1")) {
                     if (!nodeStartAndPNumMap.containsKey(value)) {
                         int[] startPnumArr = new int[2];
@@ -27,7 +27,7 @@ public class GraphWriter {
         return nodeStartAndPNumMap;
     }
 
-    public void outputGraphData(String outputFileName, List<List<String>> schedule) {
+    public void outputGraphData(String outputFileName, List<String>[] schedule) {
         GraphReader graphReader = GraphReader.getInstance();
 
         String graphId = graphReader.getGraphId();

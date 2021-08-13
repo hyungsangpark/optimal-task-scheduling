@@ -12,7 +12,7 @@ import java.util.List;
 public class TotalFCostCalculator {
     private static HashMap<String,Integer> test = new HashMap<>();
 
-    public static int calculateTotalF(List<List<String>> schedule) {
+    public static int calculateTotalF(List<String>[] schedule) {
         int totalCost = 0;
 
         for (List<String> p:schedule) {

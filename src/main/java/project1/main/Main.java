@@ -34,7 +34,7 @@ public class Main {
 //        }
 
         args = new String[2];
-        args[0] = "./src/test/graphs/15Nodes10Edges.dot";
+        args[0] = "./src/test/graphs/sample.dot";
         args[1] = "2";
         run(args);
     }
@@ -140,8 +140,8 @@ public class Main {
             System.out.println("Time taken: " + duration + " ms");
 
             // Find out the finish time.
-            result.getSchedule().sort(Comparator.comparingInt(List::size));
-            System.out.println("Finish time of best schedule: " + result.getSchedule().get(result.getSchedule().size() - 1).size());
+//            result.getSchedule().sort(Comparator.comparingInt(List::size));
+//            System.out.println("Finish time of best schedule: " + result.getSchedule()[result.getSchedule().length - 1].size());
         } catch (IOException e) {
             System.err.println("ERROR: Graph file with the provided name is not found.");
             System.exit(1);
