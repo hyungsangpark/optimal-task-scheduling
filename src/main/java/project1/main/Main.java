@@ -113,7 +113,7 @@ public class Main {
         try {
             GraphReader graphReader = GraphReader.getInstance();
             graphReader.loadGraphData(graphFileName);
-            //graphReader.addDummies();
+            graphReader.addDummies();
 
             // Record the start time.
             long startTime = System.nanoTime();

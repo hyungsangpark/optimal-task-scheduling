@@ -108,30 +108,35 @@ public class GraphReader {
         nodeMap.put(node1,newNodesOfNode);
     }
 
-//    public void addDummies() {
-//        Set<String> nodeSet = getNodeWeightsMap().keySet();
-//        Set<String> tempSet = getEdgeWeightMap().keySet();
-//        Set<String> childSet = new HashSet<>();
-//        Set<String> parentSet = new HashSet<>();
-//        Set<String> copyNodeSet = nodeSet;
-//        // Find all nodes with incoming edge(has parents)
-//        // Find all nodes with outgoing edge(has children)
-//        for (String s : tempSet) {
-//            String child = s.substring(s.indexOf(">") + 1);
-//            String parent = s.substring(0,s.indexOf("-"));
-//            childSet.add(child);
-//            parentSet.add(parent);
-//        }
-//
-//        // Remove duplicate nodes to find nodes with no parents(starting tasks)
-//        //nodeSet.removeAll(childSet);
-//
-//        //Find ending nodes
-//        //copyNodeSet.removeAll(parentSet);
-//
-//        System.out.println(nodeSet);
-//        System.out.println(copyNodeSet);
-//    }
+    public void addDummies() {
+        Set<String> nodeSet = getNodeWeightsMap().keySet();
+        Set<String> finalSet = new HashSet<>();
+        Set<String> finalSet2 = new HashSet<>();
+        for (String s : nodeSet) {
+            finalSet.add(s);
+            finalSet2.add(s);
+        }
+        Set<String> tempSet = getEdgeWeightMap().keySet();
+        Set<String> childSet = new HashSet<>();
+        Set<String> parentSet = new HashSet<>();
+
+        // Find all nodes with incoming edge(has parents) and all nodes with outgoing edge(has children)
+        for (String s : tempSet) {
+            String child = s.substring(s.indexOf(">") + 1);
+            String parent = s.substring(0,s.indexOf("-"));
+            childSet.add(child);
+            parentSet.add(parent);
+        }
+
+        // Remove duplicate nodes to find nodes with no parents(starting tasks)
+        finalSet.removeAll(childSet);
+
+        //Find ending nodes
+        finalSet2.removeAll(parentSet);
+
+        System.out.println(finalSet);
+        System.out.println(finalSet2);
+    }
 
     public String getGraphId() {
         return _graphId;
