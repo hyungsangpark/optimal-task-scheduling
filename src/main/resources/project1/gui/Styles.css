@@ -28,6 +28,10 @@
     -fx-background-color: rgba(39, 92, 161, 1.0);
 }
 
+#start-button:hover {
+    -fx-background-color: rgba(31, 73, 128, 1.0);
+}
+
 .white-star {
     -fx-pref-width: 18px;
     -fx-pref-height: 18px;
