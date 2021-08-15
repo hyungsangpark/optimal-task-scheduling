@@ -134,8 +134,15 @@ public class GraphReader {
         //Find ending nodes
         finalSet2.removeAll(parentSet);
 
-        System.out.println(finalSet);
-        System.out.println(finalSet2);
+        String start = "start";
+        String end = "end";
+
+        for (String s : finalSet) {
+            _edgeWeightMap.putIfAbsent(start + "->" + s, 0);
+        }
+        for (String s : finalSet2) {
+            _edgeWeightMap.putIfAbsent(s + "->" + end, 0);
+        }
     }
 
     public String getGraphId() {
