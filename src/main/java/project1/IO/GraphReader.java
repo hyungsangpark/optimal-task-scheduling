@@ -1,9 +1,7 @@
 package project1.IO;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
 public class GraphReader {
     private String _graphId;
@@ -109,6 +107,31 @@ public class GraphReader {
         }
         nodeMap.put(node1,newNodesOfNode);
     }
+
+//    public void addDummies() {
+//        Set<String> nodeSet = getNodeWeightsMap().keySet();
+//        Set<String> tempSet = getEdgeWeightMap().keySet();
+//        Set<String> childSet = new HashSet<>();
+//        Set<String> parentSet = new HashSet<>();
+//        Set<String> copyNodeSet = nodeSet;
+//        // Find all nodes with incoming edge(has parents)
+//        // Find all nodes with outgoing edge(has children)
+//        for (String s : tempSet) {
+//            String child = s.substring(s.indexOf(">") + 1);
+//            String parent = s.substring(0,s.indexOf("-"));
+//            childSet.add(child);
+//            parentSet.add(parent);
+//        }
+//
+//        // Remove duplicate nodes to find nodes with no parents(starting tasks)
+//        //nodeSet.removeAll(childSet);
+//
+//        //Find ending nodes
+//        //copyNodeSet.removeAll(parentSet);
+//
+//        System.out.println(nodeSet);
+//        System.out.println(copyNodeSet);
+//    }
 
     public String getGraphId() {
         return _graphId;
