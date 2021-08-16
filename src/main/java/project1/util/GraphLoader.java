@@ -1,11 +1,13 @@
 package project1.util;
 
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceDOT;
 
 import java.io.*;
+import java.util.List;
 
 /**
  * Loads and unloads graph from .dot file.
@@ -47,6 +49,21 @@ public class GraphLoader {
         });
 
         return graph;
+    }
+
+    // keep this
+    public void formatOutputGraph(Graph graph, List<List<String>> schedule) {
+        for (int i = 0; i < schedule.size(); i++) {
+            for (int j = 0; j < schedule.get(i).size(); j++) {
+                if (!schedule.get(i).get(j).equals("-1")) {
+                    Node node = graph.getNode(schedule.get(i).get(j));
+                    if(!node.hasAttribute("Start")) {
+                        node.setAttribute("Start",j);
+                        node.setAttribute("Processor",i+1);
+                    }
+                }
+            }
+        }
     }
 
     /**

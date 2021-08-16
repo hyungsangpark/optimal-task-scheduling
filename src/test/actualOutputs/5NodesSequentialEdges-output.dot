@@ -1,0 +1,11 @@
+digraph "5NodesSequentialEdges" {
+    0 [Weight=20,Start=0,Processor=1];
+    1 [Weight=30,Start=20,Processor=1];
+    2 [Weight=32,Start=50,Processor=1];
+    3 [Weight=46,Start=82,Processor=1];
+    4 [Weight=26,Start=128,Processor=1];
+    0 -> 1 [Weight=32];
+    1 -> 2 [Weight=12];
+    2 -> 3 [Weight=56];
+    3 -> 4 [Weight=15];
+}
