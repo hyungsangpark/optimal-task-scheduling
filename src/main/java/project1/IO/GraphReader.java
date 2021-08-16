@@ -128,20 +128,30 @@ public class GraphReader {
             parentSet.add(parent);
         }
 
-        // Remove duplicate nodes to find nodes with no parents(starting tasks)
+        // Find starting nodes
         finalSet.removeAll(childSet);
 
-        //Find ending nodes
+        // Find ending nodes
         finalSet2.removeAll(parentSet);
 
         String start = "start";
         String end = "end";
+        _nodeWeightsMap.putIfAbsent(start,0);
+        _nodeWeightsMap.putIfAbsent(end,0);
+//        int length = _nodeIdArr.length;
+//        _nodeIdArr = Arrays.copyOf(_nodeIdArr, length + 2);
+//        _nodeIdArr[length] = start;
+//        _nodeIdArr[length+1] = end;
 
         for (String s : finalSet) {
             _edgeWeightMap.putIfAbsent(start + "->" + s, 0);
+//            addNodeToMap(s,start, _parentsOfNodeMap);
+//            addNodeToMap(start,s, _childrenOfNodeMap);
         }
         for (String s : finalSet2) {
             _edgeWeightMap.putIfAbsent(s + "->" + end, 0);
+//            addNodeToMap(end,s, _parentsOfNodeMap);
+//            addNodeToMap(s,end, _childrenOfNodeMap);
         }
     }
 
