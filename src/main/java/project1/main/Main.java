@@ -34,8 +34,8 @@ public class Main {
 //        }
 
         args = new String[2];
-        args[0] = "./src/test/graphs/15Nodes10Edges.dot";
-        args[1] = "2";
+        args[0] = "./src/test/graphs/test.dot";
+        args[1] = "3";
         run(args);
     }
 

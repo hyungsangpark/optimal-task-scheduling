@@ -1,70 +1,88 @@
 package project1.algorithm;
 
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
 import project1.IO.GraphReader;
+import project1.data.ScheduleNode;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class TotalFCostCalculator {
-    private static HashMap<String,Integer> test = new HashMap<>();
+    private HashMap<String, Integer> bottomLevels = new HashMap<>();
 
-    public static int calculateTotalF(List<List<String>> schedule) {
+    public TotalFCostCalculator() {
+        // Initialize map with all zeros
+        for (String node : GraphReader.getInstance().getNodeIdArr()) {
+            bottomLevels.put(node, 0);
+        }
+    }
+
+    public int calculateTotalF(ScheduleNode sn) {
         int totalCost = 0;
 
+        List<List<String>> schedule = sn.getSchedule();
+
         for (List<String> p:schedule) {
-            for (int i = p.size()-1; i >= 0; i--) {
+            for (int i = 0; i < p.size(); i++) {
                 String node = p.get(i);
-                if (i - 1 > 0 && !p.get(i-1).equals(node) || i - 1 < 0 && !node.equals("-1")) {
+                if (!node.equals("-1") && i > 0 && !node.equals(p.get(i-1))) {
                     int bottomLevelCost = bottomLevelCost(node) + i;
-                    if (bottomLevelCost > totalCost) {
-                        totalCost = bottomLevelCost;
-                    }
-                    break;
+                    totalCost = Math.max(bottomLevelCost,totalCost);
                 }
-//                if (!node.equals("-1") && i > 0 && !node.equals(p.get(i-1)) || i == 0 && !node.equals("-1")) {
-//                    int bottomLevelCost = bottomLevelCost(node) + i;
-//                    if (bottomLevelCost > totalCost) {
-//                        totalCost = bottomLevelCost;
-//                    }
-//                }
             }
         }
 
-        return totalCost;
+        int maxDRT = findDTROfScheduleNode(sn);
+
+        return Math.max(totalCost,maxDRT);
     }
 
-    private static int bottomLevelCost(String nodeId) {
+    private int bottomLevelCost(String nodeId) {
+        GraphReader graphReader = GraphReader.getInstance();
+        String[] childrenOfNode = graphReader.getChildrenOfNodeMap().get(nodeId);
 
-        if (test.containsKey(nodeId)) {
-            return test.get(nodeId);
-        }
-
-        if (GraphReader.getInstance().getChildrenOfNodeMap().get(nodeId) != null) {
+        if (childrenOfNode != null) {
             int largestBtmLvl = 0;
-            int currentBtmLvl;
+            int currentBtmLvl = 0;
 
-            for (String child : GraphReader.getInstance().getChildrenOfNodeMap().get(nodeId)) {
-                if (test.containsKey(child)) {
-                    currentBtmLvl = test.get(child);
-                }
-                else {
-                    currentBtmLvl = bottomLevelCost(child);
-                    test.put(child,currentBtmLvl);
-                }
-
+            for (String child : childrenOfNode) {
+                currentBtmLvl = bottomLevelCost(child);
+                bottomLevels.put(child, currentBtmLvl);
                 if (currentBtmLvl > largestBtmLvl) {
                     largestBtmLvl = currentBtmLvl;
                 }
             }
 
-            return largestBtmLvl + GraphReader.getInstance().getNodeWeightsMap().get(nodeId);
+            bottomLevels.put(nodeId, currentBtmLvl + graphReader.getNodeWeightsMap().get(nodeId));
+            return largestBtmLvl + graphReader.getNodeWeightsMap().get(nodeId);
         }
         else {
-            return GraphReader.getInstance().getNodeWeightsMap().get(nodeId);
+            return graphReader.getNodeWeightsMap().get(nodeId);
         }
     }
+
+    private int findDTROfScheduleNode(ScheduleNode sn) {
+        List<String> nodesToSchedule = sn.getTaskToSchedule();
+
+        int btmLvl = 0;
+        int maxCurDRT = 0;
+
+        for (int j = 0; j < nodesToSchedule.size(); j++) {
+            String currNode = nodesToSchedule.get(j);
+            int minStartTime = Integer.MAX_VALUE;
+
+            for (int i = 0; i < sn.getSchedule().size(); i++) {
+                int dataReady = sn.findEarliestStartTime(i, currNode, GraphReader.getInstance().getParentsOfNodeMap().get(currNode));
+
+                if (minStartTime > dataReady) {
+                    btmLvl = bottomLevels.get(currNode);
+                    minStartTime = dataReady;
+                }
+            }
+
+            maxCurDRT = Math.max(btmLvl + minStartTime, maxCurDRT);
+        }
+
+        return maxCurDRT;
+    }
+
 }

@@ -55,6 +55,7 @@ public class Astar {
 
             // for every m which is a neighbor of n:
             _openList.addAll(childrenOfChosen);
+            System.out.println(_openList.size());
 
             _openList.remove(chosenSchedule);
         }

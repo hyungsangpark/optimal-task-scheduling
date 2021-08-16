@@ -70,7 +70,8 @@ public class ScheduleNode {
     // Find f(n) = g(n) + h(n)
     public void setTotalFCost() {
         // Bottom levels method
-        _totalF = TotalFCostCalculator.calculateTotalF(_schedule);
+        TotalFCostCalculator totalFCostCalculator = new TotalFCostCalculator();
+        _totalF = totalFCostCalculator.calculateTotalF(this);
 
         // Old method
 
@@ -106,7 +107,6 @@ public class ScheduleNode {
     // Scheduler to schedule tasks into _schedule
     private void addNewNodeTask(int pNum, String nodeId) {
 
-        // Get the nodes parents
         GraphReader graphReader = GraphReader.getInstance();
         HashMap<String,String[]> parentsOfNodeMap = graphReader.getParentsOfNodeMap();
         String[] parentsOfNodeToAdd = parentsOfNodeMap.get(nodeId);
@@ -117,8 +117,19 @@ public class ScheduleNode {
             return;
         }
 
+        addNewNodeHelper(pNum, nodeId,findEarliestStartTime(pNum,nodeId,parentsOfNodeToAdd));
+    }
+
+    public int findEarliestStartTime(int pNum, String nodeId, String[] parentsOfNodeToAdd) {
+        // Get the nodes parents
+        GraphReader graphReader = GraphReader.getInstance();
+
+        if (graphReader.getParentsOfNodeMap().get(nodeId) == null) {
+            return _schedule.get(pNum).size();
+        }
+
         // else check last parent to complete
-        int earliestPossbileStartTime = 0;
+        int earliestPossibleStartTime = 0;
 
         for (int i = 0; i < _schedule.size(); i++) {
             int pTotalTime = _schedule.get(i).size();
@@ -133,16 +144,15 @@ public class ScheduleNode {
                         totalC += transitionTime;
                     }
 
-                    if (totalC > earliestPossbileStartTime) {
-                        earliestPossbileStartTime = totalC;
+                    if (totalC > earliestPossibleStartTime) {
+                        earliestPossibleStartTime = totalC;
                     }
                 }
             }
         }
 
-        earliestPossbileStartTime++;
-
-        addNewNodeHelper(pNum, nodeId,earliestPossbileStartTime);
+        earliestPossibleStartTime++;
+        return earliestPossibleStartTime;
     }
 
     private String getParentFromArr(String[] arr, String value) {
