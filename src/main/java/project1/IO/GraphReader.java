@@ -108,52 +108,52 @@ public class GraphReader {
         nodeMap.put(node1,newNodesOfNode);
     }
 
-    public void addDummies() {
-        Set<String> nodeSet = getNodeWeightsMap().keySet();
-        Set<String> finalSet = new HashSet<>();
-        Set<String> finalSet2 = new HashSet<>();
-        for (String s : nodeSet) {
-            finalSet.add(s);
-            finalSet2.add(s);
-        }
-        Set<String> tempSet = getEdgeWeightMap().keySet();
-        Set<String> childSet = new HashSet<>();
-        Set<String> parentSet = new HashSet<>();
-
-        // Find all nodes with incoming edge(has parents) and all nodes with outgoing edge(has children)
-        for (String s : tempSet) {
-            String child = s.substring(s.indexOf(">") + 1);
-            String parent = s.substring(0,s.indexOf("-"));
-            childSet.add(child);
-            parentSet.add(parent);
-        }
-
-        // Find starting nodes
-        finalSet.removeAll(childSet);
-
-        // Find ending nodes
-        finalSet2.removeAll(parentSet);
-
-        String start = "start";
-        String end = "end";
-        _nodeWeightsMap.putIfAbsent(start,0);
-        _nodeWeightsMap.putIfAbsent(end,0);
+//    public void addDummies() {
+//        Set<String> nodeSet = getNodeWeightsMap().keySet();
+//        Set<String> finalSet = new HashSet<>();
+//        Set<String> finalSet2 = new HashSet<>();
+//        for (String s : nodeSet) {
+//            finalSet.add(s);
+//            finalSet2.add(s);
+//        }
+//        Set<String> tempSet = getEdgeWeightMap().keySet();
+//        Set<String> childSet = new HashSet<>();
+//        Set<String> parentSet = new HashSet<>();
+//
+//        // Find all nodes with incoming edge(has parents) and all nodes with outgoing edge(has children)
+//        for (String s : tempSet) {
+//            String child = s.substring(s.indexOf(">") + 1);
+//            String parent = s.substring(0,s.indexOf("-"));
+//            childSet.add(child);
+//            parentSet.add(parent);
+//        }
+//
+//        // Find starting nodes
+//        finalSet.removeAll(childSet);
+//
+//        // Find ending nodes
+//        finalSet2.removeAll(parentSet);
+//
+//        String start = "start";
+//        String end = "end";
+//        _nodeWeightsMap.putIfAbsent(start,0);
+//        _nodeWeightsMap.putIfAbsent(end,0);
 //        int length = _nodeIdArr.length;
 //        _nodeIdArr = Arrays.copyOf(_nodeIdArr, length + 2);
 //        _nodeIdArr[length] = start;
 //        _nodeIdArr[length+1] = end;
-
-        for (String s : finalSet) {
-            _edgeWeightMap.putIfAbsent(start + "->" + s, 0);
+//
+//        for (String s : finalSet) {
+//            _edgeWeightMap.putIfAbsent(start + "->" + s, 0);
 //            addNodeToMap(s,start, _parentsOfNodeMap);
 //            addNodeToMap(start,s, _childrenOfNodeMap);
-        }
-        for (String s : finalSet2) {
-            _edgeWeightMap.putIfAbsent(s + "->" + end, 0);
+//        }
+//        for (String s : finalSet2) {
+//            _edgeWeightMap.putIfAbsent(s + "->" + end, 0);
 //            addNodeToMap(end,s, _parentsOfNodeMap);
 //            addNodeToMap(s,end, _childrenOfNodeMap);
-        }
-    }
+//        }
+//    }
 
     public String getGraphId() {
         return _graphId;
