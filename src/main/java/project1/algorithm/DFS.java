@@ -13,12 +13,18 @@ import java.util.*;
  * Author: Dave Shin
  */
 public class DFS {
+    private static final int NOT_USED = -1;
+    private static final String END_TIME_INDICATOR = "schedule endtime";
+
     private Graph _graph;
     private int _numProcessors;
+    private int _endTimeIdx;
 
     public DFS(Graph graph, int numOfProcessors) {
         _graph = graph;
         _numProcessors = numOfProcessors;
+        _endTimeIdx = (int)_graph.nodes().count(); // The last element of the schedule array only stores the
+                                                   // endTime of the whole schedule.
     }
 
     /**
@@ -28,7 +34,7 @@ public class DFS {
      *                  optimal schedule that is created by the algorithm.
      */
     public Graph branchAndBoundStart() {
-        if (_graph.nodes().count() == 0) {
+        if (_endTimeIdx == 0) {
             return _graph;
         }
 
@@ -38,9 +44,12 @@ public class DFS {
         int size = 0;
 
         for (int i = 0; i < _numProcessors; i++) {
-            NewScheduleNode[] schedule = new NewScheduleNode[(int)_graph.nodes().count()];
+            NewScheduleNode[] schedule = new NewScheduleNode[_endTimeIdx + 1];
             schedule[size] = new NewScheduleNode(rootNode.getId(), 0,
                     (int)rootNode.getAttribute("Weight"), i);
+            schedule[_endTimeIdx] = new NewScheduleNode(END_TIME_INDICATOR, NOT_USED,
+                                                        schedule[size].getEndTime(), NOT_USED);
+
             solution = branchAndBound(schedule, optimalSchedule, size + 1);
             if (solution != null) {
                 optimalSchedule = solution;
@@ -72,7 +81,7 @@ public class DFS {
      * @return leftmostScheduleNode
      */
     public NewScheduleNode[] findLeftmostSchedule() {
-        NewScheduleNode[] leftmostSchedule = new NewScheduleNode[(int)_graph.nodes().count()];
+        NewScheduleNode[] leftmostSchedule = new NewScheduleNode[_endTimeIdx + 1];
         int idx = 0;
         int startTime = 0;
 
@@ -83,6 +92,9 @@ public class DFS {
             startTime += (int)task.getAttribute("Weight");
             idx++;
         }
+
+        leftmostSchedule[_endTimeIdx] = new NewScheduleNode(END_TIME_INDICATOR, NOT_USED,
+                leftmostSchedule[_endTimeIdx - 1].getEndTime(), NOT_USED);
 
         return leftmostSchedule;
     }
@@ -100,7 +112,7 @@ public class DFS {
         // Replace the current optimalSchedule with more optimal schedule when a schedule is finished creating. Return
         // null if not optimal.
         if (size == _graph.getNodeCount()) {
-            if (currentSchedule[size - 1].getEndTime() < optimalSchedule[optimalSchedule.length - 1].getEndTime()) {
+            if (currentSchedule[_endTimeIdx].getEndTime() < optimalSchedule[_endTimeIdx].getEndTime()) {
                 return currentSchedule;
             }
 
@@ -108,7 +120,7 @@ public class DFS {
         }
 
         // Bounding. Return null if currentSchedule is getting slower than optimalSchedule.
-        if (currentSchedule[size - 1].getEndTime() >= optimalSchedule[optimalSchedule.length - 1].getEndTime()) {
+        if (currentSchedule[_endTimeIdx].getEndTime() >= optimalSchedule[_endTimeIdx].getEndTime()) {
             return null;
         }
 
@@ -126,6 +138,14 @@ public class DFS {
 
                 NewScheduleNode[] nextSchedule = currentSchedule.clone();
                 nextSchedule[size] = new NewScheduleNode(task, startTime, endTime, i);
+
+                if (endTime > nextSchedule[_endTimeIdx].getEndTime()) {
+                    nextSchedule[_endTimeIdx] = new NewScheduleNode(END_TIME_INDICATOR, NOT_USED, endTime, NOT_USED);
+                } else {
+                    nextSchedule[_endTimeIdx] = new NewScheduleNode(END_TIME_INDICATOR, NOT_USED,
+                                                                   currentSchedule[_endTimeIdx].getEndTime(), NOT_USED);
+                }
+
                 solution = branchAndBound(nextSchedule, optimalSchedule, size + 1);
                 if (solution != null) {
                     optimalSchedule = solution;
@@ -256,6 +276,12 @@ public class DFS {
      */
     public void ScheduleToGraph(NewScheduleNode[] schedule) {
         for (NewScheduleNode task : schedule) {
+            // If it is the node that only indicates the schedule endtime,
+            // break the loop to prevent NullPointerException.
+            if (task.getId().equals(END_TIME_INDICATOR)) {
+                break;
+            }
+
             _graph.getNode(task.getId()).setAttribute("Start", task.getStartTime());
             _graph.getNode(task.getId()).setAttribute("Processor", task.getProcessorNum());
         }

@@ -34,4 +34,8 @@ public class NewScheduleNode {
     public int getProcessorNum() {
         return _processor;
     }
+
+    public void setEndTime(int newEndTime) {
+        _endTime = newEndTime;
+    }
 }
