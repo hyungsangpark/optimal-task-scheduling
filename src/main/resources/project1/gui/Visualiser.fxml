@@ -98,7 +98,7 @@
             <Button id="start-button" fx:id="startButton" mnemonicParsing="false" onAction="#handleStartButton" text="START" />
          </children>
       </VBox>
-      <Line id="border" fx:id="scheduleGraph" endX="-100.00001525878906" endY="525.5252075195312" layoutX="239.0" layoutY="73.0" startX="-100.00001525878906" startY="-21.464828491210938" stroke="#2968ab" strokeWidth="3.0">
+      <Line id="border" endX="-100.00001525878906" endY="525.5252075195312" layoutX="239.0" layoutY="73.0" startX="-100.00001525878906" startY="-21.464828491210938" stroke="#2968ab" strokeWidth="3.0">
          <effect>
             <DropShadow height="0.0" radius="0.25" width="3.0">
                <color>
@@ -107,9 +107,9 @@
             </DropShadow>
          </effect>
       </Line>
-      <StackedBarChart animated="false" layoutX="141.0" layoutY="50.0" legendSide="TOP" legendVisible="false" prefHeight="550.0" prefWidth="259.0" rotate="180.0">
+      <StackedBarChart fx:id="scheduleGraph" animated="false" layoutX="141.0" layoutY="50.0" legendSide="TOP" legendVisible="false" prefHeight="550.0" prefWidth="259.0" rotate="180.0">
         <xAxis>
-          <CategoryAxis prefHeight="19.0" prefWidth="221.0" fx:id="xAxis" />
+          <CategoryAxis prefHeight="19.0" prefWidth="221.0" rotate="180.0" tickMarkVisible="false" fx:id="xAxis" />
         </xAxis>
         <yAxis>
           <NumberAxis animated="false" minorTickVisible="false" prefHeight="526.0" prefWidth="34.0" side="RIGHT" tickLabelRotation="180.0" />
