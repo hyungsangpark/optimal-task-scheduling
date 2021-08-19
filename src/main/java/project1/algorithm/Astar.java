@@ -12,29 +12,15 @@ public class Astar {
 
     public PriorityQueue<ScheduleNode> _openList = new PriorityQueue<>(new PriorityQueueComparator());
 
+    // A hash set for keeping track of all the created schedules in order to only add unique ones to the open list
+    private HashSet<ScheduleNode> scheduleNodesHashSet = new HashSet<>();
+
     public Astar(int processors) {
         _processors = processors;
     }
 
     // make a list O of open nodes and their respective f values containing the start node
     public ScheduleNode aStarSearch() {
-        // Format graph with dummy start and end nodes
-//        _taskGraph.addNode("dummyStart").setAttribute("Weight",1.0);
-//        _taskGraph.addNode("dummyEnd").setAttribute("Weight",1.0);
-//
-//        for (Node n:_taskGraph) {
-//            if (n.getInDegree() == 0 && !n.getId().equals("dummyStart")) {
-//                _taskGraph.addEdge("(dummyStart;"+n+")",_taskGraph.getNode("dummyStart"),n,true).setAttribute("Weight",0.0);
-//            }
-//            else if (n.getOutDegree() == 0 && !n.getId().equals("dummyEnd")) {
-//                _taskGraph.addEdge("("+n.getId()+";dummyEnd)",n,_taskGraph.getNode("dummyEnd"),true).setAttribute("Weight",0.0);
-//            }
-//        }
-
-//         System.setProperty("org.graphstream.ui","swing");
-//        _taskGraph.display();
-
-
         // create and add root to open
         ScheduleNode root = new ScheduleNode(_processors);
         _openList.add(root);
