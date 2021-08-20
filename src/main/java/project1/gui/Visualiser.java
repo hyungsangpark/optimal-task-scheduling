@@ -22,6 +22,7 @@ public class Visualiser extends Application {
 
         program.setScene(new Scene(loader.load(), 400, 600));
         program.setTitle("Task Scheduler Visualiser");
+        program.setResizable(false);
         program.show();
 
         // Closing the GUI and algorithm.
