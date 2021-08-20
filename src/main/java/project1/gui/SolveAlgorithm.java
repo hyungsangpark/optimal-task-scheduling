@@ -6,6 +6,7 @@ public class SolveAlgorithm extends Thread {
     private boolean isChanged = false;
     private boolean isFinished = false;
     private NewScheduleNode[] schedule;
+    private int optimalTime;
 
     @Override
     public void run() {
@@ -22,6 +23,10 @@ public class SolveAlgorithm extends Thread {
 
     public boolean isFinished() {
         return isFinished;
+    }
+
+    public int getOptimalTime() {
+        return optimalTime;
     }
 
     public NewScheduleNode[] getSchedule() {
