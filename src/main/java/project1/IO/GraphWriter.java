@@ -1,33 +1,35 @@
 package project1.IO;
 
+import project1.data.Processor;
+
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.List;
 
 public class GraphWriter {
 
-    private HashMap<String, int[]> formatOutputGraph(List<List<String>> schedule) {
+    private HashMap<String, int[]> formatOutputGraph(HashMap<Integer, Processor> schedule) {
         HashMap<String, int[]> nodeStartAndPNumMap = new HashMap<>();
 
         for (int i = 0; i < schedule.size(); i++) {
-            for (int j = 0; j < schedule.get(i).size(); j++) {
-                String value = schedule.get(i).get(j);
-                if (!value.equals("-1")) {
-                    if (!nodeStartAndPNumMap.containsKey(value)) {
-                        int[] startPnumArr = new int[2];
-                        startPnumArr[0] = j;
-                        startPnumArr[1] = i+1;
-                        nodeStartAndPNumMap.put(value, startPnumArr);
-                    }
-                }
+            Processor p = schedule.get(i);
+
+            for (String nodeId : p.getNodesInScheduleMap().keySet()) {
+                int startTime = p.getNodesInScheduleMap().get(nodeId);
+
+                int[] startPnumArr = new int[2];
+                startPnumArr[0] = startTime;
+                startPnumArr[1] = p.getPid() + 1;
+
+                nodeStartAndPNumMap.put(nodeId, startPnumArr);
             }
         }
 
         return nodeStartAndPNumMap;
     }
 
-    public void outputGraphData(String outputFileName, List<List<String>> schedule) {
+    public void outputGraphData(String outputFileName, HashMap<Integer, Processor> schedule) {
+
         GraphReader graphReader = GraphReader.getInstance();
 
         String graphId = graphReader.getGraphId();

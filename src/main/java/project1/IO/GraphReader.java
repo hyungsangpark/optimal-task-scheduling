@@ -13,6 +13,7 @@ public class GraphReader {
     private HashMap<String,String[]> _parentsOfNodeMap = new HashMap<>();
     private HashMap<String,String[]> _childrenOfNodeMap = new HashMap<>();
     private HashMap<String,Integer> _edgeWeightMap = new HashMap<>();
+    private double totalWeight = 0;
 
     private static GraphReader _instance = null;
 
@@ -79,6 +80,7 @@ public class GraphReader {
                     tempNodeIdList.add(nodeId);
                     // set its weight
                     _nodeWeightsMap.putIfAbsent(nodeId,weightOfEdgeOrNode);
+                    totalWeight += weightOfEdgeOrNode;
                 }
             }
             else {
@@ -132,5 +134,9 @@ public class GraphReader {
 
     public HashMap<String, Integer> getEdgeWeightMap() {
         return _edgeWeightMap;
+    }
+
+    public double getTotalWeight() {
+        return totalWeight;
     }
 }

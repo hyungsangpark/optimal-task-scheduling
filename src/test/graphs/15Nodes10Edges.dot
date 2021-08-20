@@ -14,8 +14,6 @@ digraph "15Nodes10Edges" {
     	12    	[Weight=86];
     	13    	[Weight=27];
     	14    	[Weight=25];
-    	15    	[Weight=0];
-    	16    	[Weight=0];
 	0 -> 1	[Weight=32];
 	1 -> 8	[Weight=42];
 	4 -> 5	[Weight=12];
@@ -26,16 +24,4 @@ digraph "15Nodes10Edges" {
 	13 -> 2	[Weight=56];
 	2 -> 9 	[Weight=24];
 	3 -> 4	[Weight=15];
-		15 -> 11	[Weight=0];
-		15 -> 13	[Weight=0];
-		15 -> 3	[Weight=0];
-		15 -> 10	[Weight=0];
-		15 -> 14	[Weight=0];
-		15 -> 0	[Weight=0];
-		7 -> 16	[Weight=0];
-		8 -> 16	[Weight=0];
-		9 -> 16	[Weight=0];
-		6 -> 16	[Weight=0];
-		14 -> 16	[Weight=0];
-		10 -> 16	[Weight=0];
 }

@@ -1,42 +1,37 @@
 package project1.main;
 
 import org.apache.commons.cli.*;
-import org.graphstream.graph.Graph;
 import project1.IO.GraphReader;
 import project1.IO.GraphWriter;
-import project1.algorithm.Astar;
+import project1.algorithm.AStar;
 import project1.algorithm.TotalFCostCalculator;
 import project1.data.ScheduleNode;
-import project1.util.GraphLoader;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
 
-//        File[] files = new File("./src/test/graphs/").listFiles();
-//
-//        for (File file : files) {
-//            if (file.isFile()) {
-//                args = new String[2];
-//                args[0] = file.getPath();
-//                args[1] = "2";
-//
-//                run(args);
-//                System.out.println("Finished file: " + file.getName());
-//            }
-//            GraphReader.getInstance().resetGraphReader();
-//        }
+        File[] files = new File("./src/test/graphs/").listFiles();
 
-        args = new String[2];
-        args[0] = "./src/test/graphs/test.dot";
-        args[1] = "3";
-        run(args);
+        for (File file : files) {
+            if (file.isFile()) {
+                args = new String[2];
+                args[0] = file.getPath();
+                args[1] = "2";
+
+                run(args);
+                System.out.println("Finished file: " + file.getName());
+            }
+            GraphReader.getInstance().resetGraphReader();
+        }
+
+//        args = new String[2];
+//        args[0] = "./src/test/graphs/sample.dot";
+//        args[1] = "2";
+//        run(args);
     }
 
     public static void run(String[] args) {
@@ -114,6 +109,9 @@ public class Main {
             GraphReader graphReader = GraphReader.getInstance();
             graphReader.loadGraphData(graphFileName);
 
+            // Only for testing
+            TotalFCostCalculator.getInstance().resetGraphReader();
+
             // Record the start time.
             long startTime = System.nanoTime();
 
@@ -125,7 +123,7 @@ public class Main {
 //            }
 //            System.out.println(test);
 
-            Astar newSearch = new Astar(numProcessors);
+            AStar newSearch = new AStar(numProcessors);
             ScheduleNode result = newSearch.aStarSearch();
 
             // Record the end time.
@@ -133,15 +131,15 @@ public class Main {
             long duration = (endTime - startTime)/1000;
 
             GraphWriter graphWriter = new GraphWriter();
-            graphWriter.outputGraphData(outputName.replace("graphs","actualOutputs"),result.getSchedule());
+            graphWriter.outputGraphData(outputName.replace("graphs","actualOutputs"),result.getScheduleMap());
 
             // Output results.
-            System.out.println("\nOutput written to file named: " + outputName);
-            System.out.println("Time taken: " + duration + " ms");
-
-            // Find out the finish time.
-            result.getSchedule().sort(Comparator.comparingInt(List::size));
-            System.out.println("Finish time of best schedule: " + result.getSchedule().get(result.getSchedule().size() - 1).size());
+//            System.out.println("\nOutput written to file named: " + outputName);
+//            System.out.println("Time taken: " + duration + " ms");
+//
+//            // Find out the finish time.
+//            result.getSchedule().sort(Comparator.comparingInt(List::size));
+//            System.out.println("Finish time of best schedule: " + result.getSchedule().get(result.getSchedule().size() - 1).size());
         } catch (IOException e) {
             System.err.println("ERROR: Graph file with the provided name is not found.");
             System.exit(1);

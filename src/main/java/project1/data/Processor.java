@@ -2,12 +2,11 @@ package project1.data;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import project1.IO.GraphReader;
 
 import java.util.HashMap;
-import java.util.Set;
 
 public class Processor {
-
     // node to start time
     private HashMap<String, Integer> _nodesInScheduleMap;
     // e.g. 0 -> node1,1 -> node2,2 -> node3
@@ -15,36 +14,54 @@ public class Processor {
 
     private int _pid;
     private int _currentFinishTIme;
+    private int _idleTime;
 
     // New processor with no parent constructor
     public Processor(int pid) {
         _pid = pid;
-         _nodesInScheduleMap = new HashMap<>();
-         _nodesOrderMap = new HashMap<>();
+        _nodesInScheduleMap = new HashMap<>();
+        _nodesOrderMap = new HashMap<>();
     }
 
     // New child processor with a parent
     public Processor(Processor parentProcessor) {
-        _nodesOrderMap = parentProcessor._nodesOrderMap;
-        _nodesInScheduleMap = parentProcessor._nodesInScheduleMap;
-        _pid = parentProcessor._pid;
-        _currentFinishTIme = parentProcessor._currentFinishTIme;
+        copyParent(parentProcessor);
     }
 
-    public void addNode(String nodeId, int startTime, int nodeWeight) {
+    public void addNode(String nodeId, int startTime, int weight) {
+        _nodesInScheduleMap.put(nodeId,startTime);
+        _currentFinishTIme = startTime + weight;
 
+        int index = _nodesOrderMap.size();
+
+        _nodesOrderMap.put(index,nodeId);
+
+        if (_nodesInScheduleMap.size() == 1) {
+            _idleTime = _nodesInScheduleMap.get(_nodesOrderMap.get(0));
+        }
+        else {
+            int weightOfPrevNode = GraphReader.getInstance().getNodeWeightsMap().get(_nodesOrderMap.get(index - 1));
+            int startOfPrevNode = _nodesInScheduleMap.get(_nodesOrderMap.get(index - 1));
+
+            if (startTime != weightOfPrevNode + startOfPrevNode) {
+                _idleTime += startTime - startOfPrevNode + weightOfPrevNode;
+            }
+        }
     }
 
-    public double getIdleTime() {
-        return 0.0;
+    private void copyParent(Processor parentProcessor) {
+        _pid = parentProcessor.getPid();
+        _nodesOrderMap = new HashMap<>(parentProcessor.getNodesOrderMap());
+        _currentFinishTIme = parentProcessor.getCurrentFinishTIme();
+        _nodesInScheduleMap = new HashMap<>(parentProcessor.getNodesInScheduleMap());
     }
 
     public HashMap<String, Integer> getNodesInScheduleMap() {
         return _nodesInScheduleMap;
     }
 
-    public Set<String> getNodesScheduled() {
-        return _nodesInScheduleMap.keySet();
+    public HashMap<Integer, String> getNodesOrderMap() {
+        return _nodesOrderMap;
     }
 
     public int getPid() {
@@ -55,9 +72,12 @@ public class Processor {
         return _currentFinishTIme;
     }
 
+    public int getIdleTime() {
+        return _idleTime;
+    }
+
     @Override
     public int hashCode() {
-        // Hash table prime numbers from https://planetmath.org/goodhashtableprimes
         return new HashCodeBuilder(805306457, 402653189).append(_nodesInScheduleMap).append(_currentFinishTIme).toHashCode();
     }
 
@@ -75,12 +95,7 @@ public class Processor {
 
         Processor secondProcessor = (Processor) obj;
         return new EqualsBuilder()
-                .append(_nodesInScheduleMap, secondProcessor._nodesInScheduleMap).isEquals()
-                && checkCurrentCost(secondProcessor._currentFinishTIme);
+                .append(_nodesInScheduleMap, secondProcessor.getNodesInScheduleMap()).isEquals()
+                && (_currentFinishTIme == secondProcessor.getCurrentFinishTIme());
     }
-
-    private boolean checkCurrentCost(int currentCost) {
-        return _currentFinishTIme == currentCost;
-    }
-
 }
