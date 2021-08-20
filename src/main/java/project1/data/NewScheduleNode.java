@@ -35,8 +35,28 @@ public class NewScheduleNode implements Comparable<NewScheduleNode> {
         return _processor;
     }
 
+    /**
+     * Method implemented for Comparable interface.
+     * It compares two NewScheduleNode instances using two standards;
+     * 1. Processor Number
+     * 2. Start Time
+     *
+     * If a current instance should go before the instance given,
+     * it would return a negative int.
+     * If a current instance should go after the instance given,
+     * it would return a positive int.
+     * If a current instance is on equal order to the instance given,
+     * it would return 0.
+     *
+     * @param anotherInstance Another instance of NewScheduleNode that is being compared.
+     * @return An integer, based on description provided above.
+     */
     @Override
-    public int compareTo(NewScheduleNode o) {
-        return _startTime - o._startTime;
+    public int compareTo(NewScheduleNode anotherInstance) {
+        if (_processor - anotherInstance._processor == 0) {
+            return _startTime - anotherInstance._startTime;
+        } else {
+            return anotherInstance._processor - _processor;
+        }
     }
 }
