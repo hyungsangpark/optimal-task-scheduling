@@ -1,11 +1,14 @@
 package project1.gui;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import project1.data.NewScheduleNode;
 import project1.main.Parameters;
 
@@ -28,11 +31,62 @@ public class Controller implements Initializable {
     private StackedBarChart<String, Number> scheduleGraph;
 
     private int numProcessors;
+    private long startTime;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         numProcessors = Parameters.getInstance().getNumProcessors();
     }
 
+    /**
+     * Runs when start button is pressed.
+     * It essentially modifies appropriate elements in the application screen,
+     * measures start time, starts the scheduler algorithm in a new background thread,
+     * then initiates an status updater which regularly updates information such as
+     * time elapsed and schedule graph.
+     */
+    public void handleStartButton() {
+
+        // Configure current screen to running state.
+        status.setText("RUNNING");
+        startButton.setDisable(true);
+
+        // Create a thread which would solve the algorithm.
+        SolveAlgorithm thread = new SolveAlgorithm();
+
+        // Measure start time.
+        startTime = System.nanoTime();
+
+        // Start the thread which would start solving the algorithm.
+        thread.start();
+
+        // Every millisecond, check to see if there is an update in the schedule from SolveAlgorithm thread.
+        Timeline statusUpdater = new Timeline();
+        statusUpdater.getKeyFrames().add(new KeyFrame(Duration.millis(1),
+                event -> {
+                    // Calculate time elapsed and update timeElapsed.
+                    long timeElapsedValue = System.nanoTime() - startTime;
+
+                    int sec = (int) (timeElapsedValue / 1000000000);
+                    int ms = (int) (timeElapsedValue / 1000000) - sec * 1000;
+
+                    timeElapsed.setText(sec + "." + String.format("%3s", ms).replace(' ', '0') + " sec");
+
+                    // If a schedule is changed, update schedule graph accordingly.
+                    if (thread.isChanged()) {
+                        thread.changeApplied();
+                        updateSchedule(thread.getSchedule());
+                    }
+
+                    // If a thread has finished its task, stop updating status and run end of schedule procedure.
+                    if (thread.isFinished()) {
+                        statusUpdater.stop();
+                        schedulingEnded(6);
+                    }
+                }));
+        statusUpdater.setCycleCount(Timeline.INDEFINITE);
+        statusUpdater.play();
+    }
 
     /**
      * Update the schedule graph according to the list of schedule nodes given.
