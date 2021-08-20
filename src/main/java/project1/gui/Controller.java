@@ -79,16 +79,15 @@ public class Controller {
     }
 
     /**
-     * This method sets up the initial visualization information in the GUI, such as
-     * the labels.
-     * @param numProcessors number of processors
-     * @param numTasks number of tasks
-     * @param graphName name of the input graph
+     * Changes elements that needs to be updated such as optimal time produced and status.
+     * It also enables the button which was disabled.
+     *
+     * @param optimalTimeValue Optimal time retrieved from the output of the scheduler. i.e. max height in the graph.
      */
-    public void ArgsSetup (int numProcessors, int numTasks, String graphName) {
-        graphNameLabel.setText(graphName);
-        numTasksLabel.setText(numTasks + "");
-        this.numProcessors = numProcessors;
+    private void schedulingEnded(int optimalTimeValue) {
+        optimalTime.setText(String.valueOf(optimalTimeValue));
+        status.setText("READY");
+        startButton.setDisable(false);
     }
 
 }
