@@ -88,7 +88,7 @@ public class GraphLoader {
                         .append(",Start=")
                         .append((int)node.getAttribute("Start"))
                         .append(",Processor=")
-                        .append((int)node.getAttribute("Processor"))
+                        .append((int)node.getAttribute("Processor") + 1)
                         .append("];")
                 );
             });

@@ -10,6 +10,8 @@ import java.util.HashMap;
 
 public class ValidOutputTester {
 
+    private int finishTime;
+
     public static void main(String[] args) {
         ValidOutputTester solutionValidator = new ValidOutputTester();
 
@@ -78,6 +80,8 @@ public class ValidOutputTester {
                 System.out.println("A processor node overlaps with another node on processor " + pNum + " at start time: " + startTime + " and node weight " + outputNodeWeight);
                 return false;
             }
+
+            finishTime = Math.max(finishTime,startTime + outputNodeWeight);
         }
 
         for (int i = 0; i < inputGraph.getEdgeCount(); i++) {
@@ -96,7 +100,7 @@ public class ValidOutputTester {
             }
 
             if (childValues[0] < parentValues[0] + parentValues[2] + transCost) {
-                System.out.println("The child: " + child + "was scheduled before the parent: " + parent + " was complete.");
+                System.out.println("The child: " + child + " was scheduled before the parent: " + parent + " was complete.");
                 return false;
             }
         }
@@ -122,5 +126,9 @@ public class ValidOutputTester {
 
             return true;
         }
+    }
+
+    public int getFinishTime() {
+        return finishTime;
     }
 }
