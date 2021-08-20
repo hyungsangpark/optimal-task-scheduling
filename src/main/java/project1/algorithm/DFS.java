@@ -38,7 +38,7 @@ public class DFS {
             return _graph;
         }
 
-        NewScheduleNode[] optimalSchedule = findLeftmostSchedule();
+        NewScheduleNode[] optimalSchedule = findLeftmostSchedule(new NewScheduleNode[_endTimeIdx + 1]);
         NewScheduleNode[] solution;
         Node rootNode = getStartNode();
         int size = 0;
@@ -80,17 +80,32 @@ public class DFS {
      *
      * @return leftmostScheduleNode
      */
-    public NewScheduleNode[] findLeftmostSchedule() {
+    public NewScheduleNode[] findLeftmostSchedule(NewScheduleNode[] emptySchedule) {
         NewScheduleNode[] leftmostSchedule = new NewScheduleNode[_endTimeIdx + 1];
         int idx = 0;
         int startTime = 0;
 
-        for (Object taskObject : _graph.nodes().toArray()) {
-            Node task = (Node)taskObject;
-            leftmostSchedule[idx] = new NewScheduleNode(task.getId(), startTime, startTime
-                    + (int)task.getAttribute("Weight"), 0);
-            startTime += (int)task.getAttribute("Weight");
-            idx++;
+//        for (Object taskObject : _graph.nodes().toArray()) {
+//            Node task = (Node)taskObject;
+//
+//            leftmostSchedule[idx] = new NewScheduleNode(task.getId(), startTime, startTime
+//                    + (int)task.getAttribute("Weight"), 0);
+//
+//            startTime += (int)task.getAttribute("Weight");
+//            idx++;
+//        }
+
+        LinkedList<String> schedulableTasks = findSchedulableTasks(_graph, emptySchedule);
+        while (schedulableTasks.peekFirst() != null) { // while the queue is not empty
+            for (String task : schedulableTasks) {
+                leftmostSchedule[idx] = new NewScheduleNode(task, startTime, startTime
+                        + (int)_graph.getNode(task).getAttribute("Weight"), 0);
+
+                startTime += (int)_graph.getNode(task).getAttribute("Weight");
+                idx++;
+            }
+
+            schedulableTasks = findSchedulableTasks(_graph, leftmostSchedule);
         }
 
         leftmostSchedule[_endTimeIdx] = new NewScheduleNode(END_TIME_INDICATOR, NOT_USED,
@@ -163,8 +178,8 @@ public class DFS {
      * @param schedule - current schedule of the scheduled tasks.
      * @return schedulableTasks
      */
-    public List<String> findSchedulableTasks(Graph graph, NewScheduleNode[] schedule) {
-        List<String> schedulableTasks = new ArrayList<>();
+    public LinkedList<String> findSchedulableTasks(Graph graph, NewScheduleNode[] schedule) {
+        LinkedList<String> schedulableTasks = new LinkedList<>();
 
         for (Node task : graph) {
             boolean areParentsComplete = true;
