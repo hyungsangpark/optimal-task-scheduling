@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class Controller {
+public class Controller implements Initializable {
 
     // The following labels represent and update information in the GUI.
     @FXML
@@ -28,6 +28,11 @@ public class Controller {
     private StackedBarChart<String, Number> scheduleGraph;
 
     private int numProcessors;
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        numProcessors = Parameters.getInstance().getNumProcessors();
+    }
+
 
     /**
      * Update the schedule graph according to the list of schedule nodes given.
