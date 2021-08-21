@@ -20,7 +20,6 @@ public class SolveAlgorithm extends Thread {
         AStar newSearch = new AStar(parameters.getNumProcessors(), parameters.getNumParallelCores(), this);
         ScheduleNode schedule = newSearch.aStarSearch();
 
-        scheduleMap = schedule.getScheduleMap();
         optimalTime = schedule.getOptimalTime();
 
         isFinished = true;

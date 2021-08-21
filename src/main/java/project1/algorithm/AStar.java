@@ -14,11 +14,13 @@ public class AStar {
     private final int _numOfCores;
     private SolveAlgorithm _caller;
 
+    // Constructor for non-visualised
     public AStar(int processors, int numOfCores) {
         _processors = processors;
         _numOfCores = numOfCores;
     }
 
+    // Constructor for visualised
     public AStar(int processors, int numOfCores, SolveAlgorithm caller) {
         _processors = processors;
         _numOfCores = numOfCores;
@@ -40,7 +42,7 @@ public class AStar {
                 continue;
             }
 
-            if(_caller != null) {
+            if (_caller != null) {
                 _caller.updateSchedule(chosenSchedule.getScheduleMap());
             }
 
