@@ -100,9 +100,9 @@ public class ScheduleNode {
 
     /**
      * Method to find the earliest start time.
-     * @param pNum  processor number
+     * @param pNum  processor number.
      * @param nodeId    name/ID of a task node.
-     * @return
+     * @return  The earliest possible starting time for next task.
      */
 
     public int findEarliestStartTime(int pNum, String nodeId) {
@@ -127,6 +127,15 @@ public class ScheduleNode {
         return earliestPossibleStartTime;
     }
 
+    /**
+     * Helper method for findEarliestStartTime.
+     * @param parentNode    The parent task node of current task.
+     * @param nodeId    Current Task node.
+     * @param pNum  Processor number.
+     * @param p Processor object.
+     * @return  The best starting time.
+     */
+
     private int earliestStartTimeHelper(String parentNode, String nodeId, int pNum, Processor p) {
         int bestStarTime = _scheduleMap.get(pNum).getCurrentFinishTIme();
 
@@ -140,6 +149,11 @@ public class ScheduleNode {
         return bestStarTime;
     }
 
+    /**
+     *  This method finds tasks that are available to be scheduled.
+     * @return  A set of Tasks that are available to be scheduled.
+     */
+
     public Set<String> getTaskToSchedule() {
         Set<String> schedulableNodes = new HashSet<>();
         Set<String> tasksInSchedule = getTasksInScheduleNode();
@@ -152,6 +166,13 @@ public class ScheduleNode {
 
         return schedulableNodes;
     }
+
+    /**
+     * This method checks if the parent/parents of current task has/have been completed or not.
+     * @param nodeId    Current task node.
+     * @param tasksInSchedule   The tasks that has been scheduled already in current schedule.
+     * @return  A boolean that determine if all parents of this current task node has been scheduled or not.
+     */
 
     private boolean checkIfParentsComplete(String nodeId,Set<String> tasksInSchedule) {
         HashMap<String, String[]> parentsOfNodeMap = _graphReader.getParentsOfNodeMap();
@@ -168,6 +189,11 @@ public class ScheduleNode {
         return true;
     }
 
+    /**
+     * This method gets all tasks nodes that have been scheduled in the schedule.
+     * @return  A Set of tasks nodes.
+     */
+
     public Set<String> getTasksInScheduleNode() {
         Set<String> scheduledNodes = new HashSet<>();
 
@@ -177,6 +203,11 @@ public class ScheduleNode {
 
         return scheduledNodes;
     }
+
+    /**
+     * This method checks if all tasks node has been scheduled yet, if yes return true, if no return false.
+     * @return  boolean that determines if all tasks node have been scheduled or not.
+     */
 
     public boolean isTarget() {
         Set<String> tasksDone = getTasksInScheduleNode();
@@ -190,6 +221,11 @@ public class ScheduleNode {
         return true;
     }
 
+    /**
+     * This method gets the total idle time.
+     * @return  The total idle time.
+     */
+
     public double getTotalIdleTime() {
         double totalIdleTime = 0;
 
@@ -202,7 +238,7 @@ public class ScheduleNode {
 
     /**
      * Method to copy the information of the parent's ScheduleNode to its own.
-     * @param parent
+     * @param parent    Parent ScheduleNode.
      */
 
     private void copyParent(ScheduleNode parent) {
@@ -214,14 +250,28 @@ public class ScheduleNode {
         _FCost = parent.getFCost();
     }
 
+    /**
+     * Getter for _scheduleMap.
+     * @return  A HashMap that represents the schedule of this ScheduleNode.
+     */
 
     public HashMap<Integer, Processor> getScheduleMap() {
         return _scheduleMap;
     }
 
+    /**
+     * Getter for _FCost.
+     * @return  The f(n) cost.
+     */
+
     public double getFCost() {
         return _FCost;
     }
+
+    /**
+     * Setter for _FCost.
+     * @param _FCost    The f(n) cost.
+     */
 
     public void setFCost(double _FCost) {
         this._FCost = _FCost;
