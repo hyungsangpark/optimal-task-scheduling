@@ -5,7 +5,6 @@ import project1.data.Processor;
 import project1.data.ScheduleNode;
 
 import java.util.HashMap;
-import java.util.Set;
 
 public class TotalFCostCalculator {
     private static HashMap<String, Integer> _bottomLevelMap = null;
@@ -30,7 +29,7 @@ public class TotalFCostCalculator {
     }
 
     public void calculateAndSetFCost(ScheduleNode sn) {
-        sn.setFCost(Math.max(Math.max(bottomLevelCost(sn), findDRT(sn)), (sn.getTotalIdleTime() + _graphReader.getTotalWeight()) / (double) sn.getScheduleMap().size()));
+        sn.setFCost(Math.max(bottomLevelCost(sn), (sn.getTotalIdleTime() + _graphReader.getTotalWeight()) / ((double)sn.getScheduleMap().size())));
     }
 
     private double bottomLevelCost(ScheduleNode sn) {
@@ -45,33 +44,10 @@ public class TotalFCostCalculator {
         return maxBtmLvl;
     }
 
-    // TODO test and maybe change
-    private double findDRT(ScheduleNode sn) {
-        Set<String> nodesToSchedule = sn.getTaskToSchedule();
-
-        double bmtLvl = 0;
-        double largestDRT = 0;
-        for (String nodeId : nodesToSchedule) {
-            double minStartTime = Double.POSITIVE_INFINITY;
-
-            for (Processor p : sn.getScheduleMap().values()) {
-                int dataReady = sn.findEarliestStartTime(p.getPid(), nodeId);
-
-                if (dataReady < minStartTime) {
-                    bmtLvl = _bottomLevelMap.get(nodeId);
-                    minStartTime = dataReady;
-                }
-            }
-
-            largestDRT = Math.max(bmtLvl+minStartTime,largestDRT);
-        }
-        return largestDRT;
-    }
-
     private static void calculateBottomLevels() {
         // Go through every node id and get bottom level
         for (String nodeId : GraphReader.getInstance().getNodeIdArr()) {
-            _bottomLevelMap.put(nodeId, findAndSaveBottomLevel(nodeId));
+            _bottomLevelMap.putIfAbsent(nodeId, findAndSaveBottomLevel(nodeId));
         }
     }
 
@@ -83,8 +59,13 @@ public class TotalFCostCalculator {
             int currentBtmLvl = 0;
 
             for (String child : childrenOfNode) {
-                currentBtmLvl = findAndSaveBottomLevel(child);
-                _bottomLevelMap.put(child, currentBtmLvl);
+                if (_bottomLevelMap.containsKey(child)) {
+                    currentBtmLvl = _bottomLevelMap.get(child);
+                }
+                else {
+                    currentBtmLvl = findAndSaveBottomLevel(child);
+                    _bottomLevelMap.put(child, currentBtmLvl);
+                }
                 largestBtmLvl = Math.max(currentBtmLvl, largestBtmLvl);
             }
 
