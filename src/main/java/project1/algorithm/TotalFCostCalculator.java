@@ -1,56 +1,79 @@
 package project1.algorithm;
 
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
+import project1.IO.GraphReader;
+import project1.data.Processor;
+import project1.data.ScheduleNode;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class TotalFCostCalculator {
+    private static HashMap<String, Integer> _bottomLevelMap = null;
+    private GraphReader _graphReader = GraphReader.getInstance();
 
-    public int calculateTotalF(Graph graph, List<List<String>> schedule) {
-        int totalCost = 0;
+    private static TotalFCostCalculator _instance = null;
 
-        for (List<String> p:schedule) {
-            for (int i = 0; i < p.size(); i++) {
-                String node = p.get(i);
+    public static TotalFCostCalculator getInstance() {
+        if (_instance == null) {
+            _instance = new TotalFCostCalculator();
+            _bottomLevelMap = new HashMap<>();
+            calculateBottomLevels();
+        }
 
-                if (!node.equals("-1") && i > 0 && !node.equals(p.get(i-1))) {
-                    int bottomLevelCost = bottomLevelCost(graph,node) + i;
-                    totalCost = Math.max(bottomLevelCost,totalCost);
-                }
+        return _instance;
+    }
+
+    public void resetGraphReader() {
+        _instance = new TotalFCostCalculator();
+        _bottomLevelMap = new HashMap<>();
+        calculateBottomLevels();
+    }
+
+    public void calculateAndSetFCost(ScheduleNode sn) {
+        sn.setFCost(Math.max(bottomLevelCost(sn), (sn.getTotalIdleTime() + _graphReader.getTotalWeight()) / ((double)sn.getScheduleMap().size())));
+    }
+
+    private double bottomLevelCost(ScheduleNode sn) {
+        double maxBtmLvl = 0;
+
+        for (Processor processor : sn.getScheduleMap().values()) {
+            for (String nodeId : processor.getNodesInScheduleMap().keySet()) {
+                maxBtmLvl = Math.max(maxBtmLvl, _bottomLevelMap.get(nodeId) + processor.getNodesInScheduleMap().get(nodeId));
             }
         }
 
-        return totalCost;
+        return maxBtmLvl;
     }
 
-    private int bottomLevelCost(Graph graph, String nodeId) {
-        Node node = graph.getNode(nodeId);
+    private static void calculateBottomLevels() {
+        // Go through every node id and get bottom level
+        for (String nodeId : GraphReader.getInstance().getNodeIdArr()) {
+            _bottomLevelMap.putIfAbsent(nodeId, findAndSaveBottomLevel(nodeId));
+        }
+    }
 
-        if (node.getOutDegree() != 0) {
+    private static int findAndSaveBottomLevel(String nodeId) {
+        String[] childrenOfNode = GraphReader.getInstance().getChildrenOfNodeMap().get(nodeId);
+
+        if (childrenOfNode != null) {
             int largestBtmLvl = 0;
             int currentBtmLvl = 0;
 
-            List<Node> children = new ArrayList<>();
-
-            for(int i = 0; i < node.getOutDegree(); i++) {
-                children.add(node.getLeavingEdge(i).getTargetNode());
-            }
-
-            for (Node child : children) {
-                currentBtmLvl = bottomLevelCost(graph, child.getId());
-                if (currentBtmLvl > largestBtmLvl) {
-                    largestBtmLvl = currentBtmLvl;
+            for (String child : childrenOfNode) {
+                if (_bottomLevelMap.containsKey(child)) {
+                    currentBtmLvl = _bottomLevelMap.get(child);
                 }
+                else {
+                    currentBtmLvl = findAndSaveBottomLevel(child);
+                    _bottomLevelMap.put(child, currentBtmLvl);
+                }
+                largestBtmLvl = Math.max(currentBtmLvl, largestBtmLvl);
             }
 
-            return largestBtmLvl + (int)node.getAttribute("Weight");
-        }
-        else {
-            return (int)node.getAttribute("Weight");
+            _bottomLevelMap.put(nodeId, currentBtmLvl + GraphReader.getInstance().getNodeWeightsMap().get(nodeId));
+            return largestBtmLvl + GraphReader.getInstance().getNodeWeightsMap().get(nodeId);
+        } else {
+            return GraphReader.getInstance().getNodeWeightsMap().get(nodeId);
         }
     }
+
 }
