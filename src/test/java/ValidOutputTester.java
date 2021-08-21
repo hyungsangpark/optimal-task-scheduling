@@ -38,7 +38,9 @@ public class ValidOutputTester {
             inputGraph = graphLoader.readGraph(inputFile);
             outputGraph = graphLoader.readGraph(outputFile);
         } catch (IOException e) {
-            System.out.println("The graphs were unable to be loaded due to some error.");
+            System.out.println("The graphs were unable to be loaded due to some error. ");
+            System.out.println(inputFile);
+            System.out.println(outputFile);
         }
 
         // Check if they both have the same number of nodes
