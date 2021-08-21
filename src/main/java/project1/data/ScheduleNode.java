@@ -13,7 +13,6 @@ import java.util.concurrent.Future;
  * This ScheduleNode class stores all the information of a tree node in the A* algorithm. It is also used for the
  * expansion of the search tree. The package java.util.concurrent is used for parallelisation of the search.
  */
-
 public class ScheduleNode {
     GraphReader _graphReader = GraphReader.getInstance();
     private final HashMap<Integer, Processor> _scheduleMap = new HashMap<>();
@@ -107,7 +106,7 @@ public class ScheduleNode {
 
     public int findEarliestStartTime(int pNum, String nodeId) {
         if (_graphReader.getParentsOfNodeMap().get(nodeId) == null) {
-            return _scheduleMap.get(pNum).getCurrentFinishTIme();
+            return _scheduleMap.get(pNum).getCurrentFinishTime();
         }
 
         int earliestPossibleStartTime = 0;
@@ -137,7 +136,7 @@ public class ScheduleNode {
      */
 
     private int earliestStartTimeHelper(String parentNode, String nodeId, int pNum, Processor p) {
-        int bestStarTime = _scheduleMap.get(pNum).getCurrentFinishTIme();
+        int bestStarTime = _scheduleMap.get(pNum).getCurrentFinishTime();
 
         if (p.getPid() != pNum) {
             int parentFinishTIme = p.getNodesInScheduleMap().get(parentNode) + _graphReader.getNodeWeightsMap().get(parentNode);
@@ -250,10 +249,6 @@ public class ScheduleNode {
         _FCost = parent.getFCost();
     }
 
-    /**
-     * Getter for _scheduleMap.
-     * @return  A HashMap that represents the schedule of this ScheduleNode.
-     */
 
     public HashMap<Integer, Processor> getScheduleMap() {
         return _scheduleMap;
@@ -275,6 +270,15 @@ public class ScheduleNode {
 
     public void setFCost(double _FCost) {
         this._FCost = _FCost;
+    }
+
+    public int getOptimalTime() {
+        // Since variable changes inside a lambda function, the value is wrapped in an int array.
+        int[] optimalTime = {-1};
+        _scheduleMap.forEach(((processorNumber, processor) -> {
+            if (processor.getCurrentFinishTime() > optimalTime[0]) optimalTime[0] = processor.getCurrentFinishTime();
+        }));
+        return optimalTime[0];
     }
 
     @Override

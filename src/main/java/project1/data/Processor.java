@@ -18,7 +18,7 @@ public class Processor {
     private HashMap<Integer, String> _nodesOrderMap;
 
     private int _pid;
-    private int _currentFinishTIme;
+    private int _currentFinishTime;
     private int _idleTime;
 
     /**
@@ -50,7 +50,7 @@ public class Processor {
 
     public void addNode(String nodeId, int startTime, int weight) {
         _nodesInScheduleMap.put(nodeId,startTime);
-        _currentFinishTIme = startTime + weight;
+        _currentFinishTime = startTime + weight;
 
         int index = _nodesOrderMap.size();
 
@@ -77,7 +77,7 @@ public class Processor {
     private void copyParent(Processor parentProcessor) {
         _pid = parentProcessor.getPid();
         _nodesOrderMap = new HashMap<>(parentProcessor.getNodesOrderMap());
-        _currentFinishTIme = parentProcessor.getCurrentFinishTIme();
+        _currentFinishTime = parentProcessor.getCurrentFinishTime();
         _nodesInScheduleMap = new HashMap<>(parentProcessor.getNodesInScheduleMap());
     }
 
@@ -85,6 +85,7 @@ public class Processor {
      * Getter of _nodesInScheduleMap.
      * @return  A HashMap of tasks nodes in this schedule.
      */
+
     public HashMap<String, Integer> getNodesInScheduleMap() {
         return _nodesInScheduleMap;
     }
@@ -112,8 +113,8 @@ public class Processor {
      * @return The current finish time of the schedule.
      */
 
-    public int getCurrentFinishTIme() {
-        return _currentFinishTIme;
+    public int getCurrentFinishTime() {
+        return _currentFinishTime;
     }
 
     /**
@@ -127,7 +128,7 @@ public class Processor {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(805306457, 402653189).append(_nodesInScheduleMap).append(_currentFinishTIme).toHashCode();
+        return new HashCodeBuilder(805306457, 402653189).append(_nodesInScheduleMap).append(_currentFinishTime).toHashCode();
     }
 
     @Override
@@ -145,6 +146,6 @@ public class Processor {
         Processor secondProcessor = (Processor) obj;
         return new EqualsBuilder()
                 .append(_nodesInScheduleMap, secondProcessor.getNodesInScheduleMap()).isEquals()
-                && (_currentFinishTIme == secondProcessor.getCurrentFinishTIme());
+                && (_currentFinishTime == secondProcessor.getCurrentFinishTime());
     }
 }

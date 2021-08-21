@@ -6,6 +6,7 @@ import project1.IO.GraphWriter;
 import project1.algorithm.AStar;
 import project1.algorithm.TotalFCostCalculator;
 import project1.data.ScheduleNode;
+import project1.gui.Visualiser;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,9 +29,10 @@ public class Main {
 //            GraphReader.getInstance().resetGraphReader();
 //        }
 
-        args = new String[2];
+        args = new String[3];
         args[0] = "./src/test/graphs/sample.dot";
         args[1] = "2";
+        args[2] = "-v";
         run(args);
     }
 
@@ -49,17 +51,19 @@ public class Main {
         // Default value for the number of processors.
         // Since number of processors MUST be specified, it is deliberately set to 0 so that it would cause an error
         // with its default form.
-        int numProcessors = 1;
+//        int numProcessors = 1;
+//
+//        // Default values for optionals.
+//        int numParallelCores = 1;
+//        boolean isVisualized = false;
+//        String outputName = null;
 
-        // Default values for optionals.
-        int numParallelCores = 1;
-        boolean isVisualized = false;
-        String outputName = null;
+        Parameters parameters = Parameters.getInstance();
 
         // First, parse num of processors, if invalid num of processors, print error and exit program.
         try {
-            numProcessors = Integer.parseInt(args[1]);
-            if (numProcessors < 2) {
+            parameters.setNumProcessors(Integer.parseInt(args[1]));
+            if (parameters.getNumProcessors() < 2) {
                 throw new NumberFormatException();
             }
         } catch (NumberFormatException nfe) {
@@ -68,19 +72,19 @@ public class Main {
         }
 
         // Parse optional parameters.
-        Options parameters = new Options();
-        parameters.addOption(new Option("p", true, "number of cores for execution in parallel."));
-        parameters.addOption(new Option("v", false, "visualise the search."));
-        parameters.addOption(new Option("o", true, "set output file name, including file extension."));
+        Options options = new Options();
+        options.addOption(new Option("p", true, "number of cores for execution in parallel."));
+        options.addOption(new Option("v", false, "visualise the search."));
+        options.addOption(new Option("o", true, "set output file name, including file extension."));
 
         CommandLineParser parser = new DefaultParser();
         try {
-            CommandLine cmd = parser.parse(parameters, args);
+            CommandLine cmd = parser.parse(options, args);
 
             // Parse parameter "-p" when available. If parameter present, also check its validity. If not, exit program.
             if (cmd.hasOption("p")) {
                 try {
-                    numParallelCores = Integer.parseInt(cmd.getOptionValue("p"));
+                    parameters.setNumParallelCores(Integer.parseInt(cmd.getOptionValue("p")));
                 } catch (NumberFormatException e) {
                     System.err.println("ERROR: Invalid number of cores provided.");
                     System.exit(1);
@@ -89,12 +93,12 @@ public class Main {
             }
 
             // Check status of isVisualised based on presence of "-v" parameter.
-            isVisualized = cmd.hasOption("v");
-            if (isVisualized) System.out.println("ERROR: Visualisation is unimplemented yet. The scheduler will run without a visualiser.");
+            parameters.setVisualised(cmd.hasOption("v"));
+            if (parameters.isVisualised()) System.out.println("ERROR: Visualisation is unimplemented yet. The scheduler will run without a visualiser.");
 
             // Parse parameter "-o" when available. Output name can be anything hence doesn't require checking.
             if (cmd.hasOption("o")) {
-                outputName = cmd.getOptionValue("o");
+                parameters.setOutputName(cmd.getOptionValue("o"));
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -102,7 +106,9 @@ public class Main {
 
         // Parse graph file name, and retrieve output name, either default or specified one.
         String graphFileName = args[0];
-        outputName = outputName == null ? graphFileName.replace(".dot", "-output.dot") : outputName;
+        if (parameters.getOutputName() == null) {
+            parameters.setOutputName(graphFileName.replace(".dot", "-output.dot"));
+        }
 
         // Read graph, run algorithm, then write graph.
         try {
@@ -112,28 +118,30 @@ public class Main {
             // Only for testing
             TotalFCostCalculator.getInstance().resetGraphReader();
 
-            // Record the start time.
-            long startTime = System.nanoTime();
+            if (parameters.isVisualised()) {
+                Visualiser.main(new String[0]);
+            } else {
+                // Record the start time.
+                long startTime = System.nanoTime();
 
-            // Run ALGORITHM to receive schedule.
+                // Run ALGORITHM to receive schedule.
+                AStar newSearch = new AStar(parameters.getNumProcessors(), parameters.getNumParallelCores());
+                ScheduleNode result = newSearch.aStarSearch();
 
-            AStar newSearch = new AStar(numProcessors, numParallelCores);
-            ScheduleNode result = newSearch.aStarSearch();
+                // Record the end time.
+                long endTime = System.nanoTime();
+                long duration = (endTime - startTime)/1000;
 
-            // Record the end time.
-            long endTime = System.nanoTime();
-            long duration = (endTime - startTime)/1000;
+                GraphWriter graphWriter = new GraphWriter();
+                graphWriter.outputGraphData(parameters.getOutputName().replace("graphs","actualOutputs"),result.getScheduleMap());
 
-            GraphWriter graphWriter = new GraphWriter();
-            graphWriter.outputGraphData(outputName.replace("graphs","actualOutputs"),result.getScheduleMap());
+                // Output results.
+                System.out.println("\nOutput written to file named: " + parameters.getOutputName());
+                System.out.println("Time taken: " + duration + " ms");
+                System.out.println("Finish time of best schedule: " + result.getOptimalTime());
+            }
 
-            // Output results.
-//            System.out.println("\nOutput written to file named: " + outputName);
-//            System.out.println("Time taken: " + duration + " ms");
-//
-//            // Find out the finish time.
-//            result.getSchedule().sort(Comparator.comparingInt(List::size));
-//            System.out.println("Finish time of best schedule: " + result.getSchedule().get(result.getSchedule().size() - 1).size());
+
         } catch (IOException e) {
             System.err.println("ERROR: Graph file with the provided name is not found.");
             System.exit(1);

@@ -1,6 +1,7 @@
 package project1.algorithm;
 
 import project1.data.ScheduleNode;
+import project1.gui.SolveAlgorithm;
 
 import java.util.HashSet;
 import java.util.PriorityQueue;
@@ -17,6 +18,7 @@ public class AStar {
     private final HashSet<ScheduleNode> scheduleNodesHashSet = new HashSet<>();
     private final int _processors;
     private final int _numOfCores;
+    private SolveAlgorithm _caller;
 
     /**
      * Constructor of the AStar class.
@@ -27,6 +29,13 @@ public class AStar {
     public AStar(int processors, int numOfCores) {
         _processors = processors;
         _numOfCores = numOfCores;
+    }
+
+    // Constructor for visualised
+    public AStar(int processors, int numOfCores, SolveAlgorithm caller) {
+        _processors = processors;
+        _numOfCores = numOfCores;
+        _caller = caller;
     }
 
     /**
@@ -43,24 +52,28 @@ public class AStar {
         _openList.addAll(schedule.expandTree(_numOfCores));
 
         while (!_openList.isEmpty()) {
-            // pick a node n from O with the best value for f(n).
+            // pick a node n from O with the best value for f
             ScheduleNode chosenSchedule = _openList.peek();
 
             if (chosenSchedule == null) {
                 continue;
             }
 
-            // check if it is goal state
+            if (_caller != null) {
+                _caller.updateSchedule(chosenSchedule.getScheduleMap());
+            }
+
+            // goal state
             if (chosenSchedule.isTarget()) {
                 ScheduleNode.threadPoolExecutor.shutdown();
                 return chosenSchedule;
             }
 
-            // Execute expandTree function in ScheduleNode class to find children schedules of the current ScheduleNode.
-            // Calculate and set the f(n) cost of each child ScheduleNode.
             HashSet<ScheduleNode> childrenOfChosen = new HashSet<>(chosenSchedule.expandTree(_numOfCores));
 
-            // Only add unique schedules to the open list so there are no repeats.
+            // calculate and set the cost of each one
+
+            // Only add unique schedules to the open list so no repeats
             for (ScheduleNode sn : childrenOfChosen) {
                 if (!scheduleNodesHashSet.contains(sn)) {
                     _openList.add(sn);
@@ -68,10 +81,9 @@ public class AStar {
                 }
             }
 
-            // Remove from open list after it is expanded.
             _openList.remove(chosenSchedule);
         }
-        // return that there's no solution.
+        // return that there's no solution
         ScheduleNode.threadPoolExecutor.shutdown();
         return new ScheduleNode(_processors);
     }

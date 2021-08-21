@@ -101,7 +101,7 @@ public class GraphReader {
                 }
             }
             else {
-
+                // TODO: output the line even though it's not needed
             }
         }
 
