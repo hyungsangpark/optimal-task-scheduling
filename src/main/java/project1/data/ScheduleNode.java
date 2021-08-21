@@ -45,7 +45,6 @@ public class ScheduleNode {
         TotalFCostCalculator.getInstance().calculateAndSetFCost(this);
     }
 
-    // TODO: test and maybe change
     public int findEarliestStartTime(int pNum, String nodeId) {
         if (_graphReader.getParentsOfNodeMap().get(nodeId) == null) {
             return _scheduleMap.get(pNum).getCurrentFinishTIme();
@@ -54,23 +53,13 @@ public class ScheduleNode {
         int earliestPossibleStartTime = 0;
         String[] parentsOfNode = _graphReader.getParentsOfNodeMap().get(nodeId);
 
-        for (Integer index : _scheduleMap.keySet()) {
-            Processor p = _scheduleMap.get(index);
+        for (int i = 0; i < _scheduleMap.size(); i++) {
+            Processor p = _scheduleMap.get(i);
 
-            for (String parentNode : parentsOfNode) {
-                int currentStartTime = _scheduleMap.get(pNum).getCurrentFinishTIme();
-
+            for (int j = 0; j < parentsOfNode.length; j++) {
+                String parentNode = parentsOfNode[j];
                 if (p.getNodesInScheduleMap().containsKey(parentNode)) {
-                    if (p.getPid() != pNum) {
-                        int parentFinishTIme = p.getNodesInScheduleMap().get(parentNode) + _graphReader.getNodeWeightsMap().get(parentNode);
-                        int transitionCost = _graphReader.getEdgeWeightMap().get(parentNode + "->" + nodeId);
-
-                        if ((parentFinishTIme >= currentStartTime)
-                                || (parentFinishTIme + transitionCost >= currentStartTime)) {
-                            currentStartTime = parentFinishTIme + transitionCost;
-                        }
-                    }
-                    earliestPossibleStartTime = Math.max(earliestPossibleStartTime,currentStartTime);
+                    earliestPossibleStartTime = Math.max(earliestPossibleStartTime,earliestStartTimeHelper(parentNode,nodeId,pNum,p));
                 }
             }
         }
@@ -78,36 +67,45 @@ public class ScheduleNode {
         return earliestPossibleStartTime;
     }
 
-    // may or may not work currently plz check back again later
+    private int earliestStartTimeHelper(String parentNode, String nodeId, int pNum, Processor p) {
+        int bestStarTime = _scheduleMap.get(pNum).getCurrentFinishTIme();
+
+        if (p.getPid() != pNum) {
+            int parentFinishTIme = p.getNodesInScheduleMap().get(parentNode) + _graphReader.getNodeWeightsMap().get(parentNode);
+            int transitionCost = _graphReader.getEdgeWeightMap().get(parentNode + "->" + nodeId);
+            if ((bestStarTime <= transitionCost + parentFinishTIme) || bestStarTime <= parentFinishTIme)
+                bestStarTime = parentFinishTIme + transitionCost;
+        }
+
+        return bestStarTime;
+    }
+
     public Set<String> getTaskToSchedule() {
         Set<String> schedulableNodes = new HashSet<>();
         Set<String> tasksInSchedule = getTasksInScheduleNode();
 
-        String[] nodeIds = _graphReader.getNodeIdArr();
-        HashMap<String, String[]> parentsOfNodeMap = _graphReader.getParentsOfNodeMap();
-
-        for (String nodeId : nodeIds) {
-            boolean parentsComplete = true;
-
-            // if the task is not already scheduled
-            if (!tasksInSchedule.contains(nodeId)) {
-                // check if its parents have already been done
-                if (parentsOfNodeMap.containsKey(nodeId)) {
-                    String[] parents = parentsOfNodeMap.get(nodeId);
-                    for (String parent : parents) {
-                        if (!tasksInSchedule.contains(parent)) {
-                            parentsComplete = false;
-                            break;
-                        }
-                    }
-                }
-                if (parentsComplete) {
-                    schedulableNodes.add(nodeId);
-                }
+        for (String nodeId : _graphReader.getNodeIdArr()) {
+            if (!tasksInSchedule.contains(nodeId) && checkIfParentsComplete(nodeId,tasksInSchedule)) {
+                schedulableNodes.add(nodeId);
             }
         }
 
         return schedulableNodes;
+    }
+
+    private boolean checkIfParentsComplete(String nodeId,Set<String> tasksInSchedule) {
+        HashMap<String, String[]> parentsOfNodeMap = _graphReader.getParentsOfNodeMap();
+
+        if (parentsOfNodeMap.containsKey(nodeId)) {
+            String[] parents = parentsOfNodeMap.get(nodeId);
+            for (String parent : parents) {
+                if (!tasksInSchedule.contains(parent)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     public Set<String> getTasksInScheduleNode() {
