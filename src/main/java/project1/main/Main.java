@@ -29,9 +29,10 @@ public class Main {
 //            GraphReader.getInstance().resetGraphReader();
 //        }
 
-        args = new String[2];
+        args = new String[3];
         args[0] = "./src/test/graphs/sample.dot";
         args[1] = "2";
+        args[2] = "-v";
         run(args);
     }
 

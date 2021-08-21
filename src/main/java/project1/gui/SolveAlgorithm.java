@@ -48,5 +48,6 @@ public class SolveAlgorithm extends Thread {
 
     public void updateSchedule(HashMap<Integer, Processor> scheduleMap) {
         this.scheduleMap = scheduleMap;
+        isChanged = true;
     }
 }

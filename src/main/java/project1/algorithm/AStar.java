@@ -40,6 +40,10 @@ public class AStar {
                 continue;
             }
 
+            if(_caller != null) {
+                _caller.updateSchedule(chosenSchedule.getScheduleMap());
+            }
+
             // goal state
             if (chosenSchedule.isTarget()) {
                 ScheduleNode.threadPoolExecutor.shutdown();

@@ -106,7 +106,7 @@ public class Controller implements Initializable {
         // Essentially a list to store schedule blocks to plot.
         XYChart.Series<String, Number> schedulesToPlot = new XYChart.Series<>();
 
-        for (int processorIndex = 8; processorIndex > 0; processorIndex--) {
+        for (int processorIndex = numProcessors; processorIndex > 0; processorIndex--) {
             Processor processor = schedules.get(processorIndex);
             if (processor == null) {
                 addBlock(schedulesToPlot.getData(), processorIndex, 1, true);
