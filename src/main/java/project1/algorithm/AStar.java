@@ -31,7 +31,12 @@ public class AStar {
         _numOfCores = numOfCores;
     }
 
-    // Constructor for visualised
+    /**
+     * Constructor of the Astar class for visualised.
+     * @param processors    number of processors for the scheduler problem.
+     * @param numOfCores    number of cores used for parallelisation.
+     * @param caller    SolveAlgorithm object used to communicate with the GUI.
+     */
     public AStar(int processors, int numOfCores, SolveAlgorithm caller) {
         _processors = processors;
         _numOfCores = numOfCores;
@@ -59,6 +64,7 @@ public class AStar {
                 continue;
             }
 
+            // If visualisation is turned on
             if (_caller != null) {
                 _caller.updateSchedule(chosenSchedule.getScheduleMap());
             }

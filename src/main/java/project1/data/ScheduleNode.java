@@ -92,6 +92,12 @@ public class ScheduleNode {
         return newChildSchedule;
     }
 
+    /**
+     * This method adds new task nodes to _scheduleMap.
+     * @param pNum  processor number.
+     * @param nodeId    name/ID of a task node.
+     */
+
     private void addNewNodeTask(int pNum, String nodeId) {
         _scheduleMap.get(pNum).addNode(nodeId, findEarliestStartTime(pNum,nodeId), _graphReader.getNodeWeightsMap().get(nodeId));
         TotalFCostCalculator.getInstance().calculateAndSetFCost(this);
@@ -271,6 +277,11 @@ public class ScheduleNode {
     public void setFCost(double _FCost) {
         this._FCost = _FCost;
     }
+
+    /**
+     * This method gets the optimal time.
+     * @return  The optimal time.
+     */
 
     public int getOptimalTime() {
         // Since variable changes inside a lambda function, the value is wrapped in an int array.
