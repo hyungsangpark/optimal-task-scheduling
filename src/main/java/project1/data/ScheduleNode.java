@@ -9,34 +9,54 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+/**
+ * This ScheduleNode class stores all the information of a tree node in the A* algorithm. It is also used for the
+ * expansion of the search tree. The package java.util.concurrent is used for parallelisation of the search.
+ */
+
 public class ScheduleNode {
     GraphReader _graphReader = GraphReader.getInstance();
     private final HashMap<Integer, Processor> _scheduleMap = new HashMap<>();
     public static ExecutorService threadPoolExecutor;
     private double _FCost = 0;
 
-    //For root schedule node(node with no tasks assigned)
+    /**
+     * Constructor for root schedule node(node with no tasks assigned).
+     * @param _processors   Number of processors.
+     */
+
     public ScheduleNode(int _processors) {
         for (int i = 0; i < _processors; i++) {
             _scheduleMap.put(i, new Processor(i));
         }
     }
 
-    //For normal schedule nodes
+    /**
+     * Constructor for normal schedule nodes.
+     * @param parent    The parent ScheduleNode.
+     */
+
     public ScheduleNode(ScheduleNode parent) {
         copyParent(parent);
     }
 
-    //Expand the tree and return newly created ScheduleNodes
+    /**
+     * Expand the tree and return newly created ScheduleNodes. Parallelisation is done in this method.
+     * @param numOfCores    The number of cores used for parallelisation.
+     * @return  A HashSet of ScheduleNodes that has been expanded.
+     */
+
     public HashSet<ScheduleNode> expandTree(int numOfCores) {
         HashSet<ScheduleNode> newSchedules = new HashSet<>();
         Set<String> schedulableNodes = getTaskToSchedule();
 
+        // If parallelisation is not turned on.
         if (numOfCores == 1) {
             for (String nodeId : schedulableNodes) {
                 newSchedules.addAll(createChildren(nodeId));
             }
         }
+        // If there is parallelisation.
         else {
             ArrayList<Callable<HashSet<ScheduleNode>>> tasksToComplete = new ArrayList<>();
             schedulableNodes.forEach(nodeId -> tasksToComplete.add(() -> createChildren(nodeId)));
@@ -55,6 +75,12 @@ public class ScheduleNode {
         return newSchedules;
     }
 
+    /**
+     * Method that creates children ScheduleNode.
+     * @param nodeId    Name/ID of the task.
+     * @return  HashSet of ScheduleNodes(children that got expanded).
+     */
+
     private HashSet<ScheduleNode> createChildren(String nodeId) {
         HashSet<ScheduleNode> newChildSchedule = new HashSet<>();
 
@@ -71,6 +97,13 @@ public class ScheduleNode {
         _scheduleMap.get(pNum).addNode(nodeId, findEarliestStartTime(pNum,nodeId), _graphReader.getNodeWeightsMap().get(nodeId));
         TotalFCostCalculator.getInstance().calculateAndSetFCost(this);
     }
+
+    /**
+     * Method to find the earliest start time.
+     * @param pNum  processor number
+     * @param nodeId    name/ID of a task node.
+     * @return
+     */
 
     public int findEarliestStartTime(int pNum, String nodeId) {
         if (_graphReader.getParentsOfNodeMap().get(nodeId) == null) {
@@ -166,6 +199,11 @@ public class ScheduleNode {
 
         return totalIdleTime;
     }
+
+    /**
+     * Method to copy the information of the parent's ScheduleNode to its own.
+     * @param parent
+     */
 
     private void copyParent(ScheduleNode parent) {
         for (int i = 0; i < parent.getScheduleMap().size(); i++) {

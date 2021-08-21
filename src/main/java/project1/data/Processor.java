@@ -6,6 +6,11 @@ import project1.IO.GraphReader;
 
 import java.util.HashMap;
 
+/**
+ * This Processor class is used to represent a schedule of one processor. One ScheduleNode would have multiple Processor
+ * objects to represent its full schedule.
+ */
+
 public class Processor {
     // node to start time
     private HashMap<String, Integer> _nodesInScheduleMap;
@@ -16,17 +21,32 @@ public class Processor {
     private int _currentFinishTIme;
     private int _idleTime;
 
-    // New processor with no parent constructor
+    /**
+     * New processor with no parent constructor.
+     * @param pid   processor number/ID.
+     */
+
     public Processor(int pid) {
         _pid = pid;
         _nodesInScheduleMap = new HashMap<>();
         _nodesOrderMap = new HashMap<>();
     }
 
-    // New child processor with a parent
+    /**
+     * New child processor with a parent.
+     * @param parentProcessor   parent's processor object.
+     */
+
     public Processor(Processor parentProcessor) {
         copyParent(parentProcessor);
     }
+
+    /**
+     * addNode adds tasks nodes into _nodesInScheduleMap HashMap.
+     * @param nodeId    name/ID of the task node.
+     * @param startTime schedule start time of the task.
+     * @param weight    weight of the node.
+     */
 
     public void addNode(String nodeId, int startTime, int weight) {
         _nodesInScheduleMap.put(nodeId,startTime);
@@ -49,6 +69,11 @@ public class Processor {
         }
     }
 
+    /**
+     * Copy information of the parent's processor object to its own.
+     * @param parentProcessor   parent's processor object.
+     */
+
     private void copyParent(Processor parentProcessor) {
         _pid = parentProcessor.getPid();
         _nodesOrderMap = new HashMap<>(parentProcessor.getNodesOrderMap());
@@ -56,21 +81,45 @@ public class Processor {
         _nodesInScheduleMap = new HashMap<>(parentProcessor.getNodesInScheduleMap());
     }
 
+    /**
+     * Getter of _nodesInScheduleMap.
+     * @return  A HashMap of tasks nodes in this schedule.
+     */
     public HashMap<String, Integer> getNodesInScheduleMap() {
         return _nodesInScheduleMap;
     }
+
+    /**
+     * Getter of _nodesOrderMap.
+     * @return  A HashMap of tasks nodes in this schedule in order.
+     */
 
     public HashMap<Integer, String> getNodesOrderMap() {
         return _nodesOrderMap;
     }
 
+    /**
+     * Getter of _pid.
+     * @return  processor id.
+     */
+
     public int getPid() {
         return _pid;
     }
 
+    /**
+     * Getter of _currentFinishTIme.
+     * @return The current finish time of the schedule.
+     */
+
     public int getCurrentFinishTIme() {
         return _currentFinishTIme;
     }
+
+    /**
+     * Getter of _idleTime.
+     * @return  The idle time.
+     */
 
     public int getIdleTime() {
         return _idleTime;
