@@ -4,13 +4,15 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import project1.IO.GraphReader;
 import project1.algorithm.TotalFCostCalculator;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 public class ScheduleNode {
     GraphReader _graphReader = GraphReader.getInstance();
     private final HashMap<Integer, Processor> _scheduleMap = new HashMap<>();
+    public static ExecutorService threadPoolExecutor;
     private double _FCost = 0;
 
     //For root schedule node(node with no tasks assigned)
@@ -26,18 +28,43 @@ public class ScheduleNode {
     }
 
     //Expand the tree and return newly created ScheduleNodes
-    public HashSet<ScheduleNode> expandTree() {
+    public HashSet<ScheduleNode> expandTree(int numOfCores) {
         HashSet<ScheduleNode> newSchedules = new HashSet<>();
+        Set<String> schedulableNodes = getTaskToSchedule();
 
-        for (String nodeId : getTaskToSchedule()) {
-            for (int j = 0; j < _scheduleMap.size(); j++) {
-                ScheduleNode newChildSchedule = new ScheduleNode(this);
-                newChildSchedule.addNewNodeTask(j,nodeId);
-                newSchedules.add(newChildSchedule);
+        if (numOfCores == 1) {
+            for (String nodeId : schedulableNodes) {
+                newSchedules.addAll(createChildren(nodeId));
             }
+        }
+        else {
+            ArrayList<Callable<HashSet<ScheduleNode>>> tasksToComplete = new ArrayList<>();
+            schedulableNodes.forEach(nodeId -> tasksToComplete.add(() -> createChildren(nodeId)));
+
+            try {
+                for (Future<HashSet<ScheduleNode>> task : threadPoolExecutor.invokeAll(tasksToComplete)) {
+                    newSchedules.addAll(task.get());
+                }
+
+            } catch (Exception  e) {
+                e.printStackTrace();
+            }
+
         }
 
         return newSchedules;
+    }
+
+    private HashSet<ScheduleNode> createChildren(String nodeId) {
+        HashSet<ScheduleNode> newChildSchedule = new HashSet<>();
+
+        for (int j = 0; j < _scheduleMap.size(); j++) {
+            ScheduleNode newSN = new ScheduleNode(this);
+            newSN.addNewNodeTask(j,nodeId);
+            newChildSchedule.add(newSN);
+        }
+
+        return newChildSchedule;
     }
 
     private void addNewNodeTask(int pNum, String nodeId) {

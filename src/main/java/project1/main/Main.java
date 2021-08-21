@@ -14,24 +14,24 @@ public class Main {
 
     public static void main(String[] args) {
 
-        File[] files = new File("./src/test/graphs/").listFiles();
+//        File[] files = new File("./src/test/graphs/").listFiles();
+//
+//        for (File file : files) {
+//            if (file.isFile()) {
+//                args = new String[2];
+//                args[0] = file.getPath();
+//                args[1] = "2";
+//
+//                run(args);
+//                System.out.println("Finished file: " + file.getName());
+//            }
+//            GraphReader.getInstance().resetGraphReader();
+//        }
 
-        for (File file : files) {
-            if (file.isFile()) {
-                args = new String[2];
-                args[0] = file.getPath();
-                args[1] = "2";
-
-                run(args);
-                System.out.println("Finished file: " + file.getName());
-            }
-            GraphReader.getInstance().resetGraphReader();
-        }
-
-//        args = new String[2];
-//        args[0] = "./src/test/graphs/sample.dot";
-//        args[1] = "2";
-//        run(args);
+        args = new String[2];
+        args[0] = "./src/test/graphs/sample.dot";
+        args[1] = "2";
+        run(args);
     }
 
     public static void run(String[] args) {
@@ -117,13 +117,7 @@ public class Main {
 
             // Run ALGORITHM to receive schedule.
 
-//            ArrayList<Integer> test = new ArrayList<>();
-//            for (String nodeId : graphReader.getNodeIdArr()) {
-//                test.add(TotalFCostCalculator.bottomLevelCost(nodeId));
-//            }
-//            System.out.println(test);
-
-            AStar newSearch = new AStar(numProcessors);
+            AStar newSearch = new AStar(numProcessors, numParallelCores);
             ScheduleNode result = newSearch.aStarSearch();
 
             // Record the end time.

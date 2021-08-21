@@ -23,13 +23,17 @@ public class ValidityAndOptimalityTester {
     @Rule
     public Timeout globalTimeout = new Timeout(5000);
 
+    /**
+     * SEQUENTIAL
+     */
+
     @Test
     public void testEmptyGraph() {
         ValidOutputTester validator = new ValidOutputTester();
 
         String inputFileName = graphDir + "EmptyGraph.dot";
         String outputFileName = inputFileName.replace(".dot", "-output.dot");
-        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName));
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,1));
         assertEquals(0, validator.getFinishTime());
         deleteOutput(outputFileName);
     }
@@ -40,7 +44,7 @@ public class ValidityAndOptimalityTester {
 
         String inputFileName = graphDir + "1Node.dot";
         String outputFileName = inputFileName.replace(".dot", "-output.dot");
-        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName));
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,1));
         assertEquals(21, validator.getFinishTime());
         deleteOutput(outputFileName);
     }
@@ -51,7 +55,7 @@ public class ValidityAndOptimalityTester {
 
         String inputFileName = graphDir + "5Nodes0edges.dot";
         String outputFileName = inputFileName.replace(".dot", "-output.dot");
-        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName));
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,1));
         assertEquals(78, validator.getFinishTime());
         deleteOutput(outputFileName);
     }
@@ -62,7 +66,7 @@ public class ValidityAndOptimalityTester {
 
         String inputFileName = graphDir + "5Nodes7Edges.dot";
         String outputFileName = inputFileName.replace(".dot", "-output.dot");
-        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName));
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,1));
         assertEquals(154, validator.getFinishTime());
         deleteOutput(outputFileName);
     }
@@ -73,7 +77,7 @@ public class ValidityAndOptimalityTester {
 
         String inputFileName = graphDir + "5NodesMaximalEdges.dot";
         String outputFileName = inputFileName.replace(".dot", "-output.dot");
-        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName));
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,1));
         assertEquals(154, validator.getFinishTime());
         deleteOutput(outputFileName);
     }
@@ -84,7 +88,7 @@ public class ValidityAndOptimalityTester {
 
         String inputFileName = graphDir + "5NodesSequentialEdges.dot";
         String outputFileName = inputFileName.replace(".dot", "-output.dot");
-        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName));
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,1));
         assertEquals(154, validator.getFinishTime());
         deleteOutput(outputFileName);
     }
@@ -95,7 +99,7 @@ public class ValidityAndOptimalityTester {
 
         String inputFileName = graphDir + "15Nodes10Edges.dot";
         String outputFileName = inputFileName.replace(".dot", "-output.dot");
-        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName));
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,1));
         assertEquals(271, validator.getFinishTime());
         deleteOutput(outputFileName);
     }
@@ -106,7 +110,7 @@ public class ValidityAndOptimalityTester {
 
         String inputFileName = graphDir + "15Nodes80Edges.dot";
         String outputFileName = inputFileName.replace(".dot", "-output.dot");
-        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName));
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,1));
         assertEquals(516, validator.getFinishTime());
         deleteOutput(outputFileName);
     }
@@ -117,7 +121,7 @@ public class ValidityAndOptimalityTester {
 
         String inputFileName = graphDir + "Nodes_7_OutTree.dot";
         String outputFileName = inputFileName.replace(".dot", "-output.dot");
-        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName));
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,1));
         assertEquals(28, validator.getFinishTime());
         deleteOutput(outputFileName);
     }
@@ -128,7 +132,7 @@ public class ValidityAndOptimalityTester {
 
         String inputFileName = graphDir + "Nodes_8_Random.dot";
         String outputFileName = inputFileName.replace(".dot", "-output.dot");
-        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName));
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,1));
         assertEquals(581, validator.getFinishTime());
         deleteOutput(outputFileName);
     }
@@ -139,7 +143,7 @@ public class ValidityAndOptimalityTester {
 
         String inputFileName = graphDir + "Nodes_9_SeriesParallel.dot";
         String outputFileName = inputFileName.replace(".dot", "-output.dot");
-        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName));
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,1));
         assertEquals(55, validator.getFinishTime());
         deleteOutput(outputFileName);
     }
@@ -150,7 +154,7 @@ public class ValidityAndOptimalityTester {
 
         String inputFileName = graphDir + "Nodes_10_Random.dot";
         String outputFileName = inputFileName.replace(".dot", "-output.dot");
-        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName));
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,1));
         assertEquals(50, validator.getFinishTime());
         deleteOutput(outputFileName);
     }
@@ -161,7 +165,7 @@ public class ValidityAndOptimalityTester {
 
         String inputFileName = graphDir + "Nodes_11_OutTree.dot";
         String outputFileName = inputFileName.replace(".dot", "-output.dot");
-        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName));
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,1));
         assertEquals(350, validator.getFinishTime());
         deleteOutput(outputFileName);
     }
@@ -172,12 +176,170 @@ public class ValidityAndOptimalityTester {
 
         String inputFileName = graphDir + "sample.dot";
         String outputFileName = inputFileName.replace(".dot", "-output.dot");
-        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName));
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,1));
         assertEquals(8, validator.getFinishTime());
         deleteOutput(outputFileName);
     }
 
-    private boolean testValidity(ValidOutputTester validOutputTester, String graphFileName, int numProcessors, String outputFileName) {
+    /**
+     * PARALLEL
+     */
+
+    @Test
+    public void testEmptyGraphP() {
+        ValidOutputTester validator = new ValidOutputTester();
+
+        String inputFileName = graphDir + "EmptyGraph.dot";
+        String outputFileName = inputFileName.replace(".dot", "-output.dot");
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,4));
+        assertEquals(0, validator.getFinishTime());
+        deleteOutput(outputFileName);
+    }
+
+    @Test
+    public void test1NodeTwoP() {
+        ValidOutputTester validator = new ValidOutputTester();
+
+        String inputFileName = graphDir + "1Node.dot";
+        String outputFileName = inputFileName.replace(".dot", "-output.dot");
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,4));
+        assertEquals(21, validator.getFinishTime());
+        deleteOutput(outputFileName);
+    }
+
+    @Test
+    public void test5Nodes0EdgesP() {
+        ValidOutputTester validator = new ValidOutputTester();
+
+        String inputFileName = graphDir + "5Nodes0edges.dot";
+        String outputFileName = inputFileName.replace(".dot", "-output.dot");
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,4));
+        assertEquals(78, validator.getFinishTime());
+        deleteOutput(outputFileName);
+    }
+
+    @Test
+    public void test5Nodes7EdgesP() {
+        ValidOutputTester validator = new ValidOutputTester();
+
+        String inputFileName = graphDir + "5Nodes7Edges.dot";
+        String outputFileName = inputFileName.replace(".dot", "-output.dot");
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,4));
+        assertEquals(154, validator.getFinishTime());
+        deleteOutput(outputFileName);
+    }
+
+    @Test
+    public void test5NodesMaximalEdgesP() {
+        ValidOutputTester validator = new ValidOutputTester();
+
+        String inputFileName = graphDir + "5NodesMaximalEdges.dot";
+        String outputFileName = inputFileName.replace(".dot", "-output.dot");
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,4));
+        assertEquals(154, validator.getFinishTime());
+        deleteOutput(outputFileName);
+    }
+
+    @Test
+    public void test5NodesSequentialEdgesP() {
+        ValidOutputTester validator = new ValidOutputTester();
+
+        String inputFileName = graphDir + "5NodesSequentialEdges.dot";
+        String outputFileName = inputFileName.replace(".dot", "-output.dot");
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,4));
+        assertEquals(154, validator.getFinishTime());
+        deleteOutput(outputFileName);
+    }
+
+    @Test
+    public void test15Nodes10EdgesP() {
+        ValidOutputTester validator = new ValidOutputTester();
+
+        String inputFileName = graphDir + "15Nodes10Edges.dot";
+        String outputFileName = inputFileName.replace(".dot", "-output.dot");
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,4));
+        assertEquals(271, validator.getFinishTime());
+        deleteOutput(outputFileName);
+    }
+
+    @Test
+    public void test15Nodes80EdgesP() {
+        ValidOutputTester validator = new ValidOutputTester();
+
+        String inputFileName = graphDir + "15Nodes80Edges.dot";
+        String outputFileName = inputFileName.replace(".dot", "-output.dot");
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,4));
+        assertEquals(516, validator.getFinishTime());
+        deleteOutput(outputFileName);
+    }
+
+    @Test
+    public void testNodes7OutTreeP() {
+        ValidOutputTester validator = new ValidOutputTester();
+
+        String inputFileName = graphDir + "Nodes_7_OutTree.dot";
+        String outputFileName = inputFileName.replace(".dot", "-output.dot");
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,4));
+        assertEquals(28, validator.getFinishTime());
+        deleteOutput(outputFileName);
+    }
+
+    @Test
+    public void TestNodes8RandomP() {
+        ValidOutputTester validator = new ValidOutputTester();
+
+        String inputFileName = graphDir + "Nodes_8_Random.dot";
+        String outputFileName = inputFileName.replace(".dot", "-output.dot");
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,4));
+        assertEquals(581, validator.getFinishTime());
+        deleteOutput(outputFileName);
+    }
+
+    @Test
+    public void testNodes9SeriesParallelP() {
+        ValidOutputTester validator = new ValidOutputTester();
+
+        String inputFileName = graphDir + "Nodes_9_SeriesParallel.dot";
+        String outputFileName = inputFileName.replace(".dot", "-output.dot");
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,4));
+        assertEquals(55, validator.getFinishTime());
+        deleteOutput(outputFileName);
+    }
+
+    @Test
+    public void testNodes10RandomP() {
+        ValidOutputTester validator = new ValidOutputTester();
+
+        String inputFileName = graphDir + "Nodes_10_Random.dot";
+        String outputFileName = inputFileName.replace(".dot", "-output.dot");
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,4));
+        assertEquals(50, validator.getFinishTime());
+        deleteOutput(outputFileName);
+    }
+
+    @Test
+    public void TestNodes11OutTreeP() {
+        ValidOutputTester validator = new ValidOutputTester();
+
+        String inputFileName = graphDir + "Nodes_11_OutTree.dot";
+        String outputFileName = inputFileName.replace(".dot", "-output.dot");
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,4));
+        assertEquals(350, validator.getFinishTime());
+        deleteOutput(outputFileName);
+    }
+
+    @Test
+    public void testSampleP() {
+        ValidOutputTester validator = new ValidOutputTester();
+
+        String inputFileName = graphDir + "sample.dot";
+        String outputFileName = inputFileName.replace(".dot", "-output.dot");
+        assertTrue(testValidity(validator, inputFileName, numOfP, outputFileName,4));
+        assertEquals(8, validator.getFinishTime());
+        deleteOutput(outputFileName);
+    }
+
+    private boolean testValidity(ValidOutputTester validOutputTester, String graphFileName, int numProcessors, String outputFileName, int cores) {
         GraphReader graphReader = GraphReader.getInstance();
         try {
             graphReader.loadGraphData(graphFileName);
@@ -187,24 +349,12 @@ public class ValidityAndOptimalityTester {
 
         // Only for testing
         TotalFCostCalculator.getInstance().resetGraphReader();
-//        GraphLoader graphLoader = new GraphLoader();
-//
-//        Graph graph = null;
-//        try {
-//            graph = graphLoader.readGraph(graphFileName);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
 
-//        DFS dfs = new DFS(graph, numOfP);
-//        dfs.branchAndBoundStart();
-        AStar aStar2 = new AStar(numOfP);
+        AStar aStar2 = new AStar(numOfP,cores);
         ScheduleNode result = aStar2.aStarSearch();
 
         GraphWriter graphWriter = new GraphWriter();
         graphWriter.outputGraphData(outputFileName,result.getScheduleMap());
-
-//        graphLoader.writeGraph(graph, outputFileName);
 
         GraphReader.getInstance().resetGraphReader();
 
