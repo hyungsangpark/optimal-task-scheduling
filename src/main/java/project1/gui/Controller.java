@@ -10,7 +10,8 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import project1.data.NewScheduleNode;
+import project1.IO.GraphReader;
+import project1.data.Processor;
 import project1.main.Parameters;
 
 import java.net.URL;
@@ -94,7 +95,7 @@ public class Controller implements Initializable {
      *
      * @param schedules List of schedules to be plotted in the graph.
      */
-    public void updateSchedule(NewScheduleNode[] schedules) {
+    public void updateSchedule(HashMap<Integer, Processor> schedules) {
         // Clear previous data from the graph.
         scheduleGraph.getData().clear();
 
@@ -105,9 +106,49 @@ public class Controller implements Initializable {
         // Essentially a list to store schedule blocks to plot.
         XYChart.Series<String, Number> schedulesToPlot = new XYChart.Series<>();
 
+        for (int processorIndex = 8; processorIndex > 0; processorIndex--) {
+            Processor processor = schedules.get(processorIndex);
+            if (processor == null) {
+                addBlock(schedulesToPlot.getData(), processorIndex, 1, true);
+            } else {
+                int finalProcessorIndex = processorIndex;
+
+                processor.getNodesOrderMap().forEach((index, node) -> {
+                    int startTime = processor.getNodesInScheduleMap().get(node);
+                    int weight = GraphReader.getInstance().getNodeWeightsMap().get(node);
+
+                    // If there is a gap between the earliest possible start time and current schedule's start time,
+                    // Create a transparent block which would calibrate the actual schedule block into a correct position.
+                    if (earliestStartTimes[finalProcessorIndex - 1] < startTime) {
+                        addBlock(schedulesToPlot.getData(),
+                                finalProcessorIndex,
+                                startTime - earliestStartTimes[finalProcessorIndex - 1],
+                                true);
+                    }
+
+                    // Plot a block representing a schedule to be plotted on to the schedule graph.
+                    addBlock(schedulesToPlot.getData(),
+                            finalProcessorIndex,
+                            weight,
+                            false);
+
+                    // Update the earliest start time the corresponding processor to the end time of current schedule plotted.
+                    earliestStartTimes[finalProcessorIndex - 1] = startTime + weight;
+                });
+            }
+        }
+
+        // Add the series of blocks to be plotted to the graph.
+        scheduleGraph.getData().add(schedulesToPlot);
+
+
+
+
+
+
         // The blocks are sorted in descending order of firstly their processor number, then their start time.
         // This is due to how JavaFX plots their graph.
-        Stream<NewScheduleNode> sortedSchedules = Arrays.stream(schedules).sorted();
+//        Stream<NewScheduleNode> sortedSchedules = Arrays.stream(schedules).sorted();
 
         /* A list of last processor added to the graph.
            It starts with a value of total number of processors + 1,
@@ -115,7 +156,7 @@ public class Controller implements Initializable {
 
            Also, this is an array which is expected to only have one value which suits the array name,
            since the array acts as a wrapper class to the integer value to be used in lambda expressions. */
-        int[] lastProcessorAdded = {numProcessors + 1};
+    /*  int[] lastProcessorAdded = {numProcessors + 1};
 
         // Add each schedule block into series.
         sortedSchedules.forEach(schedule -> {
@@ -155,9 +196,10 @@ public class Controller implements Initializable {
                 addBlock(schedulesToPlot.getData(), i, 1, true);
             }
         }
+    */
 
-        // Add the series of blocks to be plotted to the graph.
-        scheduleGraph.getData().add(schedulesToPlot);
+
+
     }
 
     /**

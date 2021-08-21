@@ -189,6 +189,13 @@ public class ScheduleNode {
         this._FCost = _FCost;
     }
 
+    public int getOptimalTime() {
+        // Since variable changes inside a lambda function, the value is wrapped in an int array.
+        int[] optimalTime = {-1};
+        _scheduleMap.forEach(((processorNumber, processor) -> {
+            if (processor.getCurrentFinishTime() > optimalTime[0]) optimalTime[0] = processor.getCurrentFinishTime();
+        }));
+        return optimalTime[0];
     }
 
     @Override

@@ -6,6 +6,7 @@ import project1.IO.GraphWriter;
 import project1.algorithm.AStar;
 import project1.algorithm.TotalFCostCalculator;
 import project1.data.ScheduleNode;
+import project1.gui.Visualiser;
 
 import java.io.File;
 import java.io.IOException;
@@ -116,24 +117,29 @@ public class Main {
             // Only for testing
             TotalFCostCalculator.getInstance().resetGraphReader();
 
-            // Record the start time.
-            long startTime = System.nanoTime();
+            if (parameters.isVisualised()) {
+                Visualiser.main(new String[0]);
+            } else {
+                // Record the start time.
+                long startTime = System.nanoTime();
 
-            // Run ALGORITHM to receive schedule.
-            AStar newSearch = new AStar(parameters.getNumProcessors(), parameters.getNumParallelCores());
-            ScheduleNode result = newSearch.aStarSearch();
+                // Run ALGORITHM to receive schedule.
+                AStar newSearch = new AStar(parameters.getNumProcessors(), parameters.getNumParallelCores());
+                ScheduleNode result = newSearch.aStarSearch();
 
-            // Record the end time.
-            long endTime = System.nanoTime();
-            long duration = (endTime - startTime)/1000;
+                // Record the end time.
+                long endTime = System.nanoTime();
+                long duration = (endTime - startTime)/1000;
 
-            GraphWriter graphWriter = new GraphWriter();
-            graphWriter.outputGraphData(parameters.getOutputName().replace("graphs","actualOutputs"),result.getScheduleMap());
+                GraphWriter graphWriter = new GraphWriter();
+                graphWriter.outputGraphData(parameters.getOutputName().replace("graphs","actualOutputs"),result.getScheduleMap());
 
-            // Output results.
-            System.out.println("\nOutput written to file named: " + parameters.getOutputName());
-            System.out.println("Time taken: " + duration + " ms");
-            System.out.println("Finish time of best schedule: " + result.getOptimalTime());
+                // Output results.
+                System.out.println("\nOutput written to file named: " + parameters.getOutputName());
+                System.out.println("Time taken: " + duration + " ms");
+                System.out.println("Finish time of best schedule: " + result.getOptimalTime());
+            }
+
 
         } catch (IOException e) {
             System.err.println("ERROR: Graph file with the provided name is not found.");

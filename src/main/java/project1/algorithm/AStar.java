@@ -12,10 +12,17 @@ public class AStar {
     private final HashSet<ScheduleNode> scheduleNodesHashSet = new HashSet<>();
     private final int _processors;
     private final int _numOfCores;
+    private SolveAlgorithm _caller;
 
     public AStar(int processors, int numOfCores) {
         _processors = processors;
         _numOfCores = numOfCores;
+    }
+
+    public AStar(int processors, int numOfCores, SolveAlgorithm caller) {
+        _processors = processors;
+        _numOfCores = numOfCores;
+        _caller = caller;
     }
 
     public ScheduleNode aStarSearch() {
