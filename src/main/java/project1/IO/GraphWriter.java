@@ -6,7 +6,17 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
+/**
+ * This class writes the output of the A* algorithm into a dot file.
+ */
+
 public class GraphWriter {
+
+    /**
+     * This method changes the format of the optimal schedule to a format that can eb used for the output dot file.
+     * @param schedule  The optimal schedule.
+     * @return  HashMap that is right formatted for the output dot file.
+     */
 
     private HashMap<String, int[]> formatOutputGraph(HashMap<Integer, Processor> schedule) {
         HashMap<String, int[]> nodeStartAndPNumMap = new HashMap<>();
@@ -27,6 +37,12 @@ public class GraphWriter {
 
         return nodeStartAndPNumMap;
     }
+
+    /**
+     * This method writes the optimal schedule into a new output dot file.
+     * @param outputFileName    The name of the output file.
+     * @param schedule  HashMap that represents the optimal schedule.
+     */
 
     public void outputGraphData(String outputFileName, HashMap<Integer, Processor> schedule) {
 
@@ -63,7 +79,7 @@ public class GraphWriter {
                 );
             }
 
-//            // Print edges
+            // Print edges
             for (String edge : edgeWeightMap.keySet()) {
                 String sourceNodeId = edge.substring(0, edge.indexOf("-"));
                 String destinationNodeId = edge.substring(edge.indexOf(">") + 1);

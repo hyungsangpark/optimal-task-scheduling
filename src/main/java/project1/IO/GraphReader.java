@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+/**
+ * This class reads the input dot graph into the data structure it uses for the A* search implementation.
+ */
+
 public class GraphReader {
     private String _graphId;
 
@@ -17,6 +21,11 @@ public class GraphReader {
 
     private static GraphReader _instance = null;
 
+    /**
+     * Get instance of the GraphReader object.
+     * @return  GraphReader object.
+     */
+
     public static GraphReader getInstance() {
         if (_instance == null) {
             _instance = new GraphReader();
@@ -25,11 +34,19 @@ public class GraphReader {
         return _instance;
     }
 
-    // For testing purpose
-    // Resets the singleton
+    /**
+     * This method is for testing purpose. It resets the singleton.
+     */
+
     public void resetGraphReader() {
         _instance = new GraphReader();
     }
+
+    /**
+     * This method reads the graph and load it into the data structure A* and the GUI use.
+     * @param inputFileName The name of the input dot file.
+     * @throws IOException  Error occured during the reading of data from the input file.
+     */
 
     public void loadGraphData(String inputFileName) throws IOException {
         InputStreamReader isr = new FileReader(inputFileName);
@@ -84,7 +101,7 @@ public class GraphReader {
                 }
             }
             else {
-                // TODO: output the line even though it's not needed
+
             }
         }
 
@@ -96,6 +113,13 @@ public class GraphReader {
 
         bfr.close();
     }
+
+    /**
+     * This method is executed in loadGraphData. It maps the relationship between two tasks nodes(edges).
+     * @param node1 Either child or parent task node.
+     * @param node2 Either child or parent task node.
+     * @param nodeMap   Either _childrenOfNodeMap or _parentsOfNodeMap.
+     */
 
     private void addNodeToMap(String node1, String node2, HashMap<String,String[]> nodeMap) {
         String[] newNodesOfNode;
@@ -112,29 +136,64 @@ public class GraphReader {
         nodeMap.put(node1,newNodesOfNode);
     }
 
+    /**
+     * Getter for _graphId.
+     * @return  The ID of the input dot graph.
+     */
+
     public String getGraphId() {
         return _graphId;
     }
+
+    /**
+     * Getter for _nodeIdArr.
+     * @return  The array of IDs of the task nodes.
+     */
 
     public String[] getNodeIdArr() {
         return _nodeIdArr;
     }
 
+    /**
+     * Getter of _nodeWeightsMap.
+     * @return  HashMap that represents the task nodes' weight.
+     */
+
     public HashMap<String, Integer> getNodeWeightsMap() {
         return _nodeWeightsMap;
     }
+
+    /**
+     * Getter of _parentsOfNodeMap.
+     * @return  HashMap that represents the parent task nodes.
+     */
 
     public HashMap<String, String[]> getParentsOfNodeMap() {
         return _parentsOfNodeMap;
     }
 
+    /**
+     * Getter of _childrenOfNodeMap.
+     * @return  HashMap that represents the children task nodes.
+     */
+
     public HashMap<String, String[]> getChildrenOfNodeMap() {
         return _childrenOfNodeMap;
     }
 
+    /**
+     * Getter of _edgeWeightMap.
+     * @return  HashMap that represents the edge weights of task nodes.
+     */
+
     public HashMap<String, Integer> getEdgeWeightMap() {
         return _edgeWeightMap;
     }
+
+    /**
+     * Getter of totalWeight.
+     * @return  Total weight of all task nodes.
+     */
 
     public double getTotalWeight() {
         return totalWeight;
