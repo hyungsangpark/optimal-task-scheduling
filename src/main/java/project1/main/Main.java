@@ -11,7 +11,15 @@ import project1.gui.Visualiser;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * This Main class provides the run of the entire task scheduler.
+ */
 public class Main {
+
+    /**
+     * This method gets the input graph, schedules the tasks with the input number of processors,
+     * and visualises the search of the solution through a GUI.
+     */
 
     public static void main(String[] args) {
 
@@ -35,6 +43,12 @@ public class Main {
         args[2] = "-v";
         run(args);
     }
+
+    /**
+     * This method is called by the main method and runs the entire task scheduler.
+     * @param args The input file name, number of processors to be used for scheduling,
+     *             and visualisation of the task scheduling.
+     */
 
     public static void run(String[] args) {
 

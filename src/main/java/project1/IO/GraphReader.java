@@ -45,7 +45,7 @@ public class GraphReader {
     /**
      * This method reads the graph and load it into the data structure A* and the GUI use.
      * @param inputFileName The name of the input dot file.
-     * @throws IOException  Error occured during the reading of data from the input file.
+     * @throws IOException  Error occurred during the reading of data from the input file.
      */
 
     public void loadGraphData(String inputFileName) throws IOException {
