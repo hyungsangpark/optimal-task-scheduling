@@ -28,4 +28,4 @@ java −jar scheduler.jar INPUT.dot P [OPTION]
 - `−o OUPUT` output file is named `OUTPUT` (default is INPUT−output.dot)
 
 ## Acknowledgements
-* Test cases - from Elisa
+* Elisa's test cases
