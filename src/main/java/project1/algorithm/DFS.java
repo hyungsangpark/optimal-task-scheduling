@@ -164,6 +164,11 @@ public class DFS {
                 solution = branchAndBound(nextSchedule, optimalSchedule, size + 1);
                 if (solution != null) {
                     optimalSchedule = solution;
+
+                    System.out.println("Optimal schedule is: ");
+                    for (int x = 0; x < optimalSchedule.length; x++) {
+                        System.out.println(optimalSchedule[x].getId());
+                    }
                 }
             }
         }
