@@ -26,3 +26,6 @@ java −jar scheduler.jar INPUT.dot P [OPTION]
 - `−p N` use `N` cores for execution in parallel (default is sequential)
 - `−v` visualise the search
 - `−o OUPUT` output file is named `OUTPUT` (default is INPUT−output.dot)
+
+## Acknowledgements
+* Test cases - from Elisa
