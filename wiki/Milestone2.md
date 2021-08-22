@@ -16,4 +16,5 @@ For more information, check the following links:
 * [Parallelization](Parallelization.md)
 * [Hash Collisions](Hash_Collisions.md)
 * [Visualization](Visualization.md)
+* [IO](IO.md)
 * [Testing](Testing.md)
