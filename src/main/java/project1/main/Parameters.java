@@ -12,6 +12,7 @@ public class Parameters {
     private int _numProcessors = 1;
     private int _numParallelCores = 1;
     private boolean _isVisualised = false;
+    private String _graphFileName = null;
     private String _outputName = null;
 
     /**
@@ -93,6 +94,14 @@ public class Parameters {
      */
     public void setOutputName(String outputName) {
         _outputName = outputName;
+    }
+
+    public String getGraphFileName() {
+        return _graphFileName;
+    }
+
+    public void setGraphFileName(String graphFileName) {
+        _graphFileName = graphFileName;
     }
 
 }
