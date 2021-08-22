@@ -8,4 +8,6 @@ Wiki Links:
 
 * [Milestone 1](https://github.com/SoftEng306-2021/project-1-project-1-team-10/blob/main/wiki/Milestone1.md)
 
+* [Milestone 2](Milestone2.md)
+
 For information on the project and how to run the application, access the README [here](https://github.com/SoftEng306-2021/project-1-project-1-team-10/blob/main/README.md). 
