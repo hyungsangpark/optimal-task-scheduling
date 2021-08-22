@@ -31,3 +31,4 @@ java −jar scheduler.jar INPUT.dot P [OPTION]
 * [Elisa's test cases](https://github.com/Milk-Yan/optimal-task-scheduling/tree/master/src/test)
 * [A* Tree Search](https://www.javatpoint.com/ai-informed-search-algorithms)
 * [Research on Java Parallelisation](https://www.baeldung.com/java-when-to-use-parallel-stream)
+* [Package java.util.concurrent](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/package-summary.html)
