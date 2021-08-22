@@ -74,7 +74,7 @@ public class Controller implements Initializable {
                     int sec = (int) (timeElapsedValue / 1000000000);
                     int ms = (int) (timeElapsedValue / 1000000) - sec * 1000;
 
-                    timeElapsed.setText(sec + "." + String.format("%3s", ms).replace(' ', '0') + " sec");
+                    timeElapsed.setText(sec + "." + String.format("%3s", ms).replace(' ', '0') + "s");
 
                     // If a schedule is changed, update schedule graph accordingly.
                     if (thread.isChanged()) {

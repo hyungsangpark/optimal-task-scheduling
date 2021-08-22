@@ -88,7 +88,7 @@
                         <Font size="18.0" />
                      </font>
                   </Text>
-                  <Text fx:id="timeElapsed" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="sidebar-value" text="0:00" />
+                  <Text fx:id="timeElapsed" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="sidebar-value" text="0.000s" />
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
