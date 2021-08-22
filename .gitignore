@@ -25,7 +25,6 @@ libs/
 out/
 .idea/
 *.iml
-META-INF/
 target/
 
 # Graph Files
