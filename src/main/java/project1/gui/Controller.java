@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import project1.IO.GraphReader;
+import project1.IO.GraphWriter;
 import project1.data.Processor;
 import project1.main.Parameters;
 
@@ -84,7 +85,7 @@ public class Controller implements Initializable {
                     // If a thread has finished its task, stop updating status and run end of schedule procedure.
                     if (thread.isFinished()) {
                         statusUpdater.stop();
-                        schedulingEnded(thread.getOptimalTime());
+                        schedulingEnded(thread.getSchedule(), thread.getOptimalTime());
                     }
                 }));
         statusUpdater.setCycleCount(Timeline.INDEFINITE);
@@ -164,12 +165,15 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Changes elements that needs to be updated such as optimal time produced and status.
-     * It also enables the button which was disabled.
+     * Writes the graph into an output dot file, then changes elements that needs to be updated such as
+     * optimal time produced and status. It also enables the button which was disabled.
      *
      * @param optimalTimeValue Optimal time retrieved from the output of the scheduler. i.e. max height in the graph.
      */
-    private void schedulingEnded(int optimalTimeValue) {
+    private void schedulingEnded(HashMap<Integer, Processor> scheduleMap, int optimalTimeValue) {
+        GraphWriter graphWriter = new GraphWriter();
+        graphWriter.outputGraphData(Parameters.getInstance().getOutputName(), scheduleMap);
+
         optimalTime.setText(String.valueOf(optimalTimeValue));
         status.setText("READY");
         startButton.setDisable(false);
