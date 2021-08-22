@@ -15,4 +15,5 @@ For more information, check the following links:
 * [Optimal Scheduler Solution](Optimal_Schdule_Solution.md)
 * [Parallelization](Parallelization.md)
 * [Hash Collisions](Hash_Collisions.md)
+* [Visualization](Visualization.md)
 * [Testing](Testing.md)
