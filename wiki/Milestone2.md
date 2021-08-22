@@ -12,6 +12,6 @@ The objective of Milestone 2 was to provide the complete implementation. In orde
 cases based on our testing. Therefore, our current implementation only uses A* to produce an optimal schedule.
 
 For more information, check the following links:
+* [Parallelization](Parallelization.md)
 * [Hash Collisions](Hash_Collisions.md)
 * [Testing](Testing.md)
-* [Parallelization](Parallelization.md)
