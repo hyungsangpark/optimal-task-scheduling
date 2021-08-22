@@ -15,3 +15,4 @@ For more information, check the following links:
 * [Parallelization](Parallelization.md)
 * [Hash Collisions](Hash_Collisions.md)
 * [Testing](Testing.md)
+* [Optimal Scheduler Solution](Optimal_Schdule_Solution.md)
