@@ -30,3 +30,4 @@ java −jar scheduler.jar INPUT.dot P [OPTION]
 ## Acknowledgements
 * Elisa's test cases
 * [A* Tree Search](https://www.javatpoint.com/ai-informed-search-algorithms)
+* [Research on Java Parallelisation](https://www.baeldung.com/java-when-to-use-parallel-stream)
