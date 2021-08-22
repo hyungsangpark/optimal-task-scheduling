@@ -1,12 +1,12 @@
 package project1.main;
 
-
 /**
- * This class enables the encapsulation of data, in which they can be accessed by getters and setters.
+ * Encapsulates program arguments such as number of processors,
+ * number of parallel cores, is visualised, and custom output name.
  */
-
 public class Parameters {
 
+    // Singleton instance of this class.
     private static Parameters _instance;
 
     private int _numProcessors = 1;
@@ -32,76 +32,67 @@ public class Parameters {
     }
 
     /**
-     * This method gets the number of processors to be used for scheduling.
-     * @return Number of processors to be used for scheduling.
+     * Gets the number of processors to schedule tasks.
+     * @return Number of processors to schedule tasks.
      */
-
     public int getNumProcessors() {
         return _numProcessors;
     }
 
     /**
-     * This method sets the number processors to be used for scheduling.
-     * @param numProcessors Number of processors to be used for scheduling.
+     * Sets the number of processors to schedule tasks.
+     * @param numProcessors Number of processors to schedule tasks.
      */
-
     public void setNumProcessors(int numProcessors) {
         _numProcessors = numProcessors;
     }
 
     /**
-     * This method gets the number of parallel cores to be used for scheduling.
-     * @return Number of parallel cores to be used for scheduling.
+     * Gets the number of parallel cores used for scheduling.
+     * @return Number of parallel cores used for scheduling.
      */
-
     public int getNumParallelCores() {
         return _numParallelCores;
     }
 
     /**
-     * This method sets the number of parallel cores to be used for scheduling.
-     * @param numParallelCores Number of parallel cores to be used for scheduling.
+     * Sets the number of parallel cores used for scheduling.
+     * @param numParallelCores Number of prallel cores used for scheduling.
      */
-
     public void setNumParallelCores(int numParallelCores) {
         _numParallelCores = numParallelCores;
     }
 
     /**
-     * This method gets whether the scheduled task is visualised in the GUI.
-     * @return A boolean value of whether the scheduled task is displayed in the GUI.
+     * Checks whether the scheduler program is visualised.
+     * @return True if the program is visualized, otherwise false.
      */
-
     public boolean isVisualised() {
         return _isVisualised;
     }
 
     /**
-     * This method sets whether the scheduled task is visualised in the GUI.
-     * @param isVisualised Boolean value of whether the scheduled task is displayed in the GUI.
+     * Sets whether the scheduler should be visualized.
+     * @param isVisualised True if program should be visualized, otherwise false.
      */
-
     public void setVisualised(boolean isVisualised) {
         _isVisualised = isVisualised;
     }
 
     /**
-     * This method gets the output name of the graph file.
+     * Gets the output name of the graph file.
      * @return The output name of the graph file.
      */
-
     public String getOutputName() {
         return _outputName;
     }
 
     /**
-     * This method sets the output name of the graph file.
+     * Sets the output name of the graph file.
      * @param outputName The output name of the graph file.
      */
-
     public void setOutputName(String outputName) {
         _outputName = outputName;
     }
-
 
 }
