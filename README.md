@@ -28,6 +28,6 @@ java −jar scheduler.jar INPUT.dot P [OPTION]
 - `−o OUPUT` output file is named `OUTPUT` (default is INPUT−output.dot)
 
 ## Acknowledgements
-* Elisa's test cases
+* [Elisa's test cases](https://github.com/Milk-Yan/optimal-task-scheduling/tree/master/src/test)
 * [A* Tree Search](https://www.javatpoint.com/ai-informed-search-algorithms)
 * [Research on Java Parallelisation](https://www.baeldung.com/java-when-to-use-parallel-stream)
