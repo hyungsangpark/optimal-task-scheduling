@@ -47,6 +47,8 @@ On the root directory, an executable scheduler.jar should've been created.
 
 Each release with names starting with "Milestone" will include a runnable jar file which can be invoked from the command line with the following parameters.
 
+*\*If your jar file is not named scheduler.jar due to running it on a different OS other than linux, please rename it to scheduler.jar to run the command below, otherwise rename the "scheduler.jar" in the command below to the name of the jar file accordingly.* 
+
 ```
 java −jar scheduler.jar INPUT.dot P [OPTION]
 ```
