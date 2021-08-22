@@ -6,8 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * The Visualiser Class is responsible for loading the GUI.
- * Will add more comments
+ * Initiates Visualiser JavaFX application.
  */
 public class Visualiser extends Application {
 
@@ -18,8 +17,10 @@ public class Visualiser extends Application {
 
     @Override
     public void start(Stage program) throws Exception {
+        // Create a scene loader from Visualiser FXML file.
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Visualiser.fxml"));
 
+        // Configure the visualiser screen, and show it on the program.
         program.setScene(new Scene(loader.load(), 400, 600));
         program.setTitle("Task Scheduler Visualiser");
         program.setResizable(false);

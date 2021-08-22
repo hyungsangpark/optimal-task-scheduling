@@ -1,7 +1,7 @@
 package project1.algorithm;
 
 import project1.data.ScheduleNode;
-import project1.gui.SolveAlgorithm;
+import project1.gui.SchedulingThread;
 
 import java.util.HashSet;
 import java.util.PriorityQueue;
@@ -18,7 +18,7 @@ public class AStar {
     private final HashSet<ScheduleNode> scheduleNodesHashSet = new HashSet<>();
     private final int _processors;
     private final int _numOfCores;
-    private SolveAlgorithm _caller;
+    private SchedulingThread _caller;
 
     /**
      * Constructor of the AStar class.
@@ -35,9 +35,9 @@ public class AStar {
      * Constructor of the Astar class for visualised.
      * @param processors    number of processors for the scheduler problem.
      * @param numOfCores    number of cores used for parallelisation.
-     * @param caller    SolveAlgorithm object used to communicate with the GUI.
+     * @param caller    SchedulingThread object used to communicate with the GUI.
      */
-    public AStar(int processors, int numOfCores, SolveAlgorithm caller) {
+    public AStar(int processors, int numOfCores, SchedulingThread caller) {
         _processors = processors;
         _numOfCores = numOfCores;
         _caller = caller;

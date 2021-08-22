@@ -10,14 +10,14 @@ import java.io.*;
 import java.util.List;
 
 /**
- * Loads and unloads graph from .dot file.
+ * This class loads and unloads the graph from the .dot file.
  */
 public class GraphLoader {
 
     private String _graphID;
 
     /**
-     * Reads a graph from a file with .dot file extension.
+     * This method reads a graph from a file with .dot file extension.
      * @param linkToGraphFile A link to the graph file, relative to the parent directory of the source folder.
      * @return A graph with nodes and edges read from the given file.
      * @throws IOException when a file with a given link to graph file cannot be found.
@@ -51,7 +51,11 @@ public class GraphLoader {
         return graph;
     }
 
-    // keep this
+    /**
+     * This method creates the output graph in the desired format.
+     * @param graph A Hashmap in the right format representing the scheduled tasks.
+     * @param schedule A list of list of strings containing tasks scheduled on each processor.
+     */
     public void formatOutputGraph(Graph graph, List<List<String>> schedule) {
         for (int i = 0; i < schedule.size(); i++) {
             for (int j = 0; j < schedule.get(i).size(); j++) {
@@ -67,8 +71,8 @@ public class GraphLoader {
     }
 
     /**
-     * Writes a given graph instance in a form of .dot file.
-     * @param graph A graph to write .dot file from.
+     * This method writes a given graph instance in a form of .dot file.
+     * @param graph A graph to write the .dot file from.
      * @param outputFileName Name of the output graph file.
      */
     public void writeGraph(Graph graph, String outputFileName) {
@@ -78,7 +82,7 @@ public class GraphLoader {
             // Header
             graphWriter.println("digraph \"" + _graphID + "\" {");
 
-            // Print Nodes.
+            // Print nodes
             graph.nodes().forEach(node -> {
                 graphWriter.println(new StringBuilder()
                         .append("    ")

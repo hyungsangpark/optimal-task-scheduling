@@ -2,27 +2,25 @@ package project1.gui;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import project1.IO.GraphReader;
+import project1.IO.GraphWriter;
 import project1.data.Processor;
 import project1.main.Parameters;
 
 import java.net.URL;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class Controller implements Initializable {
 
-    // The following labels represent and update information in the GUI.
+    // The following elements represent and update information in the GUI.
     @FXML
     private Text status;
     @FXML
@@ -55,8 +53,8 @@ public class Controller implements Initializable {
         status.setText("RUNNING");
         startButton.setDisable(true);
 
-        // Create a thread which would solve the algorithm.
-        SolveAlgorithm thread = new SolveAlgorithm();
+        // Create a thread which would start scheduling.
+        SchedulingThread thread = new SchedulingThread();
 
         // Measure start time.
         startTime = System.nanoTime();
@@ -64,9 +62,11 @@ public class Controller implements Initializable {
         // Start the thread which would start solving the algorithm.
         thread.start();
 
-        // Every millisecond, check to see if there is an update in the schedule from SolveAlgorithm thread.
+        // Every 100 millisecond, check to see if there is an update in the schedule from SolveAlgorithm thread.
+        // A frequency of updating every 100 millisecond was deliberately chosen, with considerations of
+        // minimising decrease in performance and updating quickly enough to produce a correct elapsed time.
         Timeline statusUpdater = new Timeline();
-        statusUpdater.getKeyFrames().add(new KeyFrame(Duration.millis(50),
+        statusUpdater.getKeyFrames().add(new KeyFrame(Duration.millis(100),
                 event -> {
                     // Calculate time elapsed and update timeElapsed.
                     long timeElapsedValue = System.nanoTime() - startTime;
@@ -85,7 +85,7 @@ public class Controller implements Initializable {
                     // If a thread has finished its task, stop updating status and run end of schedule procedure.
                     if (thread.isFinished()) {
                         statusUpdater.stop();
-                        schedulingEnded(thread.getOptimalTime());
+                        schedulingEnded(thread.getSchedule(), thread.getOptimalTime());
                     }
                 }));
         statusUpdater.setCycleCount(Timeline.INDEFINITE);
@@ -165,12 +165,15 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Changes elements that needs to be updated such as optimal time produced and status.
-     * It also enables the button which was disabled.
+     * Writes the graph into an output dot file, then changes elements that needs to be updated such as
+     * optimal time produced and status. It also enables the button which was disabled.
      *
      * @param optimalTimeValue Optimal time retrieved from the output of the scheduler. i.e. max height in the graph.
      */
-    private void schedulingEnded(int optimalTimeValue) {
+    private void schedulingEnded(HashMap<Integer, Processor> scheduleMap, int optimalTimeValue) {
+        GraphWriter graphWriter = new GraphWriter();
+        graphWriter.outputGraphData(Parameters.getInstance().getOutputName(), scheduleMap);
+
         optimalTime.setText(String.valueOf(optimalTimeValue));
         status.setText("READY");
         startButton.setDisable(false);
