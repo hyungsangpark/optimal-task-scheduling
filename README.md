@@ -1,5 +1,8 @@
 # SOFTENG 306 Project 1: Eurasian Federation - 10
 
+## Backgroun
+This project is about using artificial intelligence and parallel processing power to solve a difficult scheduling problem, which was requested by Big-As Parallel Computing Centre. The main objectives of this project are speed and high quality software. More details about the project can be found in our [wiki](wiki/Home.md).
+
 ## Group Members
 - Danil Linkov
 - Dave Shin
