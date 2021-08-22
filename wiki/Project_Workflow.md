@@ -25,8 +25,30 @@ Meetings were mainly held in person, having approximately 3 meetings a week. Som
 
 ### Milestone 1
 
+The workload of Milestone 1 was separated into five main sections in which the I/O parsing, A*, and DFS implementation was carried out in parallel. These sections' tasks were delegated as follows:
+
 * I/O parsing – Hyung
 * Valid A* Implementation – Marcus, Danil
 * Valid DFS Implementation – Dave, Do Hyun
 * Testing – Everyone
 * Report, Wiki – Everyone
+
+### Milestone 2
+
+The workload of Milestone 2 was separated into five main sections. Throughout this milestone, the team was open to assisting each other whenever they needed help.
+  
+The Optimal Algorithm Implementation and Visualisation was done in parallel. 
+  
+Once the optimal algorithm was implemented, parallelisation and testing of the algorithm was commenced. 
+  
+The Documentation and Wiki was evenly shared by everyone, each completing the wiki pages of their respective sections.
+  
+
+Each of these sections were contributed by every person at some point, but the main contributors are as follows:
+
+* Optimal Algorithm Implementation - Danil, Dave, Marcus
+* Visualisation - Hyung, Do Hyun
+* Parallelisation - Marcus, Dave, Danil
+* Testing - Danil, Do Hyun, Hyung
+* Documentation, Wiki - Everyone
+
