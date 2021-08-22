@@ -11,10 +11,7 @@ The objective of Milestone 2 was to provide the complete implementation. In orde
 * Both A* and DFS algorithms were implemented so that corresponding algorithm can be used based on the inputs. However, we have identified that the A* algorithm is faster in all
 cases based on our testing. Therefore, our current implementation only uses A* to produce an optimal schedule.
 
-## Testing
-
-* No proper testing implemented in this stage of the project.
-* Planning to use JUnit as the framework to write tests.
-
 For more information, check the following links:
 * [Hash Collisions](Hash_Collisions.md)
+* [Testing](Testing.md)
+* [Parallelization](Parallelization.md)
