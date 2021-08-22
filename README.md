@@ -10,8 +10,40 @@ This project is about using artificial intelligence and parallel processing powe
 - Marcus Li
 - Hyung Park
 
+## Getting Started
 
-## Running instructions
+### Dependencies
+
+Dependencies used in this project are as follows: 
+
+- [Maven](https://maven.apache.org/)
+- [Commons CLI](https://commons.apache.org/proper/commons-cli/)
+- [JUnit](https://junit.org/junit4/)
+- [JavaFX](https://openjfx.io/)
+- [GraphStream](https://graphstream-project.org/) (for test purposes)
+
+### Installing
+
+In order to run the program, it is highly recommended going to the release section and download jar executables according to the OS being used.
+
+Though, detailed guides on how to manually install are listed below.
+Follow though the following guide after downloading or cloning the source files.
+
+Given the source files, Maven will be used to package the source files into executable jar files. Due to issues with JavaFX, please package executables in the specific OS that the installed executable will be run.
+
+To check whether maven is installed on your computer, run:
+
+`mvn -version`
+
+Once it's installed, on the root directory of the source folder, (folder which contains src folder and pom.xml) run:
+
+`mvn clean`
+
+`mvn install`
+
+On the root directory, an executable scheduler.jar should've been created.
+
+### Running instructions
 
 Each release with names starting with "Milestone" will include a runnable jar file which can be invoked from the command line with the following parameters.
 
