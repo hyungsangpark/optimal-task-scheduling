@@ -31,6 +31,9 @@ public class Main {
             if (parameters.isVisualised()) {
                 Visualiser.main(new String[0]);
             } else {
+                // Print line to notify the user that the schedule is being produced.
+                System.out.println("Scheduling...");
+
                 // Record the start time.
                 long startTime = System.nanoTime();
 
@@ -40,7 +43,7 @@ public class Main {
 
                 // Record the end time.
                 long endTime = System.nanoTime();
-                long duration = (endTime - startTime)/1000;
+                long duration = (endTime - startTime)/1000000;
 
                 // Write the graph into an output file.
                 GraphWriter graphWriter = new GraphWriter();
