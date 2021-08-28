@@ -1,4 +1,4 @@
-package project1.data;
+package project1.algorithm.dfs;
 
 /**
  * Node of the DFS schedule tree. A node contains the schedule of tasks and the processors that the tasks are allocated

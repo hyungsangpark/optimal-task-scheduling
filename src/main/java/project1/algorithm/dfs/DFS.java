@@ -1,4 +1,4 @@
-package project1.algorithm;
+package project1.algorithm.dfs;
 
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
@@ -12,7 +12,7 @@ import java.util.*;
  *
  * Author: Dave Shin
  */
-public class DFS {
+class DFS {
     private static final int NOT_USED = -1;
     private static final String END_TIME_INDICATOR = "schedule endtime";
 
@@ -84,16 +84,6 @@ public class DFS {
         NewScheduleNode[] leftmostSchedule = new NewScheduleNode[_endTimeIdx + 1];
         int idx = 0;
         int startTime = 0;
-
-//        for (Object taskObject : _graph.nodes().toArray()) {
-//            Node task = (Node)taskObject;
-//
-//            leftmostSchedule[idx] = new NewScheduleNode(task.getId(), startTime, startTime
-//                    + (int)task.getAttribute("Weight"), 0);
-//
-//            startTime += (int)task.getAttribute("Weight");
-//            idx++;
-//        }
 
         LinkedList<String> schedulableTasks = findSchedulableTasks(_graph, emptySchedule);
         while (schedulableTasks.peekFirst() != null) { // while the queue is not empty
