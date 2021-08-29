@@ -41,9 +41,10 @@ public class Main {
                 AStar newSearch = new AStar(parameters.getNumProcessors(), parameters.getNumParallelCores());
                 ScheduleNode result = newSearch.aStarSearch();
 
-                // Record the end time.
-                long endTime = System.nanoTime();
-                long duration = (endTime - startTime)/1000000;
+                // Measure the duration of the program and parse it into seconds and milliseconds.
+                long duration = System.nanoTime() - startTime;
+                int sec = (int) (duration / 1000000000);
+                int ms = (int) (duration / 1000000) - sec * 1000;
 
                 // Write the graph into an output file.
                 GraphWriter graphWriter = new GraphWriter();
@@ -51,7 +52,7 @@ public class Main {
 
                 // Output results.
                 System.out.println("\nOutput written to file named: " + parameters.getOutputName());
-                System.out.println("Time taken: " + duration + " ms");
+                System.out.println("Time taken: " + sec + "." + String.format("%3s", ms).replace(' ', '0') + "s");
                 System.out.println("Finish time of best schedule: " + result.getOptimalTime());
             }
 
