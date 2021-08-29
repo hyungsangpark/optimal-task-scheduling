@@ -37,9 +37,7 @@ To check whether maven is installed on your computer, run:
 
 Once it's installed, on the root directory of the source folder, (folder which contains src folder and pom.xml) run:
 
-`mvn clean`
-
-`mvn install`
+`mvn clean install`
 
 On the root directory, an executable scheduler.jar should've been created.
 
