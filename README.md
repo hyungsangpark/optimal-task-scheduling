@@ -63,6 +63,7 @@ java −jar scheduler.jar INPUT.dot P [OPTION]
 * [Elisa's test cases](https://github.com/Milk-Yan/optimal-task-scheduling/tree/master/src/test)
 * [A* Tree Search](https://www.javatpoint.com/ai-informed-search-algorithms)
 * [Research on Java Parallelisation](https://www.baeldung.com/java-when-to-use-parallel-stream)
+* [Fork/Join Framework Java Example](https://howtodoinjava.com/java7/forkjoin-framework-tutorial-forkjoinpool-example/)
 * [Package java.util.concurrent](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/package-summary.html)
 * [ArrayList vs LinkedList memory allocation](https://stackoverflow.com/questions/11564352/arraylist-vs-linkedlist-from-memory-allocation-perspective)
 * [Graph Visualisor](https://dreampuf.github.io/GraphvizOnline/#digraph%20%22example%22%20%7B%0A%20%20%20%20a%20%20%20%20%20%20%20%20%20%20%20%5BWeight%3D2%5D%3B%0A%20%20%20%20b%20%20%20%20%20%20%20%20%20%20%20%5BWeight%3D2%5D%3B%0A%20%20%20%20a%20-%3E%20b%20%20%20%20%20%20%5BWeight%3D2%5D%3B%0A%20%20%20%20c%20%20%20%20%20%20%20%20%20%20%20%5BWeight%3D3%5D%3B%0A%20%20%20%20a%20-%3E%20c%20%20%20%20%20%20%5BWeight%3D1%5D%3B%0A%20%20%20%20d%20%20%20%20%20%20%20%20%20%20%20%5BWeight%3D2%5D%3B%0A%20%20%20%20b%20-%3E%20d%20%20%20%20%20%20%5BWeight%3D2%5D%3B%0A%20%20%20%20c%20-%3E%20d%20%20%20%20%20%20%5BWeight%3D1%5D%3B%0A%7D)
